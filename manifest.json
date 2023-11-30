@@ -1,0 +1,40 @@
+{
+    "manifest_version":3,
+    "name": "Recipe Ingredient Exporter",
+    "version": "1.0.0",
+    "description": "Extracts ingredients from recipes found on the page and allows user to export to grocery stores.",
+    "author": "Maddie Drake",
+    "action": {
+        "default_popup": "index.html",
+        "default_title": "ingredinet exporter",
+        "default_icon":{
+            "16": "/images/x.png",
+            "48": "/images/x.png",
+            "128": "/images/x.png"
+        }
+     },
+     "background":{
+        "service_worker": "backgroundWorker.js",
+        "type": "module"
+    },
+     "permissions": [
+       "scripting",
+       "storage",
+       "tabs",
+       "geolocation",
+       "identity"
+     ],
+     "content_scripts": [ 
+      {
+        "matches": ["http://*/*", "https://*/*"],
+        "js": ["runExtension.js"],
+        "type": "module",
+        "css": ["styles.css"]        
+      }],
+      "web_accessible_resources": [
+        {
+          "resources": ["index.html", "ingredientContainer.html", "locationPopup.html", "images/*.png", "index.js"],
+          "matches": ["<all_urls>"]
+        }
+      ]
+    }

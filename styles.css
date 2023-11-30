@@ -1,0 +1,330 @@
+.pickupDiv{
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.zipCode{
+  padding-left: 10px;
+  padding-right: 20px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  font-weight: 325;
+  font-size: 17px;
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+}
+.storePic{
+  height: 25px;
+  padding-left: 16px;
+}
+.paragraphOutline{
+  outline: 1px solid rgb(191, 191, 191); ;
+  border-radius: 25px;
+  display: block;
+  width: 350px;
+  height: 125px;
+  margin-bottom: 5px;
+  margin-top: 5px;   
+  margin-left: 5px;
+}
+.priceAndQuantity{
+  width: 65px;
+}
+.mainDiv{
+  display: flex;
+  align-items: center;
+  padding-bottom: 10px;
+  justify-content: space-between; /* evenly space elements horizontally */
+}
+.emptyBackgroundButton{
+  padding: 0;
+  border: none;
+  background: none;
+}
+.rightArrowImage{
+  height: 20px;
+}
+.leftArrowImage{
+  height: 20px;
+}
+.downArrowImage{
+  height: 20px;
+}
+.closeImage {
+  padding: 0;
+  height: 10px;
+  position: absolute;
+  right: 15px;
+  top: 10px;
+}
+.closeImage:hover{
+  box-shadow: 0 0 10px rgb(149, 148, 148); /* Add a box shadow to simulate background covering the margin */
+}
+.minimize {
+  padding: 0;
+  height: 10px;
+  position: absolute;
+  right: 35px; /* Adjust the distance from the right edge */
+  top: 10px;
+}
+.minimize:hover{
+  box-shadow: 0 0 10px rgb(149, 148, 148); /* Add a box shadow to simulate background covering the margin */
+}
+.circleButton{
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  border: 1px solid rgb(87, 177, 189);      
+  margin-left: 15px;
+  margin-right: 10px;
+  background-color: white;
+}
+.ingredientDiv{
+  display: flex;
+  align-items: center;
+}
+.ingredientBrand{
+  margin-top: 10px;
+  margin-bottom: 0px;
+  padding-left: 25px;
+  font-weight: 345;
+  font-size: 17px;
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+  height: 30px;
+
+  display: -webkit-box; /* Limit the text to three lines */
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1; 
+  overflow: hidden;
+}
+.price{
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-weight: 500;
+  font-size: 20px;
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+}
+.descriptionAndQuantity * {
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.ingredientDescription{
+  font-weight: 325; 
+  font-size: 15px;
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+  color: rgb(0, 0, 0);
+  width: 170px;
+  text-align: left;
+  line-height: 1.2; /* Adjust the value to your preference */
+
+  display: -webkit-box; /* Limit the text to three lines */
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; 
+  overflow: hidden;
+}
+
+.size{
+  font-weight: 325; 
+  font-size: 15px;
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+  color: rgb(151, 151, 151);
+  width: 170px;
+  text-align: left;
+  
+  display: -webkit-box; /* Limit the text to 1 line */
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1; 
+  overflow: hidden;
+}
+.minusButton{
+  all:revert; 
+  border: none;
+  height: 25px;
+  width: 22px;
+  border-radius: 20%;
+  background-color: rgb(52, 122, 132);
+  color: white;
+  font-size: 20px;
+}
+.minusButton:hover{
+  box-shadow: 0 0 10px rgb(149, 148, 148); /* Add a box shadow to simulate background covering the margin */
+}
+.plusButton{
+  all:revert; 
+  border: none;
+  height: 25px;
+  width: 22px;
+  border-radius: 20%;
+  background-color: rgb(52, 122, 132);
+  color: white;
+  font-size: 20px;
+  text-align: center; /* horizontally centers the text within the div */
+}
+.plusButton:hover{
+  box-shadow: 0 0 10px rgb(149, 148, 148); /* Add a box shadow to simulate background covering the margin */
+}
+.plusMinusDiv{
+  background-color: rgb(52, 122, 132);
+  border-radius: 12px;
+  display: flex;
+  border-radius: 20%;
+  height: 25px;
+  width: 65px;
+}
+.quantity{
+  color: white;
+  vertical-align: middle;
+  font-weight: 350;
+  font-size: 16px;
+  width: 65px;
+}
+.ingredientImage{
+  width: 40px;
+  height: 60px; 
+  margin-left: 10px;
+  margin-right: 10px;
+  object-fit: contain;
+}
+
+#top-level-div{
+  background-color: white; 
+  height: 100%;
+  width: 360px;
+  position: fixed;
+  z-index: 2147483646;
+  display: block;
+  overflow-y: auto;
+  top: 10px; /* Adjust as needed */
+  right: 10px; /* Adjust as needed */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border-radius: 10px; /* Adjust the radius for the desired roundness */
+  text-align: center;
+}
+.topLevelLocationPopup{
+  background-color: white;
+  height: 50%;
+  width: 340px;
+  position: fixed;
+  z-index: 2147483647;
+  display: block;
+  overflow-y: auto;
+  top: 65px; /* Adjust as needed */
+  right: 20px; /* Adjust as needed */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border-radius: 10px; /* Adjust the radius for the desired roundness */
+  text-align: center;
+}
+.checkout {
+  all:revert; 
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+  padding: 10px 20px; /* Adjust padding as needed */
+  font-size: 16px; /* Adjust font size as needed */
+  background-color: rgb(52, 122, 132);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 350px;
+  margin-bottom: 20px;
+}
+.checkout:hover {
+  box-shadow: 0 0 10px rgb(38, 90, 98); /* Add a box shadow to simulate background covering the margin */
+}
+.testContainer {
+  display: flex;
+  justify-content: center;
+}
+.testButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: rgb(52, 122, 132);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 350px;
+  margin-bottom: 20px;
+  transition: width 0.5s, padding 0.5s, border-radius 0.5s;
+}
+
+.testButton:hover {
+  box-shadow: 0 0 10px rgb(38, 90, 98);
+}
+
+.testButton.clicked {
+  width: 40px; /* Set a fixed width for the circle */
+  height: 40px; /* Set a fixed height for the circle */
+  padding: 0;
+  border-radius: 50%;
+}
+
+.testButton.clicked span {
+  opacity: 0; /* Hide the text */
+}
+
+.testButton.clicked:after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%; /* Set a fixed height for the circle */
+  border-radius: 50%;
+  background-color: rgb(52, 122, 132);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center the absolute positioned element */
+  transition: width 0.5s, height 0.5s, border-radius 0.5s;
+}
+.topLocationDiv{
+  outline: 1px solid rgb(191, 191, 191); ;
+  border-radius: 25px;
+  display: block;
+  width: 330px;
+  height: 125px;
+  margin-bottom: 5px;
+  margin-top: 8px;   
+  margin-left: 5px;
+}
+.locationName{
+  margin-bottom: 0px;
+  padding-top: 10px;
+  padding-left: 15px;
+  font-weight: 600;
+  font-size: 17px;
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+  height: 30px;
+  text-align: left;
+}
+.locationAddress{
+  margin-top: 0px;
+  padding-left: 15px;
+  font-weight: 325; 
+  font-size: 15px;
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+  color: rgb(0, 0, 0);
+  width: 170px;
+  text-align: left;
+  line-height: 1.2; /* Adjust the value to your preference */
+
+  display: -webkit-box; /* Limit the text to three lines */
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; 
+  overflow: hidden;
+}
+.locationImage{
+  height: 20px;
+  padding-left: 15px;
+  padding-top: 9px;
+}
+.phoneImage{
+  height: 20px;
+  padding-left: 15px;
+  padding-top: 3px;
+}
