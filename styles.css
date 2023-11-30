@@ -5,6 +5,7 @@
   justify-content: center;
 }
 .zipCode{
+  all:revert; 
   padding-left: 10px;
   padding-right: 20px;
   margin-top: 0px;
@@ -172,13 +173,17 @@
   border-radius: 20%;
   height: 25px;
   width: 65px;
+  align-items: center;
+  justify-content: center;
 }
 .quantity{
+  all:revert; 
   color: white;
-  vertical-align: middle;
   font-weight: 350;
   font-size: 16px;
   width: 65px;
+  display: flex;
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 }
 .ingredientImage{
   width: 40px;
@@ -293,6 +298,7 @@
   margin-left: 5px;
 }
 .locationName{
+  all:revert; 
   margin-bottom: 0px;
   padding-top: 10px;
   padding-left: 15px;
@@ -303,6 +309,7 @@
   text-align: left;
 }
 .locationAddress{
+  all:revert; 
   margin-top: 0px;
   padding-left: 15px;
   font-weight: 325; 
@@ -318,13 +325,42 @@
   -webkit-line-clamp: 2; 
   overflow: hidden;
 }
+.phoneNumber{
+  all:revert; 
+  margin-top: 0px;
+  padding-left: 15px;
+  font-weight: 325; 
+  font-size: 15px;
+  margin-bottom: 0px;
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+  color: rgb(0, 0, 0);
+  width: 170px;
+  text-align: left;
+  line-height: 1.2; /* Adjust the value to your preference */
+}
 .locationImage{
+  all:revert; 
   height: 20px;
   padding-left: 15px;
   padding-top: 9px;
 }
 .phoneImage{
+  all:revert; 
   height: 20px;
   padding-left: 15px;
   padding-top: 3px;
+}
+.shopStore{
+  all:revert; 
+  border: none;
+  height: 25px;
+  width: 100px;
+  border-radius: 7px;
+  background-color: rgb(52, 122, 132);
+  color: white;
+  font-size: 15px;
+  text-align: center; /* horizontally centers the text within the div */
+}
+.shopStore:hover{
+  box-shadow: 0 0 10px rgb(149, 148, 148); /* Add a box shadow to simulate background covering the margin */
 }

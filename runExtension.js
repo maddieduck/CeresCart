@@ -108,7 +108,6 @@ function closePopup(event) {//closes the main popup or the location popup
 }
 
 function downArrowPressed() {
-
   // Use chrome.runtime.getURL to get the URL of the extension resource
   var url = chrome.runtime.getURL('locationPopup.html');
 
