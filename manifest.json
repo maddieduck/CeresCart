@@ -33,7 +33,7 @@
       }],
       "web_accessible_resources": [
         {
-          "resources": ["index.html", "ingredientContainer.html", "locationPopup.html", "images/*.png", "index.js"],
+          "resources": ["index.html", "ingredientContainer.html", "locationPopup.html", "location.html", "images/*.png", "index.js"],
           "matches": ["<all_urls>"]
         }
       ]

@@ -6,6 +6,30 @@
 }
 .zipCode{
   all:revert; 
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  font-weight: 325;
+  font-size: 17px;
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+  outline: 1px solid rgb(191, 191, 191); ;
+  border: none;
+  border-radius: 25px;
+  text-align: center;
+
+  display: -webkit-box; /* Limit the text to three lines */
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1; 
+  overflow: hidden;
+}
+.zipCode:placeholder{
+  all:revert; 
+  color: grey;
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+}
+.pickupAt{
+  all:revert; 
   padding-left: 10px;
   padding-right: 20px;
   margin-top: 0px;
@@ -13,8 +37,14 @@
   font-weight: 325;
   font-size: 17px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+
+  display: -webkit-box; /* Limit the text to three lines */
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1; 
+  overflow: hidden;
 }
 .storePic{
+  all:revert; 
   height: 25px;
   padding-left: 16px;
 }
@@ -52,6 +82,7 @@
   height: 20px;
 }
 .closeImage {
+  all:revert; 
   padding: 0;
   height: 10px;
   position: absolute;
@@ -300,7 +331,9 @@
 .locationName{
   all:revert; 
   margin-bottom: 0px;
-  padding-top: 10px;
+  border: 0px;
+  margin-top: 0px;
+  padding-top: 5px;
   padding-left: 15px;
   font-weight: 600;
   font-size: 17px;

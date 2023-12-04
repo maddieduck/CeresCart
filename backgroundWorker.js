@@ -82,7 +82,7 @@ async function getCartWriteAuth(){
 }
 
 function checkCategories(categories) {
-    var blackListedCategories = ['Beauty', 'Personal Care'];
+    var blackListedCategories = ['Beauty', 'Personal Care', 'Baby'];
     if (!categories || categories.length === 0) {
         return false; // Return false if the array is blank
     }
@@ -97,6 +97,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     //console.log("ingredients found on page", message); 
     if (message.to === 'ingredients'){ //returns ingredients from kroger API
         var ingredients = Object.values(message.data);
+        //console.log('found ingredients ', ingredients); 
         var strippedIngredients = stripIngredients(ingredients); 
         console.log('stripped ingredients ', strippedIngredients); 
 
@@ -113,7 +114,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         })
         .then(allIngredientProducts => {
             console.log('All Ingred ', allIngredientProducts);
-            //TODO: Remove items that are not food. Sort by category. Blacklist 'Baby', 'Personal Care', "Beauty"
             var allProductsFound = []; 
             for (const j in allIngredientProducts){
                 if (allIngredientProducts[j] != null){
@@ -175,6 +175,29 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         })
         .catch(error => {
             console.log('error in backgroundWorker.js. when getting checking out', error.message);
+        })
+    }else if(message.to === 'locations'){
+        getProductAccessToken()
+        .then(accessToken => {
+            return locationSearchByZipcode(accessToken, '77098')
+        })
+        .then(locationData =>{
+            console.log('location data ', locationData)
+            var locationPopupData = []
+            for (const index in locationData){
+                var singleLocation = locationData[index];
+                var newLocation = {
+                    "name": singleLocation['name'],
+                    "address": singleLocation['address'],
+                    "phone": singleLocation['phone']
+                }
+                locationPopupData.push(newLocation);
+            } 
+            console.log(locationPopupData); 
+            sendResponse({locationData: locationPopupData, locationsFound: true}); 
+        })
+        .catch(error => {
+            console.log('error in backgroundWorker.js. when getting locations', error.message);
         })
     }
 });

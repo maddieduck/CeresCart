@@ -107,20 +107,33 @@ function closePopup(event) {//closes the main popup or the location popup
   }
 }
 
-function downArrowPressed() {
+async function downArrowPressed() {
   // Use chrome.runtime.getURL to get the URL of the extension resource
-  var url = chrome.runtime.getURL('locationPopup.html');
-
-  // Fetch the content of the URL
-  fetch(url)
-    .then(response => response.text())
-    .then(html => {
-      // Insert the HTML into the top-level div
-      document.body.insertAdjacentHTML('afterbegin', `<div id="locationPopup">${html}</div>`);
+  let response = await chrome.runtime.sendMessage({to: 'locations'});
+  if (response.locationsFound){
+    try{
+      const htmlContents = await Promise.all([
+        fetch(chrome.runtime.getURL('locationPopup.html')).then(response => response.text()),
+        fetch(chrome.runtime.getURL('location.html')).then(response => response.text())
+      ]);
+      const [locationPopupHtml, locationHtml] = htmlContents;
+      document.body.insertAdjacentHTML('afterbegin', `<div id="locationPopup">${locationPopupHtml}</div>`);
       var elem = document.getElementById('closeImageLocationPopup'); 
       elem.addEventListener('click', closePopup); 
-    })
-    .catch(error => console.error('Error fetching locationPopup.html:', error));
+      let locationPlaceholder = document.getElementById('placeholderForLocations');
+      console.log('location place ', locationPlaceholder);
+      for (const index in response.locationPopupData){
+        var locationData = response.locationPopupData[index];
+        let nodeClone = document.createElement('div');  // Create a new div 
+        nodeClone.innerHTML = locationHtml;  // Set the inner HTML of the div 
+        locationPlaceholder.appendChild(nodeClone);
+      }
+    } catch (error) {
+      console.error('ERROR in downArrowPressed.js: ', error);
+    }
+  }else{
+    //TODO: Launch a popup that the location is not found 
+  }
 }
 
 function minimizePopup() {//TODO: commented out for now, but need to add 
