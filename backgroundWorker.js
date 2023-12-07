@@ -179,13 +179,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }else if(message.to === 'locations'){
         getProductAccessToken()
         .then(accessToken => {
-            return locationSearchByZipcode(accessToken, '77098')
+            return locationSearchByZipcode(accessToken, message.zipCode)
         })
         .then(locationData =>{
             console.log('location data ', locationData)
             var locationPopupData = []
-            for (const index in locationData){
-                var singleLocation = locationData[index];
+            for (const index in locationData['data']){
+                var singleLocation = locationData['data'][index];
                 var newLocation = {
                     "name": singleLocation['name'],
                     "address": singleLocation['address'],
@@ -193,12 +193,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 }
                 locationPopupData.push(newLocation);
             } 
-            console.log(locationPopupData); 
+            console.log('location popup data', locationPopupData); 
             sendResponse({locationData: locationPopupData, locationsFound: true}); 
         })
         .catch(error => {
             console.log('error in backgroundWorker.js. when getting locations', error.message);
         })
+        return true; // Indicates that the response will be sent asynchronously 
     }
 });
 

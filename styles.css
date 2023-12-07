@@ -340,6 +340,11 @@
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   height: 30px;
   text-align: left;
+
+  display: -webkit-box; /* Limit the text to three lines */
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1; 
+  overflow: hidden;
 }
 .locationAddress{
   all:revert; 

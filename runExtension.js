@@ -50,9 +50,6 @@ if (ingredients != null) {
           ingredDiv.appendChild(nodeClone);
         }
 
-        var elem = document.getElementById('closeImage'); 
-        elem.addEventListener('click', closePopup); 
-
         var elem = document.getElementsByClassName('leftArrowImage'); 
         for(var i=0; i<elem.length; i++){
           elem[i].addEventListener('click', leftArrowClicked);
@@ -72,17 +69,14 @@ if (ingredients != null) {
         for(var i=0; i<elem.length; i++){
           elem[i].addEventListener('click', minusButtonClicked);
         }
-
-        var elem = document.getElementById('checkoutButton'); 
-        elem.addEventListener('click', checkoutButtonClicked); 
         /*
-        var elem = document.getElementById('minimize'); 
-        elem.addEventListener('click', minimizePopup); 
+        document.getElementById('minimize').addEventListener('click', minimizePopup); 
         */
+        document.getElementById('closeImage').addEventListener('click', closePopup); 
+        document.getElementById('checkoutButton').addEventListener('click', checkoutButtonClicked); 
+        document.getElementById('downArrow').addEventListener('click', downArrowPressed); 
+        document.getElementById('zipCode').addEventListener('keyup', zipCodeEdited); 
 
-        var elem = document.getElementById('downArrow'); 
-        elem.addEventListener('click', downArrowPressed); 
-        
         chrome.runtime.sendMessage({to: 'backgroundWorker', data: ingredients});
 
       } catch (error) {
@@ -108,24 +102,32 @@ function closePopup(event) {//closes the main popup or the location popup
 }
 
 async function downArrowPressed() {
-  // Use chrome.runtime.getURL to get the URL of the extension resource
-  let response = await chrome.runtime.sendMessage({to: 'locations'});
-  if (response.locationsFound){
+  // Use chrome.runtime.getURL to get the URL of the extension resource 
+  var zipCode = document.getElementById('zipCode').value; 
+  let backgroundResponse = await chrome.runtime.sendMessage({to: 'locations', zipCode: zipCode.trim()});
+  console.log('down arrow ', backgroundResponse);
+  if (backgroundResponse.locationsFound){
     try{
       const htmlContents = await Promise.all([
-        fetch(chrome.runtime.getURL('locationPopup.html')).then(response => response.text()),
-        fetch(chrome.runtime.getURL('location.html')).then(response => response.text())
+        fetch(chrome.runtime.getURL('locationPopup.html')).then(locationPopupResponse => locationPopupResponse.text()),
+        fetch(chrome.runtime.getURL('location.html')).then(locationResponse => locationResponse.text())
       ]);
-      const [locationPopupHtml, locationHtml] = htmlContents;
-      document.body.insertAdjacentHTML('afterbegin', `<div id="locationPopup">${locationPopupHtml}</div>`);
+      const [locationPopupHtml, locationHtml] = htmlContents; 
+      document.body.insertAdjacentHTML('afterbegin', `<div id="locationPopup">${locationPopupHtml}</div>`); 
       var elem = document.getElementById('closeImageLocationPopup'); 
       elem.addEventListener('click', closePopup); 
       let locationPlaceholder = document.getElementById('placeholderForLocations');
-      console.log('location place ', locationPlaceholder);
-      for (const index in response.locationPopupData){
-        var locationData = response.locationPopupData[index];
+      for (const index in backgroundResponse.locationData){
+        var locationData = backgroundResponse.locationData[index];
         let nodeClone = document.createElement('div');  // Create a new div 
         nodeClone.innerHTML = locationHtml;  // Set the inner HTML of the div 
+        nodeClone.querySelector('.topLocationDiv').id = 'topLocationDiv ' + index;
+        nodeClone.querySelector('.locationName').textContent = locationData["name"]
+        var addressObject = locationData["address"];
+        var formattedAddress = `${addressObject.addressLine1}\n${addressObject.city}, ${addressObject.state} ${addressObject.zipCode}`;
+        nodeClone.querySelector('.locationAddress').textContent = formattedAddress
+        const formattedNumber = `${locationData["phone"].substring(0, 3)}-${locationData["phone"].substring(3, 6)}-${locationData["phone"].substring(6)}`;
+        nodeClone.querySelector('.phoneNumber').textContent = formattedNumber
         locationPlaceholder.appendChild(nodeClone);
       }
     } catch (error) {
@@ -302,6 +304,12 @@ function findIngredientsOnPage() {
   }
   return null; 
 }
+
+function zipCodeEdited(event){
+  if (event.key === 'Enter') { 
+    downArrowPressed(); 
+  } 
+} 
 
             //check if store location exists in memory 
             //if not, prompt for geolocation 
