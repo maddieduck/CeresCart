@@ -1,4 +1,5 @@
 let allProductData = []; 
+let allLocationData = []; 
 let ingredients = findIngredientsOnPage();
 console.log('ingredients ', ingredients);
 if (ingredients != null) {
@@ -8,7 +9,7 @@ if (ingredients != null) {
       try {
         const htmlContents = await Promise.all([
           fetch(chrome.runtime.getURL('index.html')).then(response => response.text()),
-          fetch(chrome.runtime.getURL('ingredientContainer.html')).then(response => response.text())
+          fetch(chrome.runtime.getURL('ingredientContainer.html')).then(response => response.text()),
         ]);
         const [indexHtml, ingredientHtml] = htmlContents;
         
@@ -49,6 +50,14 @@ if (ingredients != null) {
           }
           ingredDiv.appendChild(nodeClone);
         }
+        //set the zip code if it exists in memory 
+        /*
+        chrome.storage.local.get('zipCode', (result) => {
+          //console.log('zip code ', result['zipCode']);
+          if (result['zipCode'] != undefined){
+            document.getElementById('zipCode').value = result['zipCode']
+          }
+        });*/ 
 
         var elem = document.getElementsByClassName('leftArrowImage'); 
         for(var i=0; i<elem.length; i++){
@@ -74,7 +83,7 @@ if (ingredients != null) {
         */
         document.getElementById('closeImage').addEventListener('click', closePopup); 
         document.getElementById('checkoutButton').addEventListener('click', checkoutButtonClicked); 
-        document.getElementById('downArrow').addEventListener('click', downArrowPressed); 
+        document.getElementById('downArrow').addEventListener('click', launchLocationPopup); 
         document.getElementById('zipCode').addEventListener('keyup', zipCodeEdited); 
 
         chrome.runtime.sendMessage({to: 'backgroundWorker', data: ingredients});
@@ -89,22 +98,21 @@ if (ingredients != null) {
 function closePopup(event) {//closes the main popup or the location popup 
   var id = event.target.closest('[id]').id; 
   if (id === 'closeImage'){
-    var mainPopup = document.getElementById('ingredientExporterPopup');
-    mainPopup.remove();
+    document.getElementById('ingredientExporterPopup').remove();
     var locationPopup = document.getElementById('locationPopup');
     if (locationPopup){
       locationPopup.remove();
     }
   }else if (id === "closeImageLocationPopup"){
-    var locationPopup = document.getElementById('locationPopup');
-    locationPopup.remove();
+    document.getElementById('locationPopup').remove();
   }
 }
 
-async function downArrowPressed() {
-  // Use chrome.runtime.getURL to get the URL of the extension resource 
+async function launchLocationPopup() {
   var zipCode = document.getElementById('zipCode').value; 
+
   let backgroundResponse = await chrome.runtime.sendMessage({to: 'locations', zipCode: zipCode.trim()});
+  allLocationData = backgroundResponse.locationData;
   console.log('down arrow ', backgroundResponse);
   if (backgroundResponse.locationsFound){
     try{
@@ -121,13 +129,14 @@ async function downArrowPressed() {
         var locationData = backgroundResponse.locationData[index];
         let nodeClone = document.createElement('div');  // Create a new div 
         nodeClone.innerHTML = locationHtml;  // Set the inner HTML of the div 
-        nodeClone.querySelector('.topLocationDiv').id = 'topLocationDiv ' + index;
+        nodeClone.querySelector('.topLocationDiv').id = 'topLocationDiv' + index;
         nodeClone.querySelector('.locationName').textContent = locationData["name"]
         var addressObject = locationData["address"];
         var formattedAddress = `${addressObject.addressLine1}\n${addressObject.city}, ${addressObject.state} ${addressObject.zipCode}`;
         nodeClone.querySelector('.locationAddress').textContent = formattedAddress
         const formattedNumber = `${locationData["phone"].substring(0, 3)}-${locationData["phone"].substring(3, 6)}-${locationData["phone"].substring(6)}`;
-        nodeClone.querySelector('.phoneNumber').textContent = formattedNumber
+        nodeClone.querySelector('.phoneNumber').textContent = formattedNumber 
+        nodeClone.querySelector('.shopStore').addEventListener('click', shopStore); 
         locationPlaceholder.appendChild(nodeClone);
       }
     } catch (error) {
@@ -136,6 +145,18 @@ async function downArrowPressed() {
   }else{
     //TODO: Launch a popup that the location is not found 
   }
+}
+
+function shopStore(event){
+  document.getElementById('locationPopup').remove();
+  var id = event.target.closest('[id]').id; 
+  var locationIndex = Number(id.replace(/topLocationDiv/g, '')); 
+  console.log('shop store pressed ', locationIndex);
+  var locationId = allLocationData[locationIndex]['id'];
+  var locationName = allLocationData[locationIndex]['name'];
+  document.getElementById('zipCode').style.display = 'none';
+  document.getElementById('pickupAt').style.display = 'flex';
+  document.getElementById('pickupAt').textContent = locationName; 
 }
 
 function minimizePopup() {//TODO: commented out for now, but need to add 
@@ -305,11 +326,14 @@ function findIngredientsOnPage() {
   return null; 
 }
 
-function zipCodeEdited(event){
-  if (event.key === 'Enter') { 
-    downArrowPressed(); 
-  } 
-} 
+function zipCodeEdited(event) {
+  var zipCode = document.getElementById('zipCode').value;
+  // Check if the Enter key is pressed and the zip code is not blank
+  if (event.key === 'Enter' && zipCode.trim() !== '') {
+    launchLocationPopup();
+  }
+}
+
 
             //check if store location exists in memory 
             //if not, prompt for geolocation 

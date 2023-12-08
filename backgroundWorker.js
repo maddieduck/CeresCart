@@ -178,26 +178,35 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         })
     }else if(message.to === 'locations'){
         getProductAccessToken()
-        .then(accessToken => {
+        .then(accessToken => { 
             return locationSearchByZipcode(accessToken, message.zipCode)
         })
         .then(locationData =>{
+            //TODO: filter the locationData and remove any store that doesn't exist. Filter by 999-999-9999
             console.log('location data ', locationData)
-            var locationPopupData = []
-            for (const index in locationData['data']){
-                var singleLocation = locationData['data'][index];
-                var newLocation = {
-                    "name": singleLocation['name'],
-                    "address": singleLocation['address'],
-                    "phone": singleLocation['phone']
-                }
-                locationPopupData.push(newLocation);
-            } 
-            console.log('location popup data', locationPopupData); 
-            sendResponse({locationData: locationPopupData, locationsFound: true}); 
+            if (locationData != null && locationData['data'].length != 0){
+                chrome.storage.local.set({['zipCode']: message.zipCode });
+                var locationPopupData = []
+                for (const index in locationData['data']){
+                    var singleLocation = locationData['data'][index];
+                    var newLocation = {
+                        "name": singleLocation['name'],
+                        "address": singleLocation['address'],
+                        "phone": singleLocation['phone'],
+                        "id": singleLocation['locationId']
+                    }
+                    locationPopupData.push(newLocation);
+                } 
+                console.log('location popup data', locationPopupData); 
+                sendResponse({locationData: locationPopupData, locationsFound: true}); 
+            }else{
+                console.log('no locations found')
+                sendResponse({locationsFound: false}); 
+            }
         })
         .catch(error => {
             console.log('error in backgroundWorker.js. when getting locations', error.message);
+            sendResponse({locationsFound: false}); 
         })
         return true; // Indicates that the response will be sent asynchronously 
     }

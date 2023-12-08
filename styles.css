@@ -18,7 +18,7 @@
   border-radius: 25px;
   text-align: center;
 
-  display: -webkit-box; /* Limit the text to three lines */
+  display: flex; /* Limit the text to three lines */
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1; 
   overflow: hidden;
@@ -38,7 +38,7 @@
   font-size: 17px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 
-  display: -webkit-box; /* Limit the text to three lines */
+  display: none; /* Limit the text to three lines */
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1; 
   overflow: hidden;
@@ -124,7 +124,7 @@
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   height: 30px;
 
-  display: -webkit-box; /* Limit the text to three lines */
+  display: flex; /* Limit the text to three lines */
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1; 
   overflow: hidden;
@@ -151,7 +151,7 @@
   text-align: left;
   line-height: 1.2; /* Adjust the value to your preference */
 
-  display: -webkit-box; /* Limit the text to three lines */
+  display: flex; /* Limit the text to three lines */
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3; 
   overflow: hidden;
@@ -165,7 +165,7 @@
   width: 170px;
   text-align: left;
   
-  display: -webkit-box; /* Limit the text to 1 line */
+  display: flex; /* Limit the text to 1 line */
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1; 
   overflow: hidden;
@@ -341,7 +341,7 @@
   height: 30px;
   text-align: left;
 
-  display: -webkit-box; /* Limit the text to three lines */
+  display: flex; /* Limit the text to three lines */
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1; 
   overflow: hidden;
@@ -358,7 +358,7 @@
   text-align: left;
   line-height: 1.2; /* Adjust the value to your preference */
 
-  display: -webkit-box; /* Limit the text to three lines */
+  display: flex; /* Limit the text to three lines */
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2; 
   overflow: hidden;
