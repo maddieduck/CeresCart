@@ -2,8 +2,8 @@
 function stripIngredients(recipeIngredients){ 
     var strippedIngredients = [] 
     const quantityPattern = /^[^a-z]+/; 
-    const unitPattern = /\b(?:cup|cups|teaspoon|teaspoons|tbsp|tbsps|tsp|tsps|tablespoon|tablespoons|oz|ozs|ounce|ounces|fluid ounce|fluid ounces|pound|pounds|g|gs|gram|grams|kg|kgs|kilogram|kilogram|pint|pints|quart|quarts|gallon|gallons|liter|liters|litre|litres|scoop|scoops|batch|batches|pinch of|pinch|inch|package)\b/i; // Case-insensitive units
-    const wordsToRemove = ['ice cubes', 'cubed', 'diced', 'sliced', 'slice of', 'fresh', 'slices', "juiced", "chopped", "softened", "small", "medium", "large", "zest", "water", "finely", "cooked", "extra virgin", "extra-virgin", "heaped", "chunks", "hot water", "boiling", "ice", "iced cubes", "melted", "rolled", "peeled", "wedges", "thinly", "flaked", "for serving", "ripe", "crisp", "healthy", "whopping", "matchstick", "kosher", "roughly"]; 
+    const unitPattern = /\b(?:cup|cups|teaspoon|teaspoons|tbsp|tbsps|tsp|tsps|tablespoon|tablespoons|oz|ozs|ounce|ounces|fluid ounce|fluid ounces|pound|pounds|g|gs|gram|grams|kg|kgs|kilogram|kilogram|pint|pints|quart|quarts|gallon|gallons|liter|liters|litre|litres|scoop|scoops|batch|batches|pinch of|pinch|inch|package|head|heads|bunch)\b/i; // Case-insensitive units
+    const wordsToRemove = ['ice cubes', 'cubed', 'diced', 'sliced', 'slice of', 'fresh', 'slices', "juiced", "chopped", "softened", "small", "medium", "large", "zest", "water", "finely", "cooked", "extra virgin", "extra-virgin", "heaped", "chunks", "hot water", "boiling", "ice", "iced cubes", "melted", "rolled", "peeled", "wedges", "thinly", "flaked", "for serving", "ripe", "crisp", "healthy", "whopping", "matchstick", "kosher", "roughly", "strip", "strips", "freshly"]; 
     const regExWordsToRemove = new RegExp('\\b(' + wordsToRemove.join('|') + ')\\b', 'gi'); 
     const wordPairs = [ //replace the first word with the second
         ["spring onions", "green onions"],

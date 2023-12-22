@@ -18,12 +18,37 @@
   border-radius: 25px;
   text-align: center;
 
-  display: flex; /* Limit the text to three lines */
+  display: -webkit-box; /* Limit the text to three lines */
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1; 
   overflow: hidden;
 }
 .zipCode:placeholder{
+  all:revert; 
+  color: grey;
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+}
+.zipCodeInPopup{
+  all:revert; 
+  margin-left: 87px;
+  margin-right: 10px;
+  margin-top: 10px;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  font-weight: 325;
+  font-size: 17px;
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+  outline: 1px solid rgb(191, 191, 191); ;
+  border: none;
+  border-radius: 25px;
+  text-align: center;
+
+  display: -webkit-box; /* Limit the text to three lines */
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1; 
+  overflow: hidden;
+}
+.zipCodeInPopup:placeholder{
   all:revert; 
   color: grey;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
@@ -37,6 +62,7 @@
   font-weight: 325;
   font-size: 17px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+  max-width: 400px;
 
   display: none; /* Limit the text to three lines */
   -webkit-box-orient: vertical;
@@ -124,7 +150,7 @@
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   height: 30px;
 
-  display: flex; /* Limit the text to three lines */
+  display: -webkit-box; /* Limit the text to three lines */
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1; 
   overflow: hidden;
@@ -151,7 +177,7 @@
   text-align: left;
   line-height: 1.2; /* Adjust the value to your preference */
 
-  display: flex; /* Limit the text to three lines */
+  display: -webkit-box; /* Limit the text to three lines */
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3; 
   overflow: hidden;
@@ -165,7 +191,7 @@
   width: 170px;
   text-align: left;
   
-  display: flex; /* Limit the text to 1 line */
+  display: -webkit-box; /* Limit the text to 1 line */
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1; 
   overflow: hidden;
@@ -181,6 +207,7 @@
   font-size: 20px;
 }
 .minusButton:hover{
+  all:revert; 
   box-shadow: 0 0 10px rgb(149, 148, 148); /* Add a box shadow to simulate background covering the margin */
 }
 .plusButton{
@@ -195,6 +222,7 @@
   text-align: center; /* horizontally centers the text within the div */
 }
 .plusButton:hover{
+  all:revert; 
   box-shadow: 0 0 10px rgb(149, 148, 148); /* Add a box shadow to simulate background covering the margin */
 }
 .plusMinusDiv{
@@ -341,7 +369,7 @@
   height: 30px;
   text-align: left;
 
-  display: flex; /* Limit the text to three lines */
+  display: -webkit-box; /* Limit the text to three lines */
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1; 
   overflow: hidden;
@@ -358,7 +386,7 @@
   text-align: left;
   line-height: 1.2; /* Adjust the value to your preference */
 
-  display: flex; /* Limit the text to three lines */
+  display: -webkit-box; /* Limit the text to three lines */
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2; 
   overflow: hidden;

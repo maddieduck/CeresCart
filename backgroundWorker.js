@@ -82,7 +82,7 @@ async function getCartWriteAuth(){
 }
 
 function checkCategories(categories) {
-    var blackListedCategories = ['Beauty', 'Personal Care', 'Baby'];
+    var blackListedCategories = ['Beauty', 'Personal Care', 'Baby', 'Pet Care'];
     if (!categories || categories.length === 0) {
         return false; // Return false if the array is blank
     }
@@ -179,13 +179,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }else if(message.to === 'locations'){
         getProductAccessToken()
         .then(accessToken => { 
-            return locationSearchByZipcode(accessToken, message.zipCode)
-        })
+            return new Promise((resolve, reject) => {
+              chrome.storage.local.get('zipCode', (result) => {
+                resolve(locationSearchByZipcode(accessToken, result['zipCode']));
+              });
+            });
+          })
         .then(locationData =>{
-            //TODO: filter the locationData and remove any store that doesn't exist. Filter by 999-999-9999
             console.log('location data ', locationData)
             if (locationData != null && locationData['data'].length != 0){
-                chrome.storage.local.set({['zipCode']: message.zipCode });
                 var locationPopupData = []
                 for (const index in locationData['data']){
                     var singleLocation = locationData['data'][index];
@@ -195,10 +197,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                         "phone": singleLocation['phone'],
                         "id": singleLocation['locationId']
                     }
-                    locationPopupData.push(newLocation);
+                    if(singleLocation['phone'] != '9999999999'){ //filter locations 
+                        locationPopupData.push(newLocation);
+                    }
                 } 
-                console.log('location popup data', locationPopupData); 
-                sendResponse({locationData: locationPopupData, locationsFound: true}); 
+                sendResponse({locationData: locationPopupData, locationsFound: locationPopupData.length > 0}); 
             }else{
                 console.log('no locations found')
                 sendResponse({locationsFound: false}); 

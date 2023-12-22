@@ -175,33 +175,41 @@ async function addToCart(accessToken, items) { //returns true if added successfu
   });
 }
 
-async function productSearch(accessToken, term){
-  //TODO: use location id from memory 
-  return new Promise((resolve, rejects)=>{
-    let fetchString = "https://api.kroger.com/v1/products?filter.term=" + term + "&filter.fulfillment=ais,csp" + "&filter.locationID=" + locationID
-    fetch(fetchString, {
-      method: 'GET',
-      headers: {
-        "Accept": "application/json",
-        "Authorization": "Bearer " + accessToken
+async function productSearch(accessToken, term) {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get('locationId', (result) => {
+      const locationId = result['locationId'];
+      let fetchString = "https://api.kroger.com/v1/products?filter.term=" + term + "&filter.fulfillment=ais,csp";
+      if (locationId) {
+        console.log('location id', locationID);
+        fetchString += "&filter.locationId=" + locationId;
       }
-    }).then(res => {
-      if (res.ok){
-        return res.json()
-      }else{
-        console.log('Product Search was unsuccessful with term  ', term);
-        resolve(null);
-      }
-    })
-    .then(data => {
-      resolve(data);
-    })
-    .catch(error => {
-      console.log('ERROR in Kroger Calls Product Search Function', error);
-      resolve(null); 
-    })
-  })
+      fetch(fetchString, {
+        method: 'GET',
+        headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer " + accessToken
+        }
+      })
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          console.log('Product Search was unsuccessful with term  ', term);
+          resolve(null);
+        }
+      })
+      .then(data => {
+        resolve(data);
+      })
+      .catch(error => {
+        console.log('ERROR in Kroger Calls Product Search Function', error);
+        resolve(null); 
+      });
+    });
+  });
 }
+
 
 async function locationSearchByZipcode(accessToken, zipcode){
   return new Promise((resolve, rejects)=>{
