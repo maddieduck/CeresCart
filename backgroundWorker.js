@@ -139,8 +139,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                                 "size": product['items'][0]['size']
                                 }
                                 //TODO: factor in promo price 
-                                //TODO: price is only returned with a location 
-                                //newProduct.price = product['items'][0]['price']['regular']
                                 singularProductsData.push(newProduct);
                             }
                         }
@@ -181,6 +179,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         .then(accessToken => { 
             return new Promise((resolve, reject) => {
               chrome.storage.local.get('zipCode', (result) => {
+                //console.log('zip code ', result['zipCode']);
                 resolve(locationSearchByZipcode(accessToken, result['zipCode']));
               });
             });
