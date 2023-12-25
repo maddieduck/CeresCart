@@ -81,7 +81,7 @@ async function getCartWriteAuth(){
     });
 }
 
-function checkCategories(categories) {
+function checkCategories(categories) { //check if a product is part of a valid category. If not, return false.
     var blackListedCategories = ['Beauty', 'Personal Care', 'Baby', 'Pet Care'];
     if (!categories || categories.length === 0) {
         return false; // Return false if the array is blank
@@ -91,6 +91,18 @@ function checkCategories(categories) {
         return blackListedCategories.includes(category);
     });
     return !allBlacklisted;
+}
+
+function pickupDepartmentExists(departments){ //check if the department 'Pickup' exists in the list of departments
+    // Iterate through the departments
+    for (var i = 0; i < departments.length; i++) {
+        var department = departments[i];
+        // Check if the department name is 'Pickup'
+        if (department.name === 'Pickup') {
+          return true; 
+        }
+    }
+    return false; 
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -196,7 +208,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                         "phone": singleLocation['phone'],
                         "id": singleLocation['locationId']
                     }
-                    if(singleLocation['phone'] != '9999999999'){ //filter locations 
+                    var pickupExists = true //TODO: pickupDepartmentExists(singleLocation['departments']);
+                    if((singleLocation['phone'] != '9999999999') && pickupExists){ //filter locations 
                         locationPopupData.push(newLocation);
                     }
                 } 

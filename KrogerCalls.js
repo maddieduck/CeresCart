@@ -179,7 +179,7 @@ async function productSearch(accessToken, term) {
   return new Promise((resolve, reject) => {
     chrome.storage.local.get('locationId', (result) => {
       const locationId = result['locationId'];
-      let fetchString = "https://api.kroger.com/v1/products?filter.term=" + term + "&filter.fulfillment=ais,csp";
+      let fetchString = "https://api.kroger.com/v1/products?filter.term=" + term + "&filter.fulfillment=ais"; //,csp
       if (locationId) {
         console.log('location id', locationID);
         fetchString += "&filter.locationId=" + locationId;
@@ -209,7 +209,6 @@ async function productSearch(accessToken, term) {
     });
   });
 }
-
 
 async function locationSearchByZipcode(accessToken, zipcode){
   return new Promise((resolve, rejects)=>{

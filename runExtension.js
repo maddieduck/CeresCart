@@ -9,47 +9,15 @@ if (ingredients != null) {
       try {
         const htmlContents = await Promise.all([
           fetch(chrome.runtime.getURL('index.html')).then(response => response.text()),
-          fetch(chrome.runtime.getURL('ingredientContainer.html')).then(response => response.text()),
         ]);
-        const [indexHtml, ingredientHtml] = htmlContents;
+        const [indexHtml] = htmlContents;
         
         // insert popup into html
         document.body.insertAdjacentHTML('afterbegin', `<div id="ingredientExporterPopup">${indexHtml}</div>`);
 
-        // insert each ingredient into html 
-        let ingredDiv = document.getElementById('placeholderForIngredients');
-        for (const index in response.ingredientData){ 
-          singularIngredientData = response.ingredientData[index];
-          allProductData[index] = {indexOfProductDisplayed: 0, productData: singularIngredientData}; 
-          
-          let nodeClone = document.createElement('div');  // Create a new div 
-          nodeClone.innerHTML = ingredientHtml;  // Set the inner HTML of the div 
-          nodeClone.querySelector('.ingredientImage').src = singularIngredientData[0].image; 
-          nodeClone.querySelector('.ingredientBrand').textContent = singularIngredientData[0].brand; 
-          nodeClone.querySelector('.ingredientDescription').textContent = singularIngredientData[0].description;
-          nodeClone.querySelector('.size').textContent = singularIngredientData[0].size;
-          nodeClone.querySelector('.paragraphOutline').id = 'Ingredient ' + index;
-          nodeClone.querySelector('.leftArrowImage').style.opacity = 0;
-          nodeClone.querySelector('.leftArrowImage').style.visibility = 'hidden';
-          nodeClone.querySelector('.leftArrowImage').style.pointerEvents = 'none';
+        //insert each ingredient into the popup
+        insertEachIngredient(response.ingredientData);
 
-          var price = singularIngredientData[0].price;
-          if (price !== null){
-            const dollars = Math.floor(price);
-            const cents = Math.round((price - dollars) * 100);
-            const formattedPrice = cents < 10 ? `$${dollars}.<sup>0${cents}</sup>` : `$${dollars}.<sup>${cents}</sup>`;
-            nodeClone.querySelector('.price').innerHTML = formattedPrice;
-          }else{
-            nodeClone.querySelector('.price').innerHTML = '';
-          }
-
-          if (singularIngredientData.length == 1){
-            nodeClone.querySelector('.rightArrowImage').style.opacity = 0;
-            nodeClone.querySelector('.rightArrowImage').style.visibility = 'hidden';
-            nodeClone.querySelector('.rightArrowImage').style.pointerEvents = 'none';
-          }
-          ingredDiv.appendChild(nodeClone);
-        }
         //set the location name if it exists in memory 
         chrome.storage.local.get('locationName', (result) => {
           console.log('location Name ', result['locationName']);
@@ -60,6 +28,65 @@ if (ingredients != null) {
           }
         });
 
+        /*
+        document.getElementById('minimize').addEventListener('click', minimizePopup); 
+        */
+        document.getElementById('closeImage').addEventListener('click', closePopup); 
+        document.getElementById('checkoutButton').addEventListener('click', checkoutButtonClicked); 
+        document.getElementById('downArrow').addEventListener('click', launchLocationPopup); 
+        document.getElementById('zipCode').addEventListener('keyup', zipCodeEdited); 
+
+        chrome.runtime.sendMessage({to: 'backgroundWorker', data: ingredients});
+
+      } catch (error) {
+        console.error('ERROR in runExtension.js: ', error);
+      }
+    }
+  })();
+}
+
+function insertEachIngredient(ingredientData){
+  //insert each ingredient into html 
+  console.log('insert each ingr');
+  let ingredDiv = document.getElementById('placeholderForIngredients');
+  allProductData = []
+
+  try {
+    fetch(chrome.runtime.getURL('ingredientContainer.html'))
+      .then(response => response.text())
+      .then(ingredientHtml => {
+        for (const index in ingredientData){ 
+          singularIngredientData = ingredientData[index]; 
+          allProductData[index] = {indexOfProductDisplayed: 0, productData: singularIngredientData}; 
+          
+          let nodeClone = document.createElement('div'); // Create a new div 
+          nodeClone.innerHTML = ingredientHtml;  //Set the inner HTML of the div 
+          nodeClone.querySelector('.ingredientImage').src = singularIngredientData[0].image; 
+          nodeClone.querySelector('.ingredientBrand').textContent = singularIngredientData[0].brand; 
+          nodeClone.querySelector('.ingredientDescription').textContent = singularIngredientData[0].description;
+          nodeClone.querySelector('.size').textContent = singularIngredientData[0].size;
+          nodeClone.querySelector('.paragraphOutline').id = 'Ingredient ' + index;
+          nodeClone.querySelector('.leftArrowImage').style.opacity = 0;
+          nodeClone.querySelector('.leftArrowImage').style.visibility = 'hidden';
+          nodeClone.querySelector('.leftArrowImage').style.pointerEvents = 'none';
+      
+          var price = singularIngredientData[0].price;
+          if (price !== null){
+            const dollars = Math.floor(price);
+            const cents = Math.round((price - dollars) * 100);
+            const formattedPrice = cents < 10 ? `$${dollars}.<sup>0${cents}</sup>` : `$${dollars}.<sup>${cents}</sup>`;
+            nodeClone.querySelector('.price').innerHTML = formattedPrice;
+          }else{
+            nodeClone.querySelector('.price').innerHTML = ''; 
+          }
+      
+          if (singularIngredientData.length == 1){
+            nodeClone.querySelector('.rightArrowImage').style.opacity = 0;
+            nodeClone.querySelector('.rightArrowImage').style.visibility = 'hidden';
+            nodeClone.querySelector('.rightArrowImage').style.pointerEvents = 'none';
+          }
+          ingredDiv.appendChild(nodeClone);
+        }
         var elem = document.getElementsByClassName('leftArrowImage'); 
         for(var i=0; i<elem.length; i++){
           elem[i].addEventListener('click', leftArrowClicked);
@@ -79,21 +106,13 @@ if (ingredients != null) {
         for(var i=0; i<elem.length; i++){
           elem[i].addEventListener('click', minusButtonClicked);
         }
-        /*
-        document.getElementById('minimize').addEventListener('click', minimizePopup); 
-        */
-        document.getElementById('closeImage').addEventListener('click', closePopup); 
-        document.getElementById('checkoutButton').addEventListener('click', checkoutButtonClicked); 
-        document.getElementById('downArrow').addEventListener('click', launchLocationPopup); 
-        document.getElementById('zipCode').addEventListener('keyup', zipCodeEdited); 
-
-        chrome.runtime.sendMessage({to: 'backgroundWorker', data: ingredients});
-
-      } catch (error) {
-        console.error('ERROR in runExtension.js: ', error);
-      }
-    }
-  })();
+      })
+      .catch(error => {
+        console.error('Error fetching ingredient container HTML:', error);
+      });
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
 }
 
 function closePopup(event) {//closes the main popup or the location popup 
@@ -109,13 +128,13 @@ function closePopup(event) {//closes the main popup or the location popup
   }
 }
 
-async function loadLocationsInPopup(allLocationData){
+async function loadLocationsInPopup(newLocationData){
   let locationPlaceholder = document.getElementById('placeholderForLocations');
   const locationResponse = await fetch(chrome.runtime.getURL('location.html'));
   const locationHtml = await locationResponse.text();
-
-  for (const index in allLocationData){
-    var locationData = allLocationData[index];
+  allLocationData = newLocationData; 
+  for (const index in newLocationData){
+    var locationData = newLocationData[index];
     let nodeClone = document.createElement('div');  // Create a new div 
     nodeClone.innerHTML = locationHtml;  // Set the inner HTML of the div 
     nodeClone.querySelector('.topLocationDiv').id = 'topLocationDiv' + index;
@@ -146,7 +165,7 @@ async function insertLocations(){
 
 async function launchLocationPopup() {
   var locationPopup = document.getElementById('locationPopup'); 
-  console.log('down arrow '); 
+  console.log('launch location popup '); 
   //display or hide the zip code in the lcoations popup 
   var pickupAt = document.getElementById('pickupAt'); //check if the location is being displayed in main popup
   console.log('pickup at ', pickupAt.style.display)
@@ -177,11 +196,11 @@ async function launchLocationPopup() {
   }
 }
 
-function shopStore(event){ //a location has been selected from the location popup.
+async function shopStore(event){ //a location has been selected from the location popup.
   document.getElementById('locationPopup').remove(); 
   var id = event.target.closest('[id]').id; 
   var locationIndex = Number(id.replace(/topLocationDiv/g, '')); 
-  console.log('shop store pressed ', locationIndex);
+  console.log('shop store pressed ', locationIndex); 
   var locationId = allLocationData[locationIndex]['id'];
   var locationName = allLocationData[locationIndex]['name'];
   document.getElementById('zipCode').style.display = 'none';
@@ -189,6 +208,17 @@ function shopStore(event){ //a location has been selected from the location popu
   document.getElementById('pickupAt').textContent = locationName; 
   chrome.storage.local.set({['locationId']: locationId});
   chrome.storage.local.set({['locationName']: locationName});
+
+  //remove store locations from the popup 
+  var elementsToRemove = document.getElementsByClassName('paragraphOutline');
+  var elementsArray = Array.from(elementsToRemove);
+  elementsArray.forEach(function(element) {
+    element.parentNode.removeChild(element);
+  });
+
+  //insert ingredients from the new store location
+  let response = await chrome.runtime.sendMessage({ to: 'ingredients', data: ingredients});
+  insertEachIngredient(response.ingredientData);
 }
 
 function minimizePopup() {//TODO: commented out for now, but need to add 
