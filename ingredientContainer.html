@@ -2,20 +2,23 @@
   <script src="ingredientContainerScript.js"></script> 
   <div class="ingredientDiv"> 
     <!-- <button class = "circleButton"> </button> --> 
-    <p class="ingredientBrand">2 Bananas</p> 
-  </div> 
-  <div class = "mainDiv">   
+    <div class="ingredientBrand">2 Bananas</div> 
+  </div>  
+  <div class = "mainDiv">    
     <button class="emptyBackgroundButton"> <img class = "leftArrowImage" src="chrome-extension://ndfnmkebkdcejlijnlgihonfeoepefbl/images/left arrow.png"> </button>
     <img class="ingredientImage" src = "images/onion.jpeg"> 
     <div class = "descriptionAndQuantity">
-      <p class="ingredientDescription">Fresh Bunch of Bananas, Avg. 2.58 lbs. </p> 
-      <p class="size"></p> 
-    </div>    
+      <div class="ingredientDescription">Fresh Bunch of Bananas, Avg. 2.58 lbs. </div> 
+      <div class="size"></div> 
+    </div>  
     <div class = "priceAndQuantity">  
-      <p class="price">2.<sup>99</sup></p> 
+      <div style="display: flex;">   
+        <div class="ingrExpPrice">$2.</div>  
+        <div class="cents">99</div>    
+      </div> 
       <div class="plusMinusDiv"> 
         <button class="minusButton"> - </button> 
-        <p class="quantity"> 0 </p> 
+        <div class="quantity"> 0 </div> 
         <button class="plusButton"> + </button> 
       </div> 
     </div> 

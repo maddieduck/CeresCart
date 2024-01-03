@@ -74,10 +74,11 @@ function insertEachIngredient(ingredientData){
           if (price !== null){
             const dollars = Math.floor(price);
             const cents = Math.round((price - dollars) * 100);
-            const formattedPrice = cents < 10 ? `$${dollars}.<sup>0${cents}</sup>` : `$${dollars}.<sup>${cents}</sup>`;
-            nodeClone.querySelector('.price').innerHTML = formattedPrice;
+            nodeClone.querySelector('.ingrExpPrice').innerHTML = "$" + dollars + ".";
+            nodeClone.querySelector('.cents').innerHTML = String(cents).padStart(2, '0'); 
           }else{
-            nodeClone.querySelector('.price').innerHTML = ''; 
+            nodeClone.querySelector('.ingrExpPrice').innerHTML = ''; 
+            nodeClone.querySelector('.cents').innerHTML = '';
           }
       
           if (singularIngredientData.length == 1){
@@ -248,8 +249,8 @@ function displayNewIngredient(id, rightOrLeft){ //loads the image and product in
   if(ingredientClickedData['productData'][newIngredientIndex]['price'] != null){
     const dollars = Math.floor(ingredientClickedData['productData'][newIngredientIndex]['price']);
     const cents = Math.round((ingredientClickedData['productData'][newIngredientIndex]['price'] - dollars) * 100);
-    const formattedPrice = cents < 10 ? `$${dollars}.<sup>0${cents}</sup>` : `$${dollars}.<sup>${cents}</sup>`;
-    document.getElementById(id).querySelector('.price').innerHTML = formattedPrice;
+    document.getElementById(id).querySelector('.ingrExpPrice').innerHTML = "$" + dollars + ".";
+    document.getElementById(id).querySelector('.cents').innerHTML = String(cents).padStart(2, '0'); 
   }
 
   //check if arrow should be removed or shown 
