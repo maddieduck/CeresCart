@@ -82,7 +82,9 @@ async function getCartWriteAuth(){
 }
 
 function checkCategories(categories) { //check if a product is part of a valid category. If not, return false.
-    var blackListedCategories = ['Beauty', 'Personal Care', 'Baby', 'Pet Care'];
+    var blackListedCategories = ['Beauty', 'Personal Care', 'Baby', 'Pet Care', 'Cleaning Products', 'Home Decor', 'Natural & Organic'];
+    //TODO: may want to remove Natural & Organic. For 'lavender' was returning 'Cleaning Products' & 'N&O' for Mrs. Meyers Clean Day Soap
+    //may want to remove anything containing cleaning products 
     if (!categories || categories.length === 0) {
         return false; // Return false if the array is blank
     }

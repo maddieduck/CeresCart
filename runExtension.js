@@ -158,9 +158,9 @@ async function insertLocations(){
   allLocationData = backgroundResponse.locationData; 
   if(backgroundResponse.locationsFound){
     loadLocationsInPopup(backgroundResponse.locationData); 
+    document.getElementById('noLocationsFound').style.display = 'none'; 
   }else{
-    console.log('locations not found')
-    //TODO: Launch a popup that the location is not found 
+    document.getElementById('noLocationsFound').style.display = 'inline-block'; 
   }
 }
 

@@ -63,6 +63,7 @@
   font-size: 17px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   max-width: 400px;
+  color: rgb(0, 0, 0);
 
   display: none; /* Limit the text to three lines */
   -webkit-box-orient: vertical;
@@ -170,6 +171,7 @@
   margin-bottom: 5px;
   font-weight: 500;
   font-size: 20px;
+  color: rgb(0, 0, 0);
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 }
 .cents{ 
@@ -177,6 +179,7 @@
   margin-top: 5px; 
   font-size: 15px; 
   font-weight: 500;
+  color: rgb(0, 0, 0);
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 }
 .descriptionAndQuantity * {
@@ -351,6 +354,7 @@
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   height: 30px;
   text-align: left;
+  color: rgb(0, 0, 0);
 
   display: -webkit-box; /* Limit the text to three lines */
   -webkit-box-orient: vertical;
@@ -423,4 +427,17 @@
   margin: 0px;
   padding: 0px;
   display: flex;
+}
+.noLocationsFound{
+  all:revert; 
+  border: 0px;
+  margin-top: 10px;
+  padding: 0px;
+  font-weight: 325;
+  font-size: 17px;
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+  color: rgb(0, 0, 0);
+  font-weight: 325;
+  text-align: center;
+  display: none;
 }
