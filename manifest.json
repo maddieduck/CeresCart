@@ -5,12 +5,12 @@
     "description": "Extracts ingredients from recipes found on the page and allows user to export to grocery stores.",
     "author": "Maddie Drake",
     "action": {
-        "default_popup": "index.html",
+        "default_popup": "defaultPopup.html",
         "default_title": "ingredinet exporter",
         "default_icon":{
-            "16": "/images/x.png",
-            "48": "/images/x.png",
-            "128": "/images/x.png"
+            "16": "/images/cart.png",
+            "48": "/images/cart.png",
+            "128": "/images/cart.png"
         }
      },
      "background":{
