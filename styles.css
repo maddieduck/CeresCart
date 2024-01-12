@@ -218,7 +218,6 @@
   -webkit-line-clamp: 3; 
   overflow: hidden;
 }
-
 .size{
   font-weight: 325; 
   font-size: 15px;
@@ -458,4 +457,8 @@
 }
 .defaultPopup{
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+}
+.bold{
+  font-size: 17px; /* Adjust font size as needed */
+  font-weight: bold;
 }

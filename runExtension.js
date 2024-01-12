@@ -55,6 +55,7 @@ function insertEachIngredient(ingredientData){
     fetch(chrome.runtime.getURL('ingredientContainer.html'))
       .then(response => response.text())
       .then(ingredientHtml => {
+        console.log('got here', ingredientHtml);
         for (const index in ingredientData){ 
           singularIngredientData = ingredientData[index]; 
           allProductData[index] = {indexOfProductDisplayed: 0, productData: singularIngredientData}; 
@@ -294,6 +295,25 @@ function rightArrowClicked(event){
   displayNewIngredient(id, 'right'); 
 }
 
+function updateCheckoutButton() {
+  var totalQuantity = 0;
+  var totalPrice = 0.0;
+
+  // Iterate through allProductData and get the total quantity and price 
+  allProductData.forEach(function (element) {
+    element.productData.forEach(function (product) {
+      totalQuantity += product.quantity || 0; 
+      totalPrice += (parseFloat(product.quantity) || 0) * (parseFloat(product.price) || 0); 
+    });
+  });
+
+  if (totalQuantity == 0) {
+    document.getElementById('checkoutButton').innerHTML = `No Items Selected`;
+  } else {
+    document.getElementById('checkoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items for <span class="bold">$${totalPrice.toFixed(2)}</span>`;
+  }
+}
+
 function minusButtonClicked(event) {
   // Find the quantity element within the closest ancestor
   var quantityElement = event.target.closest('.mainDiv').querySelector('.quantity');
@@ -312,6 +332,7 @@ function minusButtonClicked(event) {
       allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'] = currentQuantity - 1;
     }
   }
+  updateCheckoutButton(); 
 }
 
 function plusButtonClicked(event) {
@@ -329,10 +350,11 @@ function plusButtonClicked(event) {
     var indexOfProductDisplayed = allProductData[productIndex]['indexOfProductDisplayed'];
     allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'] = currentQuantity + 1;
   }
+  updateCheckoutButton(); 
 }
 
 function checkoutButtonClicked(){
-  const quantityAndUPCArray = [];
+  const quantityAndUPCArray = []; 
 
   for (const productData of allProductData) {
     for (const product of productData.productData) {
@@ -344,7 +366,11 @@ function checkoutButtonClicked(){
       }
     }
   }
-  chrome.runtime.sendMessage({ to: 'checkout', data: quantityAndUPCArray}); //get auth url to call 
+  if(quantityAndUPCArray.length != 0){
+    chrome.runtime.sendMessage({ to: 'checkout', data: quantityAndUPCArray}); //get auth url to call 
+  }else{
+    //no items actually selected
+  }
 }
 
 function stringIngredientsFromRecipe(i){

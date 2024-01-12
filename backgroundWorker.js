@@ -107,6 +107,18 @@ function pickupDepartmentExists(departments){ //check if the department 'Pickup'
     return false; 
 }
 
+function returnFrontImage(images){ //returns the image where the perspective is front
+    //product['images'][0]['sizes'][0]['url']; 
+        // Find the object with perspective "front"
+        const frontImage = images.find(image => image.perspective === "front");
+
+        // Find the size object with size "large"
+        const largeSize = frontImage.sizes.find(size => size.size === "large");
+    
+        // Return the URL of the large size image
+        return largeSize.url;
+}
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     //console.log("ingredients found on page", message); 
     if (message.to === 'ingredients'){ //returns ingredients from kroger API
@@ -146,7 +158,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                                 var newProduct = {
                                 "description": product['description'],
                                 "brand": product['brand'],
-                                "image": product['images'][0]['sizes'][0]['url'],
+                                "image": returnFrontImage(product['images']),
                                 "price": price,
                                 "upc": product['upc'],
                                 "quantity": 0,

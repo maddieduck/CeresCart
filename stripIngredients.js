@@ -2,8 +2,8 @@
 function stripIngredients(recipeIngredients){ 
     var strippedIngredients = [] 
     const quantityPattern = /^[^a-z]+/; 
-    const unitPattern = /\b(?:cup|cups|teaspoon|teaspoons|tbsp|tbsps|tsp|tsps|tablespoon|tablespoons|oz|ozs|ounce|ounces|fluid ounce|fluid ounces|pound|pounds|g|gs|gram|grams|kg|kgs|kilogram|kilogram|pint|pints|quart|quarts|gallon|gallons|liter|liters|litre|litres|scoop|scoops|batch|batches|pinch of|pinch|inch|package|head|heads|bunch)\b/i; // Case-insensitive units
-    const wordsToRemove = ['ice cubes', 'cubed', 'diced', 'sliced', 'slice of', 'fresh', 'slices', "juiced", "chopped", "softened", "small", "medium", "large", "zest", "water", "finely", "cooked", "extra virgin", "extra-virgin", "heaped", "chunks", "hot water", "boiling", "ice", "iced cubes", "melted", "rolled", "peeled", "wedges", "thinly", "flaked", "for serving", "ripe", "crisp", "healthy", "whopping", "matchstick", "kosher", "roughly", "strip", "strips", "freshly"]; 
+    const unitPattern = /\b(?:cup|cups|teaspoon|teaspoons|tbsp|tbsps|tsp|tsps|tablespoon|tablespoons|oz|ozs|ounce|ounces|fluid ounce|fluid ounces|pound|pounds|g|gs|gram|grams|kg|kgs|kilogram|kilogram|pint|pints|quart|quarts|gallon|gallons|liter|liters|litre|litres|scoop|scoops|batch|batches|pinch of|pinch|inch|package|head|heads|bunch|ml|thumb-sized piece)\b/i; // Case-insensitive units
+    const wordsToRemove = ['ice cubes', 'cubed', 'diced', 'sliced', 'slice of', 'fresh', 'slices', "juiced", "chopped", "softened", "small", "medium", "large", "zest", "water", "finely", "cooked", "extra virgin", "extra-virgin", "heaped", "chunks", "hot water", "boiling", "ice", "iced cubes", "melted", "rolled", "peeled", "wedges", "thinly", "flaked", "for serving", "ripe", "crisp", "healthy", "whopping", "matchstick", "kosher", "roughly", "strip", "strips", "freshly", "fat", "dried"]; 
     const regExWordsToRemove = new RegExp('\\b(' + wordsToRemove.join('|') + ')\\b', 'gi'); 
     const wordPairs = [ //replace the first word with the second
         ["spring onions", "green onions"],
@@ -13,7 +13,7 @@ function stripIngredients(recipeIngredients){
         ["cloves garlic", "garlic"],
         ["white sugar", "sugar"],
         ["granulated sugar", "sugar"]
-      ];
+        ];
     const wordPairsWithException = [// replace word pairs, unless they belong to a specific word
         ["sweet", "sweet potato"]
         ]
@@ -33,7 +33,6 @@ function stripIngredients(recipeIngredients){
         const withoutUnit = withoutQuantity.replace(unitPattern, '');
         //remove leading commas and spaces 
         const leadingChars = withoutUnit.replace(/^\s*,+/g, '');
-
         //Remove anything after a ',' 
         const removeAfterComma = leadingChars.split(',');
         const commaRemoved = removeAfterComma[0]; 
@@ -41,8 +40,12 @@ function stripIngredients(recipeIngredients){
         const noPeriod = commaRemoved.replace(/^\./, "") 
         //remove anything after an * including * 
         const noAsterisk = noPeriod.split('*')[0]
+        //remove anything after and 'or' 
+        const noOr = noAsterisk.replace(/\sor.*$/, '');
+        //remove anythnig after plus
+        const noPlus = noOr.replace(/\splus.*$/, '');
         //Trim any leading or trailing spaces
-        const trimmedWhitespaces = noAsterisk.trim();
+        const trimmedWhitespaces = noPlus.trim();
         const replacedWords = replaceWords(trimmedWhitespaces, wordPairs);
 
         if(replacedWords !== ''){
