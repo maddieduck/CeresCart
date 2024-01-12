@@ -55,7 +55,8 @@ function insertEachIngredient(ingredientData){
     fetch(chrome.runtime.getURL('ingredientContainer.html'))
       .then(response => response.text())
       .then(ingredientHtml => {
-        console.log('got here', ingredientHtml);
+        //console.log('single Ingr ', ingredientData);
+        //console.log('ingr html', ingredientHtml);
         for (const index in ingredientData){ 
           singularIngredientData = ingredientData[index]; 
           allProductData[index] = {indexOfProductDisplayed: 0, productData: singularIngredientData}; 

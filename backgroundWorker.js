@@ -107,16 +107,43 @@ function pickupDepartmentExists(departments){ //check if the department 'Pickup'
     return false; 
 }
 
-function returnFrontImage(images){ //returns the image where the perspective is front
-    //product['images'][0]['sizes'][0]['url']; 
-        // Find the object with perspective "front"
-        const frontImage = images.find(image => image.perspective === "front");
+function returnImage(images) { //return the correct image based on the priorities
+    const sizePriorities = ["xlarge", "large", "medium", "small", "thumbnail"];
+    const perspectivePriorities = ["front", "left", "top"];
+    const defaultURL = "chrome-extension://ndfnmkebkdcejlijnlgihonfeoepefbl/images/no image found.png"
 
-        // Find the size object with size "large"
-        const largeSize = frontImage.sizes.find(size => size.size === "large");
-    
-        // Return the URL of the large size image
-        return largeSize.url;
+    // Find the object with the highest priority perspective
+    const highestPriorityPerspective = perspectivePriorities.find(perspective =>
+        images.some(image => image.perspective === perspective)
+    );
+
+    if (!highestPriorityPerspective) {
+        // Handle the case where no matching perspective is found
+        console.error("No matching perspective found");
+        return defaultURL;
+    }
+
+    // Find the size object with the highest priority size for the chosen perspective
+    const highestPrioritySize = sizePriorities.find(size =>
+        images.some(image =>
+            image.perspective === highestPriorityPerspective &&
+            image.sizes.some(imgSize => imgSize.size === size)
+        )
+    );
+
+    if (!highestPrioritySize) {
+        // Handle the case where no matching size is found for the chosen perspective
+        console.error("No matching size found for the chosen perspective");
+        return defaultURL;
+    }
+
+    // Return the URL of the highest priority size image for the chosen perspective
+    const imageUrl = images.find(image =>
+        image.perspective === highestPriorityPerspective &&
+        image.sizes.some(size => size.size === highestPrioritySize)
+    ).sizes.find(size => size.size === highestPrioritySize).url;
+
+    return imageUrl;
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -141,44 +168,45 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         .then(allIngredientProducts => {
             console.log('All Ingred ', allIngredientProducts);
             var allProductsFound = []; 
+        
             for (const j in allIngredientProducts){
                 if (allIngredientProducts[j] != null){
                     let productData = allIngredientProducts[j]['data'];
-                    if (productData.length !=0){
+                    if (productData.length !== 0){
                         let singularProductsData = [];
                         for (const index in productData){
                             let product = productData[index];
-                            var price = null
+                            var price = null;
                             if ('price' in product['items'][0] && product['items'][0]['price']['regular'] !== null) {
-                                price = product['items'][0]['price']['regular']
-                            }else{
+                                price = product['items'][0]['price']['regular'];
+                            } else {
                                 price = null; 
                             }
                             if (checkCategories(product['categories'])){                           
                                 var newProduct = {
-                                "description": product['description'],
-                                "brand": product['brand'],
-                                "image": returnFrontImage(product['images']),
-                                "price": price,
-                                "upc": product['upc'],
-                                "quantity": 0,
-                                "size": product['items'][0]['size']
-                                }
-                                //TODO: factor in promo price 
+                                    "description": product['description'],
+                                    "brand": product['brand'],
+                                    "image": returnImage(product['images']),
+                                    "price": price,
+                                    "upc": product['upc'],
+                                    "quantity": 0,
+                                    "size": product['items'][0]['size']
+                                };
+                                // TODO: factor in promo price 
                                 singularProductsData.push(newProduct);
                             }
                         }
-                        if (singularProductsData != []){
+                        if (singularProductsData.length !== 0){
                             allProductsFound.push(singularProductsData);
                         }
                     }
                 }    
             }
             console.log('allProductsFound', allProductsFound);
-            if (allProductsFound.length != 0){
+            if (allProductsFound.length !== 0){
                 sendResponse({launch: true, ingredientData: allProductsFound}); 
-            };
-        })
+            }
+        })        
         .catch(error => {
             console.log('error in backgroundWorker.js. when getting ingredients', error.message);
             sendResponse({launch: false}); 
