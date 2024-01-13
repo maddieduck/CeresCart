@@ -36,5 +36,6 @@
           "resources": ["index.html", "ingredientContainer.html", "locationPopup.html", "location.html", "images/*.png", "index.js"],
           "matches": ["<all_urls>"]
         }
-      ]
+      ],
+      "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmWaHqBYFI1cO/jMiLouPGkCY3HrwH9eSq/VbGgA1QsziSPVwKxWWymmti8Gadx/owBJzHLht6bHpoBIUbJEAVrlqVDlHj+99yrZMpZ0x1aTo3uh/8N2OyjVUAne4TwuVeOZHYJiY/7ozjXQ00ugoISL60Six2cuOCXjK7e2VfZGHFXYX2h/OATGy+3Lvoh3RJvgWTwngNMeqdQgMPeibfhmCV7SGEt+zTkpr/aThc49+9w60YIcuDjG59fUTWtI4EOIUKp/f14uPegINtMnmo0hSUd+sZVjb7uQ0mm/ZQCzzwhYrtWx4ik9369+6A7YDdVkyFnyGXcoe9805qhzqsQIDAQAB"
     }
