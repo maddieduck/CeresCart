@@ -22,19 +22,19 @@ if (ingredients != null) {
         chrome.storage.local.get('locationName', (result) => {
           console.log('location Name ', result['locationName']);
           if (result['locationName'] != undefined){
-            document.getElementById('zipCode').style.display = 'none';
-            document.getElementById('pickupAt').style.display = '-webkit-box';
-            document.getElementById('pickupAt').textContent = result['locationName']
+            document.getElementById('ingrExpZipCode').style.display = 'none';
+            document.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
+            document.getElementById('ingrExpPickupAt').textContent = result['locationName']
           }
         });
 
         /*
         document.getElementById('minimize').addEventListener('click', minimizePopup); 
         */
-        document.getElementById('closeImage').addEventListener('click', closePopup); 
-        document.getElementById('checkoutButton').addEventListener('click', checkoutButtonClicked); 
-        document.getElementById('downArrow').addEventListener('click', launchLocationPopup); 
-        document.getElementById('zipCode').addEventListener('keyup', zipCodeEdited); 
+        document.getElementById('ingrExpCloseImage').addEventListener('click', closePopup); 
+        document.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
+        document.getElementById('ingrExpDownArrow').addEventListener('click', launchLocationPopup); 
+        document.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
 
         chrome.runtime.sendMessage({to: 'backgroundWorker', data: ingredients});
 
@@ -48,64 +48,62 @@ if (ingredients != null) {
 function insertEachIngredient(ingredientData){
   //insert each ingredient into html 
   console.log('insert each ingr');
-  let ingredDiv = document.getElementById('placeholderForIngredients');
+  let ingredDiv = document.getElementById('ingrExpPlaceholderForIngredients');
   allProductData = []
 
   try {
     fetch(chrome.runtime.getURL('ingredientContainer.html'))
-      .then(response => response.text())
+      .then(response => response.text()) 
       .then(ingredientHtml => {
-        //console.log('single Ingr ', ingredientData);
-        //console.log('ingr html', ingredientHtml);
         for (const index in ingredientData){ 
           singularIngredientData = ingredientData[index]; 
           allProductData[index] = {indexOfProductDisplayed: 0, productData: singularIngredientData}; 
           
           let nodeClone = document.createElement('div'); // Create a new div 
           nodeClone.innerHTML = ingredientHtml;  //Set the inner HTML of the div 
-          nodeClone.querySelector('.ingredientImage').src = singularIngredientData[0].image; 
-          nodeClone.querySelector('.ingredientBrand').textContent = singularIngredientData[0].brand; 
-          nodeClone.querySelector('.ingredientDescription').textContent = singularIngredientData[0].description;
-          nodeClone.querySelector('.size').textContent = singularIngredientData[0].size;
-          nodeClone.querySelector('.paragraphOutline').id = 'Ingredient ' + index;
-          nodeClone.querySelector('.leftArrowImage').style.opacity = 0;
-          nodeClone.querySelector('.leftArrowImage').style.visibility = 'hidden';
-          nodeClone.querySelector('.leftArrowImage').style.pointerEvents = 'none';
+          nodeClone.querySelector('.ingrExpIngredientImage').src = singularIngredientData[0].image; 
+          nodeClone.querySelector('.ingrExpIngredientBrand').textContent = singularIngredientData[0].brand; 
+          nodeClone.querySelector('.ingrExpIngredientDescription').textContent = singularIngredientData[0].description;
+          nodeClone.querySelector('.ingrExpSize').textContent = singularIngredientData[0].size;
+          nodeClone.querySelector('.ingrExpParagraphOutline').id = 'ingrExpIngredient' + index;
+          nodeClone.querySelector('.ingrExpLeftArrowImage').style.opacity = 0;
+          nodeClone.querySelector('.ingrExpLeftArrowImage').style.visibility = 'hidden';
+          nodeClone.querySelector('.ingrExpLeftArrowImage').style.pointerEvents = 'none';
       
           var price = singularIngredientData[0].price;
           if (price !== null){
             const dollars = Math.floor(price);
             const cents = Math.round((price - dollars) * 100);
-            nodeClone.querySelector('.ingrExpPrice').innerHTML = "$" + dollars + ".";
-            nodeClone.querySelector('.cents').innerHTML = String(cents).padStart(2, '0'); 
+            nodeClone.querySelector('.ingrExpIngrExpPrice').innerHTML = "$" + dollars + ".";
+            nodeClone.querySelector('.ingrExpCents').innerHTML = String(cents).padStart(2, '0'); 
           }else{
-            nodeClone.querySelector('.ingrExpPrice').innerHTML = ''; 
-            nodeClone.querySelector('.cents').innerHTML = '';
+            nodeClone.querySelector('.ingrExpIngrExpPrice').innerHTML = ''; 
+            nodeClone.querySelector('.ingrExpCents').innerHTML = '';
           }
       
           if (singularIngredientData.length == 1){
-            nodeClone.querySelector('.rightArrowImage').style.opacity = 0;
-            nodeClone.querySelector('.rightArrowImage').style.visibility = 'hidden';
-            nodeClone.querySelector('.rightArrowImage').style.pointerEvents = 'none';
+            nodeClone.querySelector('.ingrExpRightArrowImage').style.opacity = 0;
+            nodeClone.querySelector('.ingrExpRightArrowImage').style.visibility = 'hidden';
+            nodeClone.querySelector('.ingrExpRightArrowImage').style.pointerEvents = 'none';
           }
           ingredDiv.appendChild(nodeClone);
         }
-        var elem = document.getElementsByClassName('leftArrowImage'); 
+        var elem = document.getElementsByClassName('ingrExpLeftArrowImage'); 
         for(var i=0; i<elem.length; i++){
           elem[i].addEventListener('click', leftArrowClicked);
         }
 
-        var elem = document.getElementsByClassName('rightArrowImage'); 
+        var elem = document.getElementsByClassName('ingrExpRightArrowImage'); 
         for(var i=0; i<elem.length; i++){
           elem[i].addEventListener('click', rightArrowClicked);
         }
 
-        var elem = document.getElementsByClassName('plusButton'); 
+        var elem = document.getElementsByClassName('ingrExpPlusButton'); 
         for(var i=0; i<elem.length; i++){
           elem[i].addEventListener('click', plusButtonClicked);
         }
         
-        var elem = document.getElementsByClassName('minusButton'); 
+        var elem = document.getElementsByClassName('ingrExpMinusButton'); 
         for(var i=0; i<elem.length; i++){
           elem[i].addEventListener('click', minusButtonClicked);
         }
@@ -121,18 +119,18 @@ function insertEachIngredient(ingredientData){
 function closePopup(event) {//closes the main popup or the location popup 
   var id = event.target.closest('[id]').id; 
   if (id === 'closeImage'){
-    document.getElementById('ingredientExporterPopup').remove();
-    var locationPopup = document.getElementById('locationPopup');
+    document.getElementById('ingrExpIngredientExporterPopup').remove();
+    var locationPopup = document.getElementById('ingrExpLocationPopup');
     if (locationPopup){
       locationPopup.remove();
     }
   }else if (id === "closeImageLocationPopup"){
-    document.getElementById('locationPopup').remove();
+    document.getElementById('ingrExpLocationPopup').remove();
   }
 }
 
 async function loadLocationsInPopup(newLocationData){
-  let locationPlaceholder = document.getElementById('placeholderForLocations');
+  let locationPlaceholder = document.getElementById('ingrExpPlaceholderForLocations');
   const locationResponse = await fetch(chrome.runtime.getURL('location.html'));
   const locationHtml = await locationResponse.text();
   allLocationData = newLocationData; 
@@ -140,16 +138,16 @@ async function loadLocationsInPopup(newLocationData){
     var locationData = newLocationData[index];
     let nodeClone = document.createElement('div');  // Create a new div 
     nodeClone.innerHTML = locationHtml;  // Set the inner HTML of the div 
-    nodeClone.querySelector('.topLocationDiv').id = 'topLocationDiv' + index;
-    nodeClone.querySelector('.locationName').textContent = locationData["name"]
-    var addressObject = locationData["address"];
+    nodeClone.querySelector('.ingrExpTopLocationDiv').id = 'ingrExptopLocationDiv' + index;
+    nodeClone.querySelector('.ingrExpLocationName').textContent = locationData["name"]
+    var addressObject = locationData["ingrExpAddress"];
     var formattedAddress = `${addressObject.addressLine1}\n${addressObject.city}, ${addressObject.state} ${addressObject.zipCode}`;
-    nodeClone.querySelector('.locationAddress').textContent = formattedAddress
+    nodeClone.querySelector('.ingrExpLocationAddress').textContent = formattedAddress
     if (locationData["phone"] != undefined){
       const formattedNumber = `${locationData["phone"].substring(0, 3)}-${locationData["phone"].substring(3, 6)}-${locationData["phone"].substring(6)}`;  
       nodeClone.querySelector('.phoneNumber').textContent = formattedNumber 
     }
-    nodeClone.querySelector('.shopStore').addEventListener('click', shopStore); 
+    nodeClone.querySelector('.ingrExpShopStore').addEventListener('click', shopStore); 
     locationPlaceholder.appendChild(nodeClone); 
   }
 }
@@ -160,35 +158,35 @@ async function insertLocations(){
   allLocationData = backgroundResponse.locationData; 
   if(backgroundResponse.locationsFound){
     loadLocationsInPopup(backgroundResponse.locationData); 
-    document.getElementById('noLocationsFound').style.display = 'none'; 
+    document.getElementById('ingrExpNoLocationsFound').style.display = 'none'; 
   }else{
-    document.getElementById('noLocationsFound').style.display = 'inline-block'; 
+    document.getElementById('ingrExpNoLocationsFound').style.display = 'inline-block'; 
   }
 }
 
 async function launchLocationPopup() {
-  var locationPopup = document.getElementById('locationPopup'); 
+  var locationPopup = document.getElementById('ingrExpLocationPopup'); 
   console.log('launch location popup '); 
   //display or hide the zip code in the lcoations popup 
-  var pickupAt = document.getElementById('pickupAt'); //check if the location is being displayed in main popup
+  var pickupAt = document.getElementById('ingrExpPickupAt'); //check if the location is being displayed in main popup
   console.log('pickup at ', pickupAt.style.display)
   if (locationPopup == null){//check if popup is already open 
     try{ //insert the popup
       const locationPopupResponse = await fetch(chrome.runtime.getURL('locationPopup.html'));
       const locationPopupHtml = await locationPopupResponse.text();
       document.body.insertAdjacentHTML('afterbegin', `<div id="locationPopup">${locationPopupHtml}</div>`); 
-      document.getElementById('closeImageLocationPopup').addEventListener('click', closePopup); 
+      document.getElementById('ingrExpCloseImageLocationPopup').addEventListener('click', closePopup); 
       if (pickupAt.style.display == '-webkit-box'){ //The store location is showing, show the zip code 
-        document.getElementById('zipCodeInPopup').style.display = '-webkit-box';
+        document.getElementById('ingrExpZipCodeInPopup').style.display = '-webkit-box';
         chrome.storage.local.get('zipCode', (result) => {
           if (result['zipCode'] != undefined){
             console.log('zip code being used in location popup ', result['zipCode']);
-            document.getElementById('zipCodeInPopup').value = result['zipCode']
-            document.getElementById('zipCodeInPopup').addEventListener('keyup', zipCodeInPopupEdited);
+            document.getElementById('ingrExpZipCodeInPopup').value = result['zipCode']
+            document.getElementById('ingrExpZipCodeInPopup').addEventListener('keyup', zipCodeInPopupEdited);
           } 
         }); 
       }else{ 
-        document.getElementById('zipCodeInPopup').style.display = 'none';
+        document.getElementById('ingrExpZipCodeInPopup').style.display = 'none';
       }
       insertLocations()
     }catch (error) {
@@ -200,20 +198,20 @@ async function launchLocationPopup() {
 }
 
 async function shopStore(event){ //a location has been selected from the location popup.
-  document.getElementById('locationPopup').remove(); 
+  document.getElementById('ingrExpLocationPopup').remove(); 
   var id = event.target.closest('[id]').id; 
   var locationIndex = Number(id.replace(/topLocationDiv/g, '')); 
   console.log('shop store pressed ', locationIndex); 
   var locationId = allLocationData[locationIndex]['id'];
   var locationName = allLocationData[locationIndex]['name'];
-  document.getElementById('zipCode').style.display = 'none';
-  document.getElementById('pickupAt').style.display = '-webkit-box';
-  document.getElementById('pickupAt').textContent = locationName; 
+  document.getElementById('ingrExpZipCode').style.display = 'none';
+  document.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
+  document.getElementById('ingrExpPickupAt').textContent = locationName; 
   chrome.storage.local.set({['locationId']: locationId});
   chrome.storage.local.set({['locationName']: locationName});
 
   //remove store locations from the popup 
-  var elementsToRemove = document.getElementsByClassName('paragraphOutline');
+  var elementsToRemove = document.getElementsByClassName('ingrExpParagraphOutline');
   var elementsArray = Array.from(elementsToRemove);
   elementsArray.forEach(function(element) {
     element.parentNode.removeChild(element);
@@ -225,7 +223,7 @@ async function shopStore(event){ //a location has been selected from the locatio
 }
 
 function minimizePopup() {//TODO: commented out for now, but need to add 
-  var popupContainer = document.getElementById('ingredientExporterPopup');
+  var popupContainer = document.getElementById('ingrExpIngredientExporterPopup');
   if (popupContainer) {
     popupContainer.remove();
   }
@@ -234,7 +232,7 @@ function minimizePopup() {//TODO: commented out for now, but need to add
 
 function displayNewIngredient(id, rightOrLeft){ //loads the image and product info when an arrow is clicked 
   console.log('all product Data', allProductData);
-  var productIndex = Number(id.replace(/Ingredient/g, '')); 
+  var productIndex = Number(id.replace(/ingrExpIngredient/g, '')); 
   var ingredientClickedData = allProductData[productIndex]; 
   if (rightOrLeft == 'right'){
     var newIngredientIndex = Number(ingredientClickedData['indexOfProductDisplayed']) + 1;
@@ -243,45 +241,45 @@ function displayNewIngredient(id, rightOrLeft){ //loads the image and product in
   }
   allProductData[productIndex]['indexOfProductDisplayed'] = newIngredientIndex 
   //display the new ingredient 
-  document.getElementById(id).querySelector('.ingredientImage').src = ingredientClickedData['productData'][newIngredientIndex]['image'];
-  document.getElementById(id).querySelector('.ingredientBrand').textContent = ingredientClickedData['productData'][newIngredientIndex]['brand'];
-  document.getElementById(id).querySelector('.ingredientDescription').textContent = ingredientClickedData['productData'][newIngredientIndex]['description'];
-  document.getElementById(id).querySelector('.size').textContent = ingredientClickedData['productData'][newIngredientIndex]['size'];
-  document.getElementById(id).querySelector('.quantity').innerText = String(ingredientClickedData['productData'][newIngredientIndex]['quantity']);
+  document.getElementById(id).querySelector('.ingrExpIngredientImage').src = ingredientClickedData['productData'][newIngredientIndex]['image'];
+  document.getElementById(id).querySelector('.ingrExpIngredientBrand').textContent = ingredientClickedData['productData'][newIngredientIndex]['brand'];
+  document.getElementById(id).querySelector('.ingrExpIngredientDescription').textContent = ingredientClickedData['productData'][newIngredientIndex]['description'];
+  document.getElementById(id).querySelector('.ingrExpSize').textContent = ingredientClickedData['productData'][newIngredientIndex]['size'];
+  document.getElementById(id).querySelector('.ingrExpQuantity').innerText = String(ingredientClickedData['productData'][newIngredientIndex]['quantity']);
   if(ingredientClickedData['productData'][newIngredientIndex]['price'] != null){
     const dollars = Math.floor(ingredientClickedData['productData'][newIngredientIndex]['price']);
     const cents = Math.round((ingredientClickedData['productData'][newIngredientIndex]['price'] - dollars) * 100);
-    document.getElementById(id).querySelector('.ingrExpPrice').innerHTML = "$" + dollars + ".";
-    document.getElementById(id).querySelector('.cents').innerHTML = String(cents).padStart(2, '0'); 
+    document.getElementById(id).querySelector('.ingrExpIngrExpPrice').innerHTML = "$" + dollars + ".";
+    document.getElementById(id).querySelector('.ingrExpCents').innerHTML = String(cents).padStart(2, '0'); 
   }
 
   //check if arrow should be removed or shown 
   var totalIndexes = allProductData[productIndex]['productData'].length 
   if (rightOrLeft == 'right'){
-    document.getElementById(id).querySelector('.leftArrowImage').style.visibility = 'visible';
-    document.getElementById(id).querySelector('.leftArrowImage').style.pointerEvents = 'auto';
-    document.getElementById(id).querySelector('.leftArrowImage').style.opacity = '1';
+    document.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.visibility = 'visible';
+    document.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.pointerEvents = 'auto';
+    document.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.opacity = '1';
     if ((newIngredientIndex + 1) >= totalIndexes) {
-      document.getElementById(id).querySelector('.rightArrowImage').style.visibility = 'hidden';
-      document.getElementById(id).querySelector('.rightArrowImage').style.pointerEvents = 'none';
-      document.getElementById(id).querySelector('.rightArrowImage').style.opacity = '0';
+      document.getElementById(id).querySelector('.ingrExpRightArrowImage').style.visibility = 'hidden';
+      document.getElementById(id).querySelector('.ingrExpRightArrowImage').style.pointerEvents = 'none';
+      document.getElementById(id).querySelector('.ingrExpRightArrowImage').style.opacity = '0';
     }else{
-      document.getElementById(id).querySelector('.rightArrowImage').style.visibility = 'visible';
-      document.getElementById(id).querySelector('.rightArrowImage').style.pointerEvents = 'auto';
-      document.getElementById(id).querySelector('.rightArrowImage').style.opacity = '1';
+      document.getElementById(id).querySelector('.ingrExpRightArrowImage').style.visibility = 'visible';
+      document.getElementById(id).querySelector('.ingrExpRightArrowImage').style.pointerEvents = 'auto';
+      document.getElementById(id).querySelector('.ingrExpRightArrowImage').style.opacity = '1';
     }
   }else if (rightOrLeft == 'left'){ 
-    document.getElementById(id).querySelector('.rightArrowImage').style.visibility = 'visible';
-    document.getElementById(id).querySelector('.rightArrowImage').style.pointerEvents = 'auto';
-    document.getElementById(id).querySelector('.rightArrowImage').style.opacity = '1';
+    document.getElementById(id).querySelector('.ingrExpRightArrowImage').style.visibility = 'visible';
+    document.getElementById(id).querySelector('.ingrExpRightArrowImage').style.pointerEvents = 'auto';
+    document.getElementById(id).querySelector('.ingrExpRightArrowImage').style.opacity = '1';
     if (newIngredientIndex == 0) {
-      document.getElementById(id).querySelector('.leftArrowImage').style.visibility = 'hidden';
-      document.getElementById(id).querySelector('.leftArrowImage').style.pointerEvents = 'none';
-      document.getElementById(id).querySelector('.leftArrowImage').style.opacity = '0';
+      document.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.visibility = 'hidden';
+      document.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.pointerEvents = 'none';
+      document.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.opacity = '0';
     }else{
-      document.getElementById(id).querySelector('.leftArrowImage').style.visibility = 'visible';
-      document.getElementById(id).querySelector('.leftArrowImage').style.pointerEvents = 'auto';
-      document.getElementById(id).querySelector('.leftArrowImage').style.opacity = '1';
+      document.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.visibility = 'visible';
+      document.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.pointerEvents = 'auto';
+      document.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.opacity = '1';
     }
   }
 }
@@ -299,25 +297,35 @@ function rightArrowClicked(event){
 function updateCheckoutButton() {
   var totalQuantity = 0;
   var totalPrice = 0.0;
+  var hasNullPrices = false;
 
   // Iterate through allProductData and get the total quantity and price 
   allProductData.forEach(function (element) {
     element.productData.forEach(function (product) {
-      totalQuantity += product.quantity || 0; 
-      totalPrice += (parseFloat(product.quantity) || 0) * (parseFloat(product.price) || 0); 
+      totalQuantity += product.quantity || 0;
+
+      // Check for null prices
+      if (product.price === null) {
+        hasNullPrices = true;
+      } else {
+        totalPrice += (parseFloat(product.quantity) || 0) * (parseFloat(product.price) || 0);
+      }
     });
   });
 
-  if (totalQuantity == 0) {
-    document.getElementById('checkoutButton').innerHTML = `No Items Selected`;
+  if (hasNullPrices) {
+    document.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items`;
+  } else if (totalQuantity == 0) {
+    document.getElementById('ingrExpCheckoutButton').innerHTML = `No Items Selected`;
   } else {
-    document.getElementById('checkoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items for <span class="bold">$${totalPrice.toFixed(2)}</span>`;
+    document.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items for <span class="bold">$${totalPrice.toFixed(2)}</span>`;
   }
 }
 
+
 function minusButtonClicked(event) {
   // Find the quantity element within the closest ancestor
-  var quantityElement = event.target.closest('.mainDiv').querySelector('.quantity');
+  var quantityElement = event.target.closest('.ingrExpMainDiv').querySelector('.ingrExpQuantity');
 
   // Check if the element is found
   if (quantityElement) {
@@ -328,7 +336,7 @@ function minusButtonClicked(event) {
 
       // Update the corresponding data in allProductData
       var id = event.target.closest('[id]').id;
-      var productIndex = Number(id.replace(/Ingredient/g, ''));
+      var productIndex = Number(id.replace(/ingrExpIngredient/g, ''));
       var indexOfProductDisplayed = allProductData[productIndex]['indexOfProductDisplayed'];
       allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'] = currentQuantity - 1;
     }
@@ -338,7 +346,7 @@ function minusButtonClicked(event) {
 
 function plusButtonClicked(event) {
   // Find the quantity element within the closest ancestor
-  var quantityElement = event.target.closest('.mainDiv').querySelector('.quantity');
+  var quantityElement = event.target.closest('.ingrExpMainDiv').querySelector('.ingrExpQuantity');
   // Check if the element is found
   if (quantityElement) {
     // Update the content of the quantity element (increment, for example)
@@ -347,7 +355,7 @@ function plusButtonClicked(event) {
 
     // Update the corresponding data in allProductData
     var id = event.target.closest('[id]').id;
-    var productIndex = Number(id.replace(/Ingredient/g, ''));
+    var productIndex = Number(id.replace(/ingrExpIngredient/g, ''));
     var indexOfProductDisplayed = allProductData[productIndex]['indexOfProductDisplayed'];
     allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'] = currentQuantity + 1;
   }
@@ -357,7 +365,7 @@ function plusButtonClicked(event) {
 async function checkoutButtonClicked(){
   const quantityAndUPCArray = []; 
   //disable button until products are done being added
-  document.getElementById("checkoutButton").disabled = true;
+  document.getElementById("ingrExpCheckoutButton").disabled = true;
 
   for (const productData of allProductData) {
     for (const product of productData.productData) {
@@ -380,19 +388,19 @@ async function checkoutButtonClicked(){
         });
       });
       //make all quantities 0
-      const elements = document.querySelectorAll(`.${'quantity'}`);
+      const elements = document.querySelectorAll(`.${'ingrExpQuantity'}`);
       elements.forEach(element => {
         element.innerText = '0';
       });
       //update checkout button
-      document.getElementById('checkoutButton').innerHTML = `Items Successfully Added`;
+      document.getElementById('ingrExpCheckoutButton').innerHTML = `Items Successfully Added`;
     }else{
       console.log('error when trying to add to cart');
     }
   }else{
     console.log('No items selected. Do nothing.');
   }
-  document.getElementById("checkoutButton").disabled = false;
+  document.getElementById("ingrExpCheckoutButton").disabled = false;
 }
 
 function stringIngredientsFromRecipe(i){
@@ -444,7 +452,7 @@ function findIngredientsOnPage() {
 }
 
 function zipCodeEdited(event) {
-  var zipCode = document.getElementById('zipCode').value;
+  var zipCode = document.getElementById('ingrExpZipCode').value;
   // Check if the Enter key is pressed and the zip code is not blank
   if (event.key === 'Enter' && zipCode.trim() !== '') {
     console.log('zip code used ', zipCode)
@@ -455,10 +463,10 @@ function zipCodeEdited(event) {
 
 function zipCodeInPopupEdited(event) {
   console.log('zip code in popup edited')
-  var zipCode = document.getElementById('zipCodeInPopup').value;
+  var zipCode = document.getElementById('ingrExpZipCodeInPopup').value;
   if (event.key === 'Enter' && zipCode.trim() !== '') {
     //remove all existing locations before running again
-    var elementsToRemove = document.getElementsByClassName('topLocationDiv'); //Get elements by class name
+    var elementsToRemove = document.getElementsByClassName('ingrExpTopLocationDiv'); //Get elements by class name
     var elementsArray = Array.from(elementsToRemove); // Convert HTMLCollection to an array
     elementsArray.forEach(function(element) { //Remove each element
       element.parentNode.removeChild(element);

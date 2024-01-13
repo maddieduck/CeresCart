@@ -1,10 +1,10 @@
-.pickupDiv{
+.ingrExpPickupDiv{
   padding-bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.zipCode{
+.ingrExpZipCode{
   all:revert; 
   margin-left: 10px;
   margin-right: 10px;
@@ -23,12 +23,12 @@
   -webkit-line-clamp: 1; 
   overflow: hidden;
 }
-.zipCode:placeholder{
+.ingrExpZipCode:placeholder{
   all:revert; 
   color: grey;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 }
-.zipCodeInPopup{
+.ingrExpZipCodeInPopup{
   all:revert; 
   margin-left: 87px;
   margin-right: 10px;
@@ -48,12 +48,12 @@
   -webkit-line-clamp: 1; 
   overflow: hidden;
 }
-.zipCodeInPopup:placeholder{
+.ingrExpZipCodeInPopup:placeholder{
   all:revert; 
   color: grey;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 }
-.zipCodeInPopup:focus {
+.ingrExpZipCodeInPopup:focus {
   all:revert; 
   margin-left: 87px;
   margin-right: 10px;
@@ -68,7 +68,7 @@
   border-radius: 25px;
   text-align: center;
 }
-.pickupAt{
+.ingrExpPickupAt{
   all:revert; 
   padding-left: 10px;
   padding-right: 20px;
@@ -85,12 +85,12 @@
   -webkit-line-clamp: 1; 
   overflow: hidden;
 }
-.storePic{
+.ingrExpStorePic{
   all:revert; 
   height: 25px;
   padding-left: 16px;
 }
-.paragraphOutline{
+.ingrExpParagraphOutline{
   outline: 1px solid rgb(191, 191, 191); ;
   border-radius: 25px;
   display: block;
@@ -100,39 +100,39 @@
   margin-top: 5px;   
   margin-left: 5px;
 }
-.priceAndQuantity{
+.ingrExpPriceAndQuantity{
   all:revert; 
   width: 65px;
 }
-.mainDiv{
+.ingrExpMainDiv{
   all:revert; 
   display: flex;
   align-items: center;
   padding-bottom: 10px;
   justify-content: space-between; /* evenly space elements horizontally */
 }
-.emptyBackgroundButton{
+.ingrExpEmptyBackgroundButton{
   padding: 0px;
   border: 0px;
   background: none;
   margin: 0px
 }
-.rightArrowImage{
+.ingrExpRightArrowImage{
   all:revert; 
   height: 20px;
   cursor: pointer;
 }
-.leftArrowImage{
+.ingrExpLeftArrowImage{
   all:revert; 
   height: 20px;
   cursor: pointer;
 }
-.downArrowImage{
+.ingrExpDownArrowImage{
   all:revert; 
   height: 20px;
   cursor: pointer;
 }
-.closeImage {
+.ingrExpCloseImage {
   all:revert; 
   padding: 0;
   height: 10px;
@@ -140,20 +140,20 @@
   right: 15px;
   top: 10px;
 }
-.closeImage:hover{
+.ingrExpCloseImage:hover{
   box-shadow: 0 0 10px rgb(149, 148, 148); /* Add a box shadow to simulate background covering the margin */
 }
-.minimize {
+.ingrExpMinimize {
   padding: 0;
   height: 10px;
   position: absolute;
   right: 35px; /* Adjust the distance from the right edge */
   top: 10px;
 }
-.minimize:hover{
+.ingrExpMinimize:hover{
   box-shadow: 0 0 10px rgb(149, 148, 148); /* Add a box shadow to simulate background covering the margin */
 }
-.circleButton{
+.ingrExpCircleButton{
   height: 30px;
   width: 30px;
   border-radius: 50%;
@@ -162,11 +162,11 @@
   margin-right: 10px;
   background-color: white;
 }
-.ingredientDiv{
+.ingrExpIngredientDiv{
   display: flex;
   align-items: center;
 }
-.ingredientBrand{
+.ingrExpIngredientBrand{
   margin-top: 10px;
   margin-bottom: 0px;
   padding-left: 25px;
@@ -180,7 +180,7 @@
   -webkit-line-clamp: 1; 
   overflow: hidden;
 }
-.ingrExpPrice{
+.ingrExpIngrExpPrice{
   all:revert; 
   margin-top: 5px;
   margin-bottom: 5px;
@@ -189,7 +189,7 @@
   color: rgb(0, 0, 0);
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 }
-.cents{ 
+.ingrExpCents{ 
   vertical-align: super;
   margin-top: 5px; 
   font-size: 15px; 
@@ -197,14 +197,14 @@
   color: rgb(0, 0, 0);
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 }
-.descriptionAndQuantity * {
+.ingrExpDescriptionAndQuantity * {
   all:revert; 
   flex-direction: column; 
   margin: 0;
   padding: 0;
   border: 0;
 }
-.ingredientDescription{
+.ingrExpIngredientDescription{
   font-weight: 325; 
   font-size: 15px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
@@ -218,7 +218,7 @@
   -webkit-line-clamp: 3; 
   overflow: hidden;
 }
-.size{
+.ingrExpSize{
   font-weight: 325; 
   font-size: 15px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
@@ -231,7 +231,7 @@
   -webkit-line-clamp: 1; 
   overflow: hidden;
 }
-.minusButton{
+.ingrExpMinusButton{
   all:revert; 
   border: none;
   height: 25px;
@@ -242,7 +242,7 @@
   font-size: 20px;
   cursor: pointer;
 }
-.minusButton:hover{
+.ingrExpMinusButton:hover{
   all:revert; 
   border: none;
   height: 25px;
@@ -253,7 +253,7 @@
   font-size: 20px;
   cursor: pointer;
 }
-.plusButton{
+.ingrExpPlusButton{
   all:revert; 
   border: none;
   height: 25px;
@@ -264,7 +264,7 @@
   font-size: 20px;
   cursor: pointer;
 }
-.plusButton:hover{
+.ingrExpPlusButton:hover{
   all:revert; 
   border: none;
   height: 25px;
@@ -275,7 +275,7 @@
   font-size: 20px;
   cursor: pointer;
 }
-.plusMinusDiv{
+.ingrExpPlusMinusDiv{
   background-color: rgb(52, 122, 132);
   border-radius: 12px;
   display: flex;
@@ -287,7 +287,7 @@
   text-align: center;
  
 }
-.quantity{
+.ingrExpQuantity{
   all:revert; 
   color: white;
   width: 65px;
@@ -295,14 +295,14 @@
   font-size: 16px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 } 
-.ingredientImage{
+.ingrExpIngredientImage{
   width: 40px;
   height: 60px; 
   margin-left: 10px;
   margin-right: 10px;
   object-fit: contain;
 }
-#top-level-div{
+#ingrExpTopLevelDiv{
   background-color: white; 
   max-height: 98%;
   width: 360px;
@@ -316,7 +316,7 @@
   border-radius: 10px; 
   text-align: center;
 }
-.topLevelLocationPopup{
+.ingrExpTopLevelLocationPopup{
   background-color: white;
   height: 50%;
   width: 340px;
@@ -330,7 +330,7 @@
   border-radius: 10px; /* Adjust the radius for the desired roundness */
   text-align: center;
 }
-.checkout {
+.ingrExpCheckout {
   all:revert; 
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   padding: 10px 20px; /* Adjust padding as needed */
@@ -343,10 +343,10 @@
   width: 350px;
   margin-bottom: 10px;
 }
-.checkout:hover {
+.ingrExpCheckout:hover {
   box-shadow: 0 0 10px rgb(38, 90, 98); /* Add a box shadow to simulate background covering the margin */
 }
-.topLocationDiv{
+.ingrExpTopLocationDiv{
   outline: 1px solid rgb(191, 191, 191); ;
   border-radius: 25px;
   display: block;
@@ -356,7 +356,7 @@
   margin-top: 8px;   
   margin-left: 5px;
 }
-.locationName{
+.ingrExpLocationName{
   all:revert; 
   margin-bottom: 0px;
   border: 0px;
@@ -375,7 +375,7 @@
   -webkit-line-clamp: 1; 
   overflow: hidden;
 }
-.locationAddress{
+.ingrExpLocationAddress{
   all:revert; 
   margin-top: 0px;
   padding-left: 15px;
@@ -392,7 +392,7 @@
   -webkit-line-clamp: 2; 
   overflow: hidden;
 }
-.phoneNumber{
+.ingrExpPhoneNumber{
   all:revert; 
   margin-top: 0px;
   padding-left: 15px;
@@ -405,19 +405,19 @@
   text-align: left;
   line-height: 1.2; /* Adjust the value to your preference */
 }
-.locationImage{
+.ingrExpLocationImage{
   all:revert; 
   height: 20px;
   padding-left: 15px;
   padding-top: 9px;
 }
-.phoneImage{
+.ingrExpPhoneImage{
   all:revert; 
   height: 20px;
   padding-left: 15px;
   padding-top: 3px;
 }
-.shopStore{
+.ingrExpShopStore{
   all:revert; 
   border: none;
   height: 25px;
@@ -428,21 +428,21 @@
   font-size: 15px;
   text-align: center; /* horizontally centers the text within the div */
 }
-.shopStore:hover{
+.ingrExpShopStore:hover{
   box-shadow: 0 0 10px rgb(149, 148, 148); /* Add a box shadow to simulate background covering the margin */
 }
-.placeholderForLocations{
+.ingrExpPlaceholderForLocations{
   border: 0px;
   margin: 0px;
   padding: 0px;
 }
-.locationZipDiv{
+.ingrExpLocationZipDiv{
   border: 0px;
   margin: 0px;
   padding: 0px;
   display: flex;
 }
-.noLocationsFound{
+.ingrExpNoLocationsFound{
   all:revert; 
   border: 0px;
   margin-top: 10px;
@@ -455,10 +455,10 @@
   text-align: center;
   display: none;
 }
-.defaultPopup{
+.ingrExpDefaultPopup{
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 }
-.bold{
+.ingrExpBold{
   font-size: 17px; /* Adjust font size as needed */
   font-weight: bold;
 }
