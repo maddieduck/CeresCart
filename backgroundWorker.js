@@ -219,15 +219,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             console.log('Add to cart auth code received ', authCode);
             console.log(message.data);
             if (message.data.length === 0){ //no products selected 
-                //TODO: Send feedback to user that they haven't selected anything
                 console.log('no products selected to check out with ')
             }else{
                 addToCart(authCode, message.data)
+                .then(success => {
+                    sendResponse(success);
+                })
             }
         })
         .catch(error => {
             console.log('error in backgroundWorker.js. when getting checking out', error.message);
         })
+        return true; // Indicates that the response will be sent asynchronously 
     }else if(message.to === 'locations'){
         getProductAccessToken()
         .then(accessToken => { 

@@ -354,8 +354,10 @@ function plusButtonClicked(event) {
   updateCheckoutButton(); 
 }
 
-function checkoutButtonClicked(){
+async function checkoutButtonClicked(){
   const quantityAndUPCArray = []; 
+  //disable button until products are done being added
+  document.getElementById("checkoutButton").disabled = true;
 
   for (const productData of allProductData) {
     for (const product of productData.productData) {
@@ -368,10 +370,29 @@ function checkoutButtonClicked(){
     }
   }
   if(quantityAndUPCArray.length != 0){
-    chrome.runtime.sendMessage({ to: 'checkout', data: quantityAndUPCArray}); //get auth url to call 
+    let successful = await chrome.runtime.sendMessage({ to: 'checkout', data: quantityAndUPCArray}); //get auth url to call
+    console.log('successful adding of cart ', successful); 
+    if(successful){
+      //make all quantities 0 in array 
+      allProductData.forEach(outerArray => {
+        outerArray.productData.forEach(product => {
+            product.quantity = 0;
+        });
+      });
+      //make all quantities 0
+      const elements = document.querySelectorAll(`.${'quantity'}`);
+      elements.forEach(element => {
+        element.innerText = '0';
+      });
+      //update checkout button
+      document.getElementById('checkoutButton').innerHTML = `Items Successfully Added`;
+    }else{
+      console.log('error when trying to add to cart');
+    }
   }else{
-    //no items actually selected
+    console.log('No items selected. Do nothing.');
   }
+  document.getElementById("checkoutButton").disabled = false;
 }
 
 function stringIngredientsFromRecipe(i){
@@ -445,7 +466,6 @@ function zipCodeInPopupEdited(event) {
 
     chrome.storage.local.set({['zipCode']: zipCode.trim()}); 
     insertLocations();
-    //loadLocationsInPopup();
   }
 }
 
