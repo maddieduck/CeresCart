@@ -13,7 +13,7 @@ if (ingredients != null) {
         const [indexHtml] = htmlContents;
         
         // insert popup into html
-        document.body.insertAdjacentHTML('afterbegin', `<div id="ingredientExporterPopup">${indexHtml}</div>`);
+        document.body.insertAdjacentHTML('afterbegin', `<div id="ingrExpIngredientExporterPopup">${indexHtml}</div>`);
 
         //insert each ingredient into the popup
         insertEachIngredient(response.ingredientData);
@@ -118,13 +118,13 @@ function insertEachIngredient(ingredientData){
 
 function closePopup(event) {//closes the main popup or the location popup 
   var id = event.target.closest('[id]').id; 
-  if (id === 'closeImage'){
+  if (id === 'ingrExpCloseImage'){
     document.getElementById('ingrExpIngredientExporterPopup').remove();
     var locationPopup = document.getElementById('ingrExpLocationPopup');
     if (locationPopup){
       locationPopup.remove();
     }
-  }else if (id === "closeImageLocationPopup"){
+  }else if (id === "ingrExpCloseImageLocationPopup"){
     document.getElementById('ingrExpLocationPopup').remove();
   }
 }
@@ -138,14 +138,14 @@ async function loadLocationsInPopup(newLocationData){
     var locationData = newLocationData[index];
     let nodeClone = document.createElement('div');  // Create a new div 
     nodeClone.innerHTML = locationHtml;  // Set the inner HTML of the div 
-    nodeClone.querySelector('.ingrExpTopLocationDiv').id = 'ingrExptopLocationDiv' + index;
+    nodeClone.querySelector('.ingrExpTopLocationDiv').id = 'ingrExpTopLocationDiv' + index;
     nodeClone.querySelector('.ingrExpLocationName').textContent = locationData["name"]
-    var addressObject = locationData["ingrExpAddress"];
+    var addressObject = locationData["address"];
     var formattedAddress = `${addressObject.addressLine1}\n${addressObject.city}, ${addressObject.state} ${addressObject.zipCode}`;
     nodeClone.querySelector('.ingrExpLocationAddress').textContent = formattedAddress
     if (locationData["phone"] != undefined){
       const formattedNumber = `${locationData["phone"].substring(0, 3)}-${locationData["phone"].substring(3, 6)}-${locationData["phone"].substring(6)}`;  
-      nodeClone.querySelector('.phoneNumber').textContent = formattedNumber 
+      nodeClone.querySelector('.ingrExpPhoneNumber').textContent = formattedNumber 
     }
     nodeClone.querySelector('.ingrExpShopStore').addEventListener('click', shopStore); 
     locationPlaceholder.appendChild(nodeClone); 
@@ -174,9 +174,11 @@ async function launchLocationPopup() {
     try{ //insert the popup
       const locationPopupResponse = await fetch(chrome.runtime.getURL('locationPopup.html'));
       const locationPopupHtml = await locationPopupResponse.text();
-      document.body.insertAdjacentHTML('afterbegin', `<div id="locationPopup">${locationPopupHtml}</div>`); 
+      document.body.insertAdjacentHTML('afterbegin', `<div id="ingrExpLocationPopup">${locationPopupHtml}</div>`); 
       document.getElementById('ingrExpCloseImageLocationPopup').addEventListener('click', closePopup); 
+      console.log('display style ', pickupAt.style.display);
       if (pickupAt.style.display == '-webkit-box'){ //The store location is showing, show the zip code 
+        console.log('show zip code')
         document.getElementById('ingrExpZipCodeInPopup').style.display = '-webkit-box';
         chrome.storage.local.get('zipCode', (result) => {
           if (result['zipCode'] != undefined){
@@ -186,6 +188,7 @@ async function launchLocationPopup() {
           } 
         }); 
       }else{ 
+        console.log('dont display zipcode');
         document.getElementById('ingrExpZipCodeInPopup').style.display = 'none';
       }
       insertLocations()
@@ -200,7 +203,7 @@ async function launchLocationPopup() {
 async function shopStore(event){ //a location has been selected from the location popup.
   document.getElementById('ingrExpLocationPopup').remove(); 
   var id = event.target.closest('[id]').id; 
-  var locationIndex = Number(id.replace(/topLocationDiv/g, '')); 
+  var locationIndex = Number(id.replace(/ingrExpTopLocationDiv/g, '')); 
   console.log('shop store pressed ', locationIndex); 
   var locationId = allLocationData[locationIndex]['id'];
   var locationName = allLocationData[locationIndex]['name'];
@@ -322,7 +325,6 @@ function updateCheckoutButton() {
   }
 }
 
-
 function minusButtonClicked(event) {
   // Find the quantity element within the closest ancestor
   var quantityElement = event.target.closest('.ingrExpMainDiv').querySelector('.ingrExpQuantity');
@@ -378,8 +380,9 @@ async function checkoutButtonClicked(){
     }
   }
   if(quantityAndUPCArray.length != 0){
+    console.log('quantity and upc ', quantityAndUPCArray);
     let successful = await chrome.runtime.sendMessage({ to: 'checkout', data: quantityAndUPCArray}); //get auth url to call
-    console.log('successful adding of cart ', successful); 
+    console.log('Was cart successful? ', successful); 
     if(successful){
       //make all quantities 0 in array 
       allProductData.forEach(outerArray => {
