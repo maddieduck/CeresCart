@@ -1,7 +1,7 @@
 //parses the array of ingredients to only return what you want to search in a Korger search 
 function stripIngredients(recipeIngredients){ 
     var strippedIngredients = [] 
-    const quantityPattern = /^\s*\d+(?:\.\d+)?(?:\s*\d*\/\d+)?(?:\s+(?:to|\-)\s*\d+(?:\s*\d*\/\d+)?)?(?:\s+and\s+\d+(?:\s*\d*\/\d+)?)?(?:\/\d+)?\s*/;
+    const quantityPattern = /^\s*\d+(?:\.\d+|\s*\d*\/\d+)?(?:\s+(?:to|\-)\s*\d+(?:\s*\d*\/\d+)?)?(?:\s+and\s+\d+(?:\s*\d*\/\d+)?)?(?:\/\d+)?\s*/;
     const unitPattern = /\b(?:cup|cups|c|teaspoon|teaspoons|tbsp|tbsps|tsp|tsps|tablespoon|tablespoons|oz|ozs|ounce|ounces|fluid ounce|fluid ounces|pound|pounds|g|gs|gram|grams|kg|kgs|kilogram|kilogram|pint|pints|quart|quarts|gallon|gallons|liter|liters|litre|litres|scoop|scoops|batch|batches|pinch of|pinch|inch|package|head|heads|bunch|ml|thumb-sized piece|large|medium|small|sticks)\b/i; // Case-insensitive units
     const wordsToRemove = ['ice cubes', 'cubed', 'diced', 'sliced', 'slice of', 'fresh', 'slices', "juiced", "chopped", "softened", "zest", "water", "finely", "cooked", "extra virgin", "extra-virgin", "heaped", "chunks", "hot water", "boiling", "ice", "iced cubes", "melted", "rolled", "peeled", "wedges", "thinly", "flaked", "for serving", "ripe", "crisp", "healthy", "whopping", "matchstick", "kosher", "roughly", "strip", "strips", "freshly", "fat", "dried", "loosely packed", "mashed", "very", "of", "hot", "for", "optional", "garnish"]; 
     const regExWordsToRemove = new RegExp('\\b(' + wordsToRemove.join('|') + ')\\b', 'gi');  
@@ -28,7 +28,7 @@ function stripIngredients(recipeIngredients){
         const noPeriod = commaRemoved.replace(/^\./, "") 
         //remove anything after an * including * 
         const noAsterisk = noPeriod.split('*')[0]
-        //remove anything after and 'or' 
+        //remove anything after an 'or' 
         const noOr = noAsterisk.replace(/\sor.*$/, '');
         //remove anythnig after plus
         const noPlus = noOr.replace(/\splus.*$/, '');
