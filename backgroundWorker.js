@@ -149,7 +149,9 @@ function returnImage(images) { //return the correct image based on the prioritie
 function prioritizeProducts(ingredient, productsForIngredient) {
     //console.log(ingredient, productsForIngredient);
     const priorityUPCs = [
-        ["banana", ["0000000004011", "0000000094011"]]
+        ["banana", ["0000000004011", "0000000094011"]],
+        ["baking soda", ["0001111090765", "0001990000320"]],
+        ["garlic", ["0000000004608", "0001111002882"]] 
         // Add more priorityUPCs as needed
     ];
 
@@ -189,7 +191,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     //console.log("ingredients found on page", message); 
     if (message.to === 'ingredients'){ //returns ingredients from kroger API
         var ingredients = Object.values(message.data);
-        //console.log('found ingredients ', ingredients); 
+        console.log('found ingredients ', ingredients); 
         var strippedIngredients = stripIngredients(ingredients); 
         console.log('stripped ingredients ', strippedIngredients); 
 
