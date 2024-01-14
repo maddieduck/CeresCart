@@ -234,7 +234,7 @@ function minimizePopup() {//TODO: commented out for now, but need to add
 }
 
 function displayNewIngredient(id, rightOrLeft){ //loads the image and product info when an arrow is clicked 
-  console.log('all product Data', allProductData);
+  //console.log('all product Data', allProductData);
   var productIndex = Number(id.replace(/ingrExpIngredient/g, '')); 
   var ingredientClickedData = allProductData[productIndex]; 
   if (rightOrLeft == 'right'){
@@ -305,13 +305,18 @@ function updateCheckoutButton() {
   // Iterate through allProductData and get the total quantity and price 
   allProductData.forEach(function (element) {
     element.productData.forEach(function (product) {
-      totalQuantity += product.quantity || 0;
+      var quantity = product.quantity || 0;
+      var price = parseFloat(product.price);
 
-      // Check for null prices
-      if (product.price === null) {
-        hasNullPrices = true;
-      } else {
-        totalPrice += (parseFloat(product.quantity) || 0) * (parseFloat(product.price) || 0);
+      totalQuantity += quantity;
+
+      // Check for null prices only if quantity is not null
+      if (quantity > 0) {
+        if (isNaN(price) || price === null) {
+          hasNullPrices = true;
+        } else {
+          totalPrice += quantity * price;
+        }
       }
     });
   });

@@ -146,6 +146,45 @@ function returnImage(images) { //return the correct image based on the prioritie
     return imageUrl;
 }
 
+function prioritizeProducts(ingredient, productsForIngredient) {
+    //console.log(ingredient, productsForIngredient);
+    const priorityUPCs = [
+        ["banana", ["0000000004011", "0000000094011"]]
+        // Add more priorityUPCs as needed
+    ];
+
+    // Check if the ingredient ends with 's' and remove it
+    const normalizedIngredient = ingredient.toLowerCase().endsWith('s') ? ingredient.slice(0, -1) : ingredient.toLowerCase();
+
+    // Find the priorityUPC for the given ingredient
+    const matchingPriorityUPC = priorityUPCs.find(pair => {
+        const [priorityIngredient] = pair;
+        // Check if the normalizedIngredient contains the priorityIngredient
+        return normalizedIngredient.includes(priorityIngredient.toLowerCase());
+    });
+
+    if (matchingPriorityUPC) {
+        const [_, npriorityUPCs] = matchingPriorityUPC;
+
+        // Separate products into priority and non-priority based on UPC
+        const priorityProducts = productsForIngredient.filter(product =>
+            npriorityUPCs.includes(product.upc)
+        );
+        const nonPriorityProducts = productsForIngredient.filter(product =>
+            !npriorityUPCs.includes(product.upc)
+        );
+
+        // Concatenate priority and non-priority products
+        const prioritizedProducts = [...priorityProducts, ...nonPriorityProducts];
+
+        return prioritizedProducts;
+    } else {
+        // No priorityUPC for the given ingredient, return the original array
+        return productsForIngredient;
+    }
+}
+
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     //console.log("ingredients found on page", message); 
     if (message.to === 'ingredients'){ //returns ingredients from kroger API
@@ -157,21 +196,21 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         getProductAccessToken()
         .then(accessToken => {
             const promises = [];
-            //console.log('accessToken ', accessToken);
-            for (const ingredient in strippedIngredients){
-                //console.log(strippedIngredients[ingredient]);
-                const promise = productSearch(accessToken, strippedIngredients[ingredient]); 
-                promises.push(promise);
+            for (const ingredient of strippedIngredients) {
+              const productsForIngredient = productSearch(accessToken, ingredient);
+              promises.push(
+                productsForIngredient.then(products => prioritizeProducts(ingredient, products['data']))
+              );
             }
             return Promise.all(promises);
-        })
+          })
         .then(allIngredientProducts => {
             console.log('All Ingred ', allIngredientProducts);
             var allProductsFound = []; 
         
             for (const j in allIngredientProducts){
                 if (allIngredientProducts[j] != null){
-                    let productData = allIngredientProducts[j]['data'];
+                    let productData = allIngredientProducts[j];
                     if (productData.length !== 0){
                         let singularProductsData = [];
                         for (const index in productData){
@@ -202,7 +241,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     }
                 }    
             }
-            console.log('allProductsFound', allProductsFound);
+            //console.log('allProductsFound', allProductsFound);
             if (allProductsFound.length !== 0){
                 sendResponse({launch: true, ingredientData: allProductsFound}); 
             }
