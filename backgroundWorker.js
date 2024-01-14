@@ -154,26 +154,28 @@ function prioritizeProducts(ingredient, productsForIngredient) {
         ["garlic", ["0000000004608", "0001111002882"]] 
         // Add more priorityUPCs as needed
     ];
-
-    // Check if the ingredient ends with 's' and remove it
+    //check plural values as well 
     const normalizedIngredient = ingredient.toLowerCase().endsWith('s') ? ingredient.slice(0, -1) : ingredient.toLowerCase();
 
-    // Find the priorityUPC for the given ingredient
-    const matchingPriorityUPC = priorityUPCs.find(pair => {
-        const [priorityIngredient] = pair;
-        // Check if the normalizedIngredient contains the priorityIngredient
-        return normalizedIngredient.includes(priorityIngredient.toLowerCase());
-    });
+    // Check if the ingredient is found in the description and prioritize those
+    const descriptionPriority = productsForIngredient.filter(product =>
+        product.description.toLowerCase().includes(normalizedIngredient)
+    );
 
-    if (matchingPriorityUPC) {
-        const [_, npriorityUPCs] = matchingPriorityUPC;
+    if (descriptionPriority.length > 0) {
+        // Sort by the percentage of the description occupied by the ingredient
+        const sortedByPercentage = descriptionPriority.sort((a, b) => {
+            const percentageA = (a.description.toLowerCase().match(new RegExp(normalizedIngredient, 'g')) || []).length / a.description.length;
+            const percentageB = (b.description.toLowerCase().match(new RegExp(normalizedIngredient, 'g')) || []).length / b.description.length;
+            return percentageB - percentageA;
+        });
 
         // Separate products into priority and non-priority based on UPC
-        const priorityProducts = productsForIngredient.filter(product =>
-            npriorityUPCs.includes(product.upc)
+        const priorityProducts = sortedByPercentage.filter(product =>
+            priorityUPCs.some(pair => pair[1].includes(product.upc))
         );
-        const nonPriorityProducts = productsForIngredient.filter(product =>
-            !npriorityUPCs.includes(product.upc)
+        const nonPriorityProducts = sortedByPercentage.filter(product =>
+            !priorityUPCs.some(pair => pair[1].includes(product.upc))
         );
 
         // Concatenate priority and non-priority products
@@ -181,8 +183,25 @@ function prioritizeProducts(ingredient, productsForIngredient) {
 
         return prioritizedProducts;
     } else {
-        // No priorityUPC for the given ingredient, return the original array
-        return productsForIngredient;
+        // Continue with the existing logic for priorityUPCs
+        const matchingPriorityUPC = priorityUPCs.find(pair => normalizedIngredient.includes(pair[0].toLowerCase()));
+
+        if (matchingPriorityUPC) {
+            const [_, npriorityUPCs] = matchingPriorityUPC;
+
+            const priorityProducts = productsForIngredient.filter(product =>
+                npriorityUPCs.includes(product.upc)
+            );
+            const nonPriorityProducts = productsForIngredient.filter(product =>
+                !npriorityUPCs.includes(product.upc)
+            );
+
+            const prioritizedProducts = [...priorityProducts, ...nonPriorityProducts];
+
+            return prioritizedProducts;
+        } else {
+            return productsForIngredient;
+        }
     }
 }
 
