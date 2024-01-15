@@ -234,7 +234,7 @@ function minimizePopup() {//TODO: commented out for now, but need to add
 }
 
 function displayNewIngredient(id, rightOrLeft){ //loads the image and product info when an arrow is clicked 
-  //console.log('all product Data', allProductData);
+  console.log('all product Data', allProductData);
   var productIndex = Number(id.replace(/ingrExpIngredient/g, '')); 
   var ingredientClickedData = allProductData[productIndex]; 
   if (rightOrLeft == 'right'){
@@ -428,8 +428,10 @@ function stringIngredientsFromRecipe(i){
 
 function findIngredientsOnPage() {
   const scripts = document.querySelectorAll('script[type="application/ld+json"]');
+  //console.log('find ingr ', scripts);
   for (const script of scripts) {
     const schema = JSON.parse(script.textContent);
+    console.log('ingred script ', schema)
     let graph = schema['@graph'];
     if (graph != undefined){
       for (const key in graph) {

@@ -3,7 +3,7 @@ function stripIngredients(recipeIngredients){
     var strippedIngredients = [] 
     const quantityPattern = /^\s*\d+(?:\.\d+|\s*\d*\/\d+)?(?:\s+(?:to|\-)\s*\d+(?:\s*\d*\/\d+)?)?(?:\s+and\s+\d+(?:\s*\d*\/\d+)?)?(?:\/\d+)?\s*/;
     const unitPattern = /\b(?:cup|cups|c|teaspoon|teaspoons|tbsp|tbsps|tsp|tsps|tablespoon|tablespoons|oz|ozs|ounce|ounces|fluid ounce|fluid ounces|pound|pounds|g|gs|gram|grams|kg|kgs|kilogram|kilogram|pint|pints|quart|quarts|gallon|gallons|liter|liters|litre|litres|scoop|scoops|batch|batches|pinch of|pinch|inch|package|head|heads|bunch|ml|thumb-sized piece|large|medium|small|sticks)\b/i; // Case-insensitive units
-    const wordsToRemove = ['ice cubes', 'cubed', 'diced', 'sliced', 'slice of', 'fresh', 'slices', "juiced", "chopped", "softened", "zest", "water", "finely", "cooked", "extra virgin", "extra-virgin", "heaped", "chunks", "hot water", "boiling", "ice", "iced cubes", "melted", "rolled", "peeled", "wedges", "thinly", "flaked", "for serving", "ripe", "crisp", "healthy", "whopping", "matchstick", "kosher", "roughly", "strip", "strips", "freshly", "fat", "dried", "loosely packed", "mashed", "very", "of", "hot", "for", "optional", "garnish"]; 
+    const wordsToRemove = ['ice cubes', 'cubed', 'diced', 'sliced', 'slice of', 'fresh', 'slices', "juiced", "chopped", "softened", "zest", "water", "finely", "cooked", "extra virgin", "extra-virgin", "heaped", "chunks", "hot water", "boiling", "ice", "iced cubes", "melted", "rolled", "peeled", "wedges", "thinly", "flaked", "for serving", "ripe", "crisp", "healthy", "whopping", "matchstick", "kosher", "roughly", "strip", "strips", "freshly", "fat", "dried", "loosely packed", "mashed", "very", "of", "for", "optional", "garnish", "toasted", "rounded", "in water", "extravirgin", "freerange", "piece"]; 
     const regExWordsToRemove = new RegExp('\\b(' + wordsToRemove.join('|') + ')\\b', 'gi');  
 
     for (const index in recipeIngredients) {
@@ -11,14 +11,16 @@ function stripIngredients(recipeIngredients){
         ingredient = ingredient.toLowerCase(); 
         //remove parentheses and everything between them. Do this before removing anything after a comma in case there are commas in ()
         const removeParentheses = ingredient.replace(/\([^)]*\)/g, '');
-        //remove any erroneous parentheses 
-        const removeMoreParentheses = removeParentheses.replace(/[()]/g, '');
+        //remove any erroneous parentheses and dashes 
+        const removeMoreParentheses = removeParentheses.replace(/[()\-\u2013\u2014]/g, '');
         //Remove certain words like "sliced", "diced". Remove this before quantity in case it's something like "1 whopping tablespoon"
         const removedWords = removeMoreParentheses.replace(regExWordsToRemove, '');
         // Remove quantity. Removes anything that is not a character. 
         const withoutQuantity = removedWords.replace(quantityPattern, '');
+        //remove any erroneous numbers, like 1/4 1/8 
+        const nofract = withoutQuantity.replace(/^\s*[\d\s/¼½⅓⅔¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞]+\s*/, '').replace(/^\s*/, '');
         // Remove unit
-        const withoutUnit = withoutQuantity.replace(unitPattern, '');
+        const withoutUnit = nofract.replace(unitPattern, '');
         //remove leading commas and spaces 
         const leadingChars = withoutUnit.replace(/^\s*,+/g, '');
         //Remove anything after a ',' 
@@ -29,11 +31,13 @@ function stripIngredients(recipeIngredients){
         //remove anything after an * including * 
         const noAsterisk = noPeriod.split('*')[0]
         //remove anything after an 'or' 
-        const noOr = noAsterisk.replace(/\sor.*$/, '');
+        const noOr = noAsterisk.replace(/\sor\b.*$/, '');
         //remove anythnig after plus
-        const noPlus = noOr.replace(/\splus.*$/, '');
+        const noPlus = noOr.replace(/\splus\b.*$/, '');
+        //remove special characters like ñ with normal characters like n
+        const noSpecial = noPlus.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         //Trim any leading or trailing spaces
-        const trimmedWhitespaces = noPlus.trim();
+        const trimmedWhitespaces = noSpecial.trim();
         const replacedWords = replaceWords(trimmedWhitespaces);
         const replaceWithException = removeFirstWordWithException(replacedWords);
 
@@ -70,8 +74,9 @@ function replaceWords(inputString) {
     ["white sugar", "sugar"],
     ["granulated sugar", "sugar"],
     ["egg yolk", "egg"],
-    ["pepper", "black pepper"],
-    ["great northern bean", "cannellini bean"]
+    ["great northern bean", "cannellini bean"],
+    ["bramley", "green"],
+    ["frozen banana", "banana"]
     ];
 
     let resultString = inputString;
