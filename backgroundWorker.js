@@ -153,8 +153,8 @@ function prioritizeProducts(ingredient, productsForIngredient) {
         ["baking soda", ["0001111090765", "0001990000320"]],
         ["garlic", ["0000000004608", "0001111002882"]],
         ["onion", ["0000000004663", "0000000004082", "0000000004093", "0000000094093","0000000004166"]],
-        ["lemon", ["0000000004053"]],
-        ["lime", ["0000000004048"]] 
+        ["lemon", ["0000000004053"]]
+        //add lime and spinach 
         // Add more priorityUPCs as needed
     ];
     //check plural values as well 

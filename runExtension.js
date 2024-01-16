@@ -31,6 +31,7 @@ if (ingredients != null) {
         /*
         document.getElementById('minimize').addEventListener('click', minimizePopup); 
         */
+
         document.getElementById('ingrExpCloseImage').addEventListener('click', closePopup); 
         document.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
         document.getElementById('ingrExpDownArrow').addEventListener('click', launchLocationPopup); 

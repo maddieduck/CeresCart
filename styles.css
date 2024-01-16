@@ -112,10 +112,14 @@
   justify-content: space-between; /* evenly space elements horizontally */
 }
 .ingrExpEmptyBackgroundButton{
+  all:revert; 
   padding: 0px;
   border: 0px;
   background: none;
-  margin: 0px
+  margin: 0px;
+  background-color: white;
+  color: rgb(255, 255, 255);
+
 }
 .ingrExpRightArrowImage{
   all:revert; 
@@ -131,6 +135,7 @@
   all:revert; 
   height: 20px;
   cursor: pointer;
+  background-color: white;
 }
 .ingrExpCloseImage {
   all:revert; 
