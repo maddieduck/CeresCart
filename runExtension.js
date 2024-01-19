@@ -362,8 +362,9 @@ function plusButtonClicked(event) {
     quantityElement.innerText = String(currentQuantity + 1);
 
     // Update the corresponding data in allProductData
-    var id = event.target.closest('[id]').id;
+    var id = event.target.closest('[id]').id; 
     var productIndex = Number(id.replace(/ingrExpIngredient/g, ''));
+    console.log('all prod data ', productIndex); 
     var indexOfProductDisplayed = allProductData[productIndex]['indexOfProductDisplayed'];
     allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'] = currentQuantity + 1;
   }

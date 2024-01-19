@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
 }
-.ingrExpZipCode{
+#ingrExpZipCode{
   all:revert; 
   margin-left: 10px;
   margin-right: 10px;
@@ -23,13 +23,19 @@
   -webkit-line-clamp: 1; 
   overflow: hidden;
 }
-.ingrExpZipCode:placeholder{
+#ingrExpZipCode:placeholder{
   all:revert; 
   color: grey;
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+  text-align: center;
 }
-.ingrExpZipCodeInPopup{
+#ingrExpZipCode::placeholder{
   all:revert; 
+  color: grey;
+  text-align: center;
+}
+#ingrExpZipCodeInPopup{
+  all:revert; 
+  color: black;
   margin-left: 87px;
   margin-right: 10px;
   margin-top: 10px;
@@ -48,12 +54,12 @@
   -webkit-line-clamp: 1; 
   overflow: hidden;
 }
-.ingrExpZipCodeInPopup:placeholder{
+#ingrExpZipCodeInPopup:placeholder{
   all:revert; 
-  color: grey;
+  color: black;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 }
-.ingrExpZipCodeInPopup:focus {
+#ingrExpZipCodeInPopup:focus {
   all:revert; 
   margin-left: 87px;
   margin-right: 10px;
@@ -119,7 +125,17 @@
   margin: 0px;
   background-color: white;
   color: rgb(255, 255, 255);
-
+  min-height: 0px ;
+}
+.ingrExpEmptyBackgroundButton:hover{
+  all:revert; 
+  padding: 0px;
+  border: 0px;
+  background: none;
+  margin: 0px;
+  background-color: white;
+  color: rgb(255, 255, 255);
+  min-height: 0px ;
 }
 .ingrExpRightArrowImage{
   all:revert; 
@@ -130,6 +146,17 @@
   all:revert; 
   height: 20px;
   cursor: pointer;
+}
+#ingrExpDownArrow{
+  background-color: white;
+  height: 20px;
+  min-height: 20px;
+  width: 20px;
+  min-width: 20px;
+  cursor: pointer;
+  background-color: white;
+  padding: 0px;
+  line-height: 0px;
 }
 .ingrExpDownArrowImage{
   all:revert; 
@@ -144,6 +171,11 @@
   position: absolute;
   right: 15px;
   top: 10px;
+  border: 0px;
+  background: none;
+  margin: 0px;
+  background-color: white;
+  color: rgb(255, 255, 255); 
 }
 .ingrExpCloseImage:hover{
   box-shadow: 0 0 10px rgb(149, 148, 148); /* Add a box shadow to simulate background covering the margin */
@@ -335,7 +367,7 @@
   border-radius: 10px; /* Adjust the radius for the desired roundness */
   text-align: center;
 }
-.ingrExpCheckout {
+#ingrExpCheckoutButton {
   all:revert; 
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   padding: 10px 20px; /* Adjust padding as needed */
@@ -348,7 +380,7 @@
   width: 350px;
   margin-bottom: 10px;
 }
-.ingrExpCheckout:hover {
+#ingrExpCheckoutButton:hover {
   box-shadow: 0 0 10px rgb(38, 90, 98); /* Add a box shadow to simulate background covering the margin */
 }
 .ingrExpTopLocationDiv{

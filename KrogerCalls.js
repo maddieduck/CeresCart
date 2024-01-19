@@ -20,7 +20,7 @@ async function clientCredentials(){ //gets a token for use When making API reque
       if (res.ok){
         return res.json()
       }else{
-        console.log('Client Credentials was unsuccessful. ');
+        console.log('Client Credentials was unsuccessful. ', res);
         rejects("fetch response in Kroger Calls returned an invalid response");
       }
     })
