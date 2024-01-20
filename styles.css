@@ -164,6 +164,12 @@
   cursor: pointer;
   background-color: white;
 }
+#ingrExpClose{
+  background-color: white;
+  color: rgb(255, 255, 255); 
+  min-height: 0px;
+
+}
 .ingrExpCloseImage {
   all:revert; 
   padding: 0;

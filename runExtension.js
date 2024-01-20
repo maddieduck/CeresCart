@@ -32,7 +32,7 @@ if (ingredients != null) {
         document.getElementById('minimize').addEventListener('click', minimizePopup); 
         */
 
-        document.getElementById('ingrExpCloseImage').addEventListener('click', closePopup); 
+        document.getElementById('ingrExpClose').addEventListener('click', closePopup); 
         document.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
         document.getElementById('ingrExpDownArrow').addEventListener('click', launchLocationPopup); 
         document.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
@@ -119,7 +119,7 @@ function insertEachIngredient(ingredientData){
 
 function closePopup(event) {//closes the main popup or the location popup 
   var id = event.target.closest('[id]').id; 
-  if (id === 'ingrExpCloseImage'){
+  if (id === 'ingrExpClose'){
     document.getElementById('ingrExpIngredientExporterPopup').remove();
     var locationPopup = document.getElementById('ingrExpLocationPopup');
     if (locationPopup){
