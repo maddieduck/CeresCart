@@ -118,14 +118,15 @@ function insertEachIngredient(ingredientData){
 }
 
 function closePopup(event) {//closes the main popup or the location popup 
-  var id = event.target.closest('[id]').id; 
-  if (id === 'ingrExpClose'){
+  console.log('close id ', event.target.id);
+  var id = event.target.id;
+  if (id === 'ingrExpCloseImage'){
     document.getElementById('ingrExpIngredientExporterPopup').remove();
     var locationPopup = document.getElementById('ingrExpLocationPopup');
     if (locationPopup){
       locationPopup.remove();
     }
-  }else if (id === "ingrExpCloseImageLocationPopup"){
+  }else if (id === "ingrExpCloseImageInPopup"){
     document.getElementById('ingrExpLocationPopup').remove();
   }
 }
@@ -167,7 +168,7 @@ async function insertLocations(){
 
 async function launchLocationPopup() {
   var locationPopup = document.getElementById('ingrExpLocationPopup'); 
-  console.log('launch location popup '); 
+  console.log('launch location popup ', locationPopup); 
   //display or hide the zip code in the lcoations popup 
   var pickupAt = document.getElementById('ingrExpPickupAt'); //check if the location is being displayed in main popup
   console.log('pickup at ', pickupAt.style.display)
@@ -176,7 +177,8 @@ async function launchLocationPopup() {
       const locationPopupResponse = await fetch(chrome.runtime.getURL('locationPopup.html'));
       const locationPopupHtml = await locationPopupResponse.text();
       document.body.insertAdjacentHTML('afterbegin', `<div id="ingrExpLocationPopup">${locationPopupHtml}</div>`); 
-      document.getElementById('ingrExpCloseImageLocationPopup').addEventListener('click', closePopup); 
+      document.getElementById('ingrExpCloseInPopup').addEventListener('click', closePopup); 
+
       console.log('display style ', pickupAt.style.display);
       if (pickupAt.style.display == '-webkit-box'){ //The store location is showing, show the zip code 
         console.log('show zip code')
