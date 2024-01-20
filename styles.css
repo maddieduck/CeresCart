@@ -123,8 +123,9 @@
   border: 0px;
   background: none;
   margin: 0px;
-  background-color: white;
-  color: rgb(255, 255, 255);
+  background-color: white !important;
+  background: white !important;
+  color: rgb(255, 255, 255) !important;
   min-height: 0px ;
 }
 .ingrExpEmptyBackgroundButton:hover{
@@ -164,7 +165,6 @@
   cursor: pointer;
   background-color: white;
 }
-
 #ingrExpClose{
   background-color: white;
   color: rgb(255, 255, 255); 
@@ -187,7 +187,6 @@
 #ingrExpCloseImage:hover{
   box-shadow: 0 0 10px rgb(149, 148, 148); /* Add a box shadow to simulate background covering the margin */
 }
-
 #ingrExpCloseInPopup{
   background-color: white;
   color: rgb(255, 255, 255); 
