@@ -18,11 +18,7 @@
         "type": "module"
     },
      "permissions": [
-       "scripting",
-       "storage",
-       "tabs",
-       "geolocation",
-       "identity"
+       "storage"
      ],
      "content_scripts": [ 
       {
