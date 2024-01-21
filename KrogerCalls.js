@@ -1,7 +1,6 @@
 var clientID = 'chromeextension-9164a765a55fbb5196e486a21816eebc2545707629365177077'
 var clientSecret = '-K-l4m3_XtLtLDYzWbhRyuCiR9esN3Oo2BRX00Kz'
-var locationID = '03400355'//'01400943' //'540FC252' //TODO: Update this with search 
-var redirectURI = 'https://ndfnmkebkdcejlijnlgihonfeoepefbl.chromiumapp.org' //TODO: Make constant unique ID for extensions
+var redirectURI = 'https://neodpkgadbjhpapepfepfegjokomhnhc.chromiumapp.org' 
 import {saveToLocalStorage} from './storageHelpers.js'
 
 async function clientCredentials(){ //gets a token for use When making API requests that do not require customer consent 
@@ -179,10 +178,9 @@ async function addToCart(accessToken, items) { //returns true if added successfu
 async function productSearch(accessToken, term) {
   return new Promise((resolve, reject) => {
     chrome.storage.local.get('locationId', (result) => {
-      const locationId = result['locationId'];
+      var locationId = result['locationId'];
       let fetchString = "https://api.kroger.com/v1/products?filter.term=" + term + "&filter.fulfillment=ais"; //,csp
       if (locationId) {
-        console.log('location id', locationID);
         fetchString += "&filter.locationId=" + locationId;
       }
       fetch(fetchString, {

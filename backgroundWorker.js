@@ -60,8 +60,7 @@ async function getCartWriteAuth(){
                 ); 
             })
             .catch(error => {
-                //TODO: try again?
-                console.log('error in backgroundWorker.js. when getting ingredients', error.message);
+                console.log('error in backgroundWorker.js. when getting Cart Write Auth', error.message);
                 reject(error);
             })
         }else if (currentTimeSeconds > (timeOfExpiry - 30)){ //subtract 30 seconds for buffer 
@@ -207,7 +206,6 @@ function prioritizeProducts(ingredient, productsForIngredient) {
         }
     }
 }
-
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     //console.log("ingredients found on page", message); 
