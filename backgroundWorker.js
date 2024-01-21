@@ -268,10 +268,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     }
                     //console.log('allProductsFound', allProductsFound);
                     if (allProductsFound.length !== 0){
-                        console.log('prod found ', allProductsFound);
                         sendResponse({launch: true, ingredientData: allProductsFound}); 
                     }else{
-                        console.log('prod not found ', allProductsFound)
                         sendResponse({launch: false, ingredientData: allProductsFound}); 
                     }
                 })        
