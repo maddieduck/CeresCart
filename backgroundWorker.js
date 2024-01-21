@@ -1,7 +1,7 @@
 import {clientCredentials, cartWriteAuthorizationCode, productSearch,locationSearchByZipcode, locationSearchByLongLat, addToCart, getAuthToken, getRefreshToken} from './KrogerCalls.js'
 import {loadFromLocalStorage} from './storageHelpers.js'
 import {stripIngredients} from './stripIngredients.js'
-var appID = 'ndfnmkebkdcejlijnlgihonfeoepefbl' //TODO: Change to published app's ID and make consistent 
+import {getRefinedIngredients} from './ChatGPT.js'
 
 //determines if the access token from the Kroger website needs to be returned 
 async function getProductAccessToken(){
@@ -209,70 +209,78 @@ function prioritizeProducts(ingredient, productsForIngredient) {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     //console.log("ingredients found on page", message); 
+    
     if (message.to === 'ingredients'){ //returns ingredients from kroger API
-        var ingredients = Object.values(message.data);
+        var ingredients = Object.values(message.data); 
         console.log('found ingredients ', ingredients); 
-        var strippedIngredients = stripIngredients(ingredients); 
-        console.log('stripped ingredients ', strippedIngredients); 
-
-        getProductAccessToken()
-        .then(accessToken => {
-            const promises = [];
-            for (const ingredient of strippedIngredients) {
-              const productsForIngredient = productSearch(accessToken, ingredient);
-              promises.push(
-                productsForIngredient.then(products => prioritizeProducts(ingredient, products['data']))
-              );
-            }
-            return Promise.all(promises);
-          })
-        .then(allIngredientProducts => {
-            console.log('All Ingred ', allIngredientProducts);
-            var allProductsFound = []; 
-        
-            for (const j in allIngredientProducts){
-                if (allIngredientProducts[j] != null){
-                    let productData = allIngredientProducts[j];
-                    if (productData.length !== 0){
-                        let singularProductsData = [];
-                        for (const index in productData){
-                            let product = productData[index];
-                            var price = null;
-                            if ('price' in product['items'][0] && product['items'][0]['price']['regular'] !== null) {
-                                price = product['items'][0]['price']['regular'];
-                            } else {
-                                price = null; 
-                            }
-                            if (checkCategories(product['categories'])){                           
-                                var newProduct = {
-                                    "description": product['description'],
-                                    "brand": product['brand'],
-                                    "image": returnImage(product['images']),
-                                    "price": price,
-                                    "upc": product['upc'],
-                                    "quantity": 0,
-                                    "size": product['items'][0]['size']
-                                };
-                                // TODO: factor in promo price 
-                                singularProductsData.push(newProduct);
-                            }
-                        }
-                        if (singularProductsData.length !== 0){
-                            allProductsFound.push(singularProductsData);
-                        }
+        //var strippedIngredients = stripIngredients(ingredients); //old way of tripping ingredients 
+        //var strippedIngredients = await getRefinedIngredients(ingredients)
+        getRefinedIngredients(ingredients)
+        .then(strippedIngredients =>{
+            console.log('stripped ingredients ', strippedIngredients); 
+            if(stripIngredients != null){
+                getProductAccessToken()
+                .then(accessToken => {
+                    const promises = [];
+                    for (const ingredient of strippedIngredients) {
+                      const productsForIngredient = productSearch(accessToken, ingredient);
+                      promises.push(
+                        productsForIngredient.then(products => prioritizeProducts(ingredient, products['data']))
+                      );
                     }
-                }    
+                    return Promise.all(promises);
+                  })
+                .then(allIngredientProducts => {
+                    console.log('All Ingred ', allIngredientProducts);
+                    var allProductsFound = []; 
+                    for (const j in allIngredientProducts){
+                        if (allIngredientProducts[j] != null){
+                            let productData = allIngredientProducts[j];
+                            if (productData.length !== 0){
+                                let singularProductsData = [];
+                                for (const index in productData){
+                                    let product = productData[index];
+                                    var price = null;
+                                    if ('price' in product['items'][0] && product['items'][0]['price']['regular'] !== null) {
+                                        price = product['items'][0]['price']['regular'];
+                                    } else {
+                                        price = null; 
+                                    }
+                                    if (checkCategories(product['categories'])){                           
+                                        var newProduct = {
+                                            "description": product['description'],
+                                            "brand": product['brand'],
+                                            "image": returnImage(product['images']),
+                                            "price": price,
+                                            "upc": product['upc'],
+                                            "quantity": 0,
+                                            "size": product['items'][0]['size']
+                                        };
+                                        // TODO: factor in promo price 
+                                        singularProductsData.push(newProduct);
+                                    }
+                                }
+                                if (singularProductsData.length !== 0){
+                                    allProductsFound.push(singularProductsData);
+                                }
+                            }
+                        }    
+                    }
+                    //console.log('allProductsFound', allProductsFound);
+                    if (allProductsFound.length !== 0){
+                        console.log('prod found ', allProductsFound);
+                        sendResponse({launch: true, ingredientData: allProductsFound}); 
+                    }else{
+                        console.log('prod not found ', allProductsFound)
+                        sendResponse({launch: false, ingredientData: allProductsFound}); 
+                    }
+                })        
+                .catch(error => {
+                    console.log('error in backgroundWorker.js. when getting ingredients', error.message);
+                    sendResponse({launch: false}); 
+                }); 
             }
-            //console.log('allProductsFound', allProductsFound);
-            if (allProductsFound.length !== 0){
-                sendResponse({launch: true, ingredientData: allProductsFound}); 
-            }
-        })        
-        .catch(error => {
-            console.log('error in backgroundWorker.js. when getting ingredients', error.message);
-            sendResponse({launch: false}); 
-        }); 
-        return true; // Indicates that the response will be sent asynchronously 
+        })
     }else if(message.to === 'checkout'){ //allows the user to checkout using API 
         console.log('checkout pressed'); 
         getCartWriteAuth()
@@ -291,7 +299,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         .catch(error => {
             console.log('error in backgroundWorker.js. when getting checking out', error.message);
         })
-        return true; // Indicates that the response will be sent asynchronously 
     }else if(message.to === 'locations'){
         getProductAccessToken()
         .then(accessToken => { 
@@ -329,6 +336,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             console.log('error in backgroundWorker.js. when getting locations', error.message);
             sendResponse({locationsFound: false}); 
         })
-        return true; // Indicates that the response will be sent asynchronously 
     }
+    return true; // Indicates that the response will be sent asynchronously 
+
 });
