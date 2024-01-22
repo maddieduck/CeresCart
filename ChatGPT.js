@@ -13,7 +13,7 @@ async function getRefinedIngredients(userInput) {
         model: 'gpt-3.5-turbo',
         messages: [
           { role: 'system', content: 'You are a helpful assistant.' },
-          { role: 'user', content: `Take this array of ingredients and provide a more concise array of ingredients by stripping off the quantity and unit, only return the main ingredients that you would use to search in a grocery store API. ${userInput}` }]
+          { role: 'user', content: `Take this array of ingredients and provide a more concise array of ingredients by stripping out the quantity and unit. Only return the main ingredients that you would use to search in an American grocery store API. Only return a comma separated string of ingredients. Remove any unneccessary adjectives and words. If ingredients are separated with an 'or' make it two ingredients in the new list. ${userInput}` }]
       })
     });
 
