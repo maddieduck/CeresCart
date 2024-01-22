@@ -1,6 +1,6 @@
 import {clientCredentials, cartWriteAuthorizationCode, productSearch,locationSearchByZipcode, locationSearchByLongLat, addToCart, getAuthToken, getRefreshToken} from './KrogerCalls.js'
 import {loadFromLocalStorage} from './storageHelpers.js'
-import {stripIngredients} from './stripIngredients.js'
+import {replaceWords,removeWords} from './stripIngredients.js'
 import {getRefinedIngredients} from './ChatGPT.js'
 
 //determines if the access token from the Kroger website needs to be returned 
@@ -207,59 +207,15 @@ function prioritizeProducts(ingredient, productsForIngredient) {
     }
 }
 
-function replaceWords(products) {
-    const oldWordPairs = [
-        ["spring onion", "green onion"],
-        ["garlic clove", "garlic"],
-        ["clove garlic", "garlic"],
-        ["cloves garlic", "garlic"],
-        ["white sugar", "sugar"],
-        ["granulated sugar", "sugar"],
-        ["egg yolk", "egg"],
-        ["great northern bean", "cannellini bean"],
-        ["bramley", "green"],
-        ["frozen banana", "banana"]
-    ];
-
-    const newWordPairs = [
-        ["spring onion", "green onion"],
-        ["great northern bean", "cannellini bean"],
-        ["bramley", "granny smith"],
-        ["swede", "rutabaga"],
-        ["heavy cream", "heavy whipping cream"],
-        ["fennel bulb", "fennel"]
-    ];
-    
-    const resultArray = products.map(product => {
-        // Iterate through each word pair for the current product
-        newWordPairs.forEach(pair => {
-            const [oldWord, newWord] = pair;
-            // Create a regular expression to match the old word globally
-            const regex = new RegExp("\\b" + oldWord + "(?:s)?\\b", "gi");
-            // Replace occurrences of the old word with the new word
-            product = product.replace(regex, (match) => {
-                // Check if the matched word is in plural form (ends with "s")
-                const isPlural = match.toLowerCase().endsWith('s');
-                // If it's plural, replace with the new word in singular form
-                return isPlural ? newWord + 's' : newWord;
-            });
-        });
-
-        return product;
-    });
-
-    return resultArray;
-}
-
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
     if (message.to === 'ingredients'){ //returns ingredients from kroger API
         var ingredients = Object.values(message.data); 
         console.log('found ingredients ', ingredients); 
         getRefinedIngredients(ingredients)
         .then(strippedIngredients =>{
-            var products = replaceWords(strippedIngredients)
+            var products = replaceWords(strippedIngredients); 
             console.log('final product list ', products); 
-            if(stripIngredients != null){
+            if(strippedIngredients != null){
                 getProductAccessToken()
                 .then(accessToken => {
                     const promises = [];
