@@ -1,3 +1,5 @@
+export{ExtPay}
+
 var ExtPay = (function () {
 	'use strict';
 

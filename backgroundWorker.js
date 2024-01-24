@@ -2,6 +2,7 @@ import {clientCredentials, cartWriteAuthorizationCode, productSearch,locationSea
 import {loadFromLocalStorage} from './storageHelpers.js'
 import {replaceWords,removeWords} from './stripIngredients.js'
 import {getRefinedIngredients} from './ChatGPT.js'
+import {ExtPay} from './ExtPay.js'; 
 
 //determines if the access token from the Kroger website needs to be returned 
 async function getProductAccessToken(){
@@ -208,6 +209,14 @@ function prioritizeProducts(ingredient, productsForIngredient) {
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
+
+    var extpay = ExtPay('ingredient-exporter'); 
+    extpay.startBackground(); // this line is required to use ExtPay in the rest of your extension
+
+    extpay.getUser().then(user => {
+	    console.log('ext pay user ', user)
+    })
+
     if (message.to === 'ingredients'){ //returns ingredients from kroger API
         var ingredients = Object.values(message.data); 
         console.log('found ingredients ', ingredients); 
