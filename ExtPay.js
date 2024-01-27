@@ -1538,16 +1538,18 @@ You can copy and paste this to your manifest.json file to fix this error:
 	        },
 	        startBackground: function() {
 	            browserPolyfill.runtime.onMessage.addListener(function(message, sender, send_response) {
-	                console.log('service worker got message! Here it is:', message);
 	                if (message == 'fetch-user') {
+						console.log('extension pay service worker got message! Here it is:', message);
 	                    // Only called via extensionpay.com/extension/[extension-id]/paid -> content_script when user successfully pays.
 	                    // It's possible attackers could trigger this but that is basically harmless. It would just query the user.
 	                    poll_user_paid();
 	                } else if (message == 'trial-start') {
+						console.log('extension pay service worker got message! Here it is:', message);
 	                    // no need to poll since the trial confirmation page has already set trialStartedAt
 	                    fetch_user(); 
 	                } else if (message == 'extpay-extinfo' && browserPolyfill.management) {
 	                    // get this message from content scripts which can't access browser.management
+						console.log('extension pay service worker got message! Here it is:', message);
 	                    return browserPolyfill.management.getSelf()
 	                } 
 	            });

@@ -30,9 +30,7 @@ function replaceWords(products) {
 }
 
 function removeWords(){
-  const wordsToRemove = [
-      "zest", "water", "ice cube", "ice", "ice cubes"
-  ];
+  const wordsToRemove = [ "ice", "iced cubes",'ice cubes', 'cubed', 'ice cube', 'diced', 'sliced', 'slice of', 'fresh', 'slices', "juiced", "chopped", "softened", "zest", "water", "finely", "cooked", "extra virgin", "extra-virgin", "heaped", "chunks", "hot water", "boiling", "melted", "rolled", "peeled", "wedges", "thinly", "flaked", "for serving", "ripe", "crisp", "healthy", "whopping", "matchstick", "kosher", "roughly", "strip", "strips", "freshly", "fat", "dried", "loosely packed", "mashed", "very", "of", "for", "optional", "garnish", "toasted", "rounded", "in water", "extravirgin", "freerange", "piece", "unbaked", "each", "to taste", "cooked", "bag"]; 
 }
 
 ////////////////Anything below here is old and will be removed eventually ////////

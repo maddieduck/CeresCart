@@ -17,7 +17,6 @@ if (ingredients != null) {
 
         //insert each ingredient into the popup
         insertEachIngredient(response.ingredientData);
-
         //set the location name if it exists in memory 
         chrome.storage.local.get('locationName', (result) => {
           console.log('location Name ', result['locationName']);
@@ -36,8 +35,7 @@ if (ingredients != null) {
         document.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
         document.getElementById('ingrExpDownArrow').addEventListener('click', launchLocationPopup); 
         document.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
-
-        chrome.runtime.sendMessage({to: 'backgroundWorker', data: ingredients});
+        //updateCheckoutButton()
 
       } catch (error) {
         console.error('ERROR in runExtension.js: ', error);
@@ -300,36 +298,42 @@ function rightArrowClicked(event){
   displayNewIngredient(id, 'right'); 
 }
 
-function updateCheckoutButton() {
-  var totalQuantity = 0;
-  var totalPrice = 0.0;
-  var hasNullPrices = false;
-
-  // Iterate through allProductData and get the total quantity and price 
-  allProductData.forEach(function (element) {
-    element.productData.forEach(function (product) {
-      var quantity = product.quantity || 0;
-      var price = parseFloat(product.price);
-
-      totalQuantity += quantity;
-
-      // Check for null prices only if quantity is not null
-      if (quantity > 0) {
-        if (isNaN(price) || price === null) {
-          hasNullPrices = true;
-        } else {
-          totalPrice += quantity * price;
+async function updateCheckoutButton() {
+  let hasAccess = await chrome.runtime.sendMessage({ to: 'userHasAccess'}); 
+  console.log('access in checkout button ', hasAccess);
+  if (hasAccess){
+    var totalQuantity = 0;
+    var totalPrice = 0.0;
+    var hasNullPrices = false;
+  
+    // Iterate through allProductData and get the total quantity and price 
+    allProductData.forEach(function (element) {
+      element.productData.forEach(function (product) {
+        var quantity = product.quantity || 0;
+        var price = parseFloat(product.price);
+  
+        totalQuantity += quantity;
+  
+        // Check for null prices only if quantity is not null
+        if (quantity > 0) {
+          if (isNaN(price) || price === null) {
+            hasNullPrices = true;
+          } else {
+            totalPrice += quantity * price;
+          }
         }
-      }
+      });
     });
-  });
-
-  if (hasNullPrices) {
-    document.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items`;
-  } else if (totalQuantity == 0) {
-    document.getElementById('ingrExpCheckoutButton').innerHTML = `No Items Selected`;
-  } else {
-    document.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items for <span class="bold">$${totalPrice.toFixed(2)}</span>`;
+  
+    if (hasNullPrices) {
+      document.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items`;
+    } else if (totalQuantity == 0) {
+      document.getElementById('ingrExpCheckoutButton').innerHTML = `No Items Selected`;
+    } else {
+      document.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items for <span class="bold">$${totalPrice.toFixed(2)}</span>`;
+    }
+  }else{
+    document.getElementById('ingrExpCheckoutButton').innerHTML = `Sign Up or Log In`;
   }
 }
 
@@ -372,25 +376,9 @@ function plusButtonClicked(event) {
   }
   updateCheckoutButton(); 
 }
-
-async function checkoutButtonClicked(){
-  const quantityAndUPCArray = []; 
-  //disable button until products are done being added
-  document.getElementById("ingrExpCheckoutButton").disabled = true;
-
-  for (const productData of allProductData) {
-    for (const product of productData.productData) {
-      const quantity = product.quantity;
-      const upc = product.upc; // Assuming there's a property named 'upc' in your data structure
-      if (quantity > 0){
-        const quantityAndUPC = {'quantity': quantity, 'upc': upc};
-        quantityAndUPCArray.push(quantityAndUPC);
-      }
-    }
-  }
-  if(quantityAndUPCArray.length != 0){
-    console.log('quantity and upc ', quantityAndUPCArray);
-    let successful = await chrome.runtime.sendMessage({ to: 'checkout', data: quantityAndUPCArray}); //get auth url to call
+ 
+async function checkoutUser(userHasPaid){//lets the user attempt to checkout if they have paid
+  let successful = await chrome.runtime.sendMessage({ to: 'checkout', data: quantityAndUPCArray}); 
     console.log('Was cart successful? ', successful); 
     if(successful){
       //make all quantities 0 in array 
@@ -409,9 +397,40 @@ async function checkoutButtonClicked(){
     }else{
       console.log('error when trying to add to cart');
     }
+}
+
+async function checkoutButtonClicked(){
+   
+  //disable button until products are done being added
+  document.getElementById("ingrExpCheckoutButton").disabled = true;
+
+  //get the quantity of items to add to cart 
+  const quantityAndUPCArray = [];
+  for (const productData of allProductData) {
+    for (const product of productData.productData) {
+      const quantity = product.quantity;
+      const upc = product.upc; // Assuming there's a property named 'upc' in your data structure
+      if (quantity > 0){
+        const quantityAndUPC = {'quantity': quantity, 'upc': upc};
+        quantityAndUPCArray.push(quantityAndUPC);
+      }
+    }
+  }
+
+  if(quantityAndUPCArray.length != 0){
+    console.log('quantity and upc ', quantityAndUPCArray);
+    let hasAccess = await chrome.runtime.sendMessage({ to: 'userHasAccess'}); 
+    if(hasAccess){
+      checkoutUser()
+    }else{
+      console.log('User has not paid. Launch Extension Pay.')
+      chrome.runtime.sendMessage({ to: 'launchPayWindow', data: quantityAndUPCArray}); 
+      //change button if the user has paid 
+    }
   }else{
     console.log('No items selected. Do nothing.');
   }
+  //enable button again
   document.getElementById("ingrExpCheckoutButton").disabled = false;
 }
 
@@ -490,37 +509,3 @@ function zipCodeInPopupEdited(event) {
     insertLocations();
   }
 }
-
-            //check if store location exists in memory 
-            //if not, prompt for geolocation 
-/*
-            //gets geolocation 
-      navigator.geolocation.getCurrentPosition(
-        (loc) => {
-            console.log('location', loc);
-            },
-        // in case the user doesnt have/is blocking `geolocation`
-        (err) => console.log('geo error ', err)
-      );  
-*/
-
-      // prompts for geolocation permission and handle the result
-      /*
-      navigator.permissions.query({ name: 'geolocation' }).then(permissionStatus => {
-        if (permissionStatus.state === 'granted') {
-          // Geolocation permission granted, proceed to use it
-          navigator.geolocation.getCurrentPosition(position => {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-            console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-          });
-        } else {
-          console.log('Geolocation permission denied.');
-        }
-      });
-      */
-/*
-      chrome.storage.local.get('store', (result) => {
-        console.log("store result ", result);
-      });
-      */

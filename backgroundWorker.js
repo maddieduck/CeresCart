@@ -4,6 +4,21 @@ import {replaceWords,removeWords} from './stripIngredients.js'
 import {getRefinedIngredients} from './ChatGPT.js'
 import {ExtPay} from './ExtPay.js'; 
 
+chrome.runtime.onInstalled.addListener(function() {
+    // Initialize the counter
+    chrome.storage.local.set({'buttonCounter': 0});
+  
+    //Initialize the start date of the current month
+    const currentDate = new Date();
+    const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    chrome.storage.local.set({'startOfMonth': startOfMonth.getTime()});
+
+    // this line is required to use ExtPay in the rest of your extension
+    var extpay = ExtPay('ingredient-exporter'); 
+    extpay.startBackground(); 
+    console.log('ext pay started');
+});
+
 //determines if the access token from the Kroger website needs to be returned 
 async function getProductAccessToken(){
     return new Promise(async function(resolve,reject) {
@@ -208,16 +223,32 @@ function prioritizeProducts(ingredient, productsForIngredient) {
     }
 }
 
+/*
+        extpay.openPaymentPage();
+
+        extpay.getUser().then(user => {
+            if (user.paid) {
+                //user has paid
+                document.querySelector('p').innerHTML = 'User has paid! 🎉'
+                document.querySelector('button').remove()
+            }
+        }).catch(err => {
+            document.querySelector('p').innerHTML = "Error fetching data :( Check that your ExtensionPay id is correct and you're connected to the internet"
+        })
+*/
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
-
-    var extpay = ExtPay('ingredient-exporter'); 
-    extpay.startBackground(); // this line is required to use ExtPay in the rest of your extension
-
-    extpay.getUser().then(user => {
-	    console.log('ext pay user ', user)
-    })
-
-    if (message.to === 'ingredients'){ //returns ingredients from kroger API
+    if (message.to === 'userHasAccess'){ //returns ingredients from kroger API
+        //TODO: Check if free trial is up
+        var extpay = ExtPay('ingredient-exporter'); 
+        extpay.getUser().then(user => {
+            console.log('ext pay user ', user);
+            return user['paid']
+        })
+    }else if(message.to === 'launchPayWindow'){
+        var extpay = ExtPay('ingredient-exporter'); 
+        extpay.openPaymentPage();
+    }else if (message.to === 'ingredients'){ //returns ingredients from kroger API
         var ingredients = Object.values(message.data); 
         console.log('found ingredients ', ingredients); 
         getRefinedIngredients(ingredients)

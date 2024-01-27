@@ -18,7 +18,8 @@
         "type": "module"
     },
      "permissions": [
-       "storage"
+       "storage",
+       "identity"
      ],
      "content_scripts": [ 
       {
