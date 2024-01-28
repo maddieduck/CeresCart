@@ -159,12 +159,13 @@
   padding: 0px;
   line-height: 0px;
 }
-.ingrExpDownArrowImage{
+#ingrExpDownArrowImage{
   all:revert; 
   height: 20px;
   cursor: pointer;
   background-color: white;
 }
+
 #ingrExpClose{
   background-color: white;
   color: rgb(255, 255, 255); 
@@ -187,6 +188,24 @@
 #ingrExpCloseImage:hover{
   box-shadow: 0 0 10px rgb(149, 148, 148); /* Add a box shadow to simulate background covering the margin */
 }
+#ingrExpPerson {
+  background-color: white;
+  color: rgb(255, 255, 255);
+  min-height: 0px;
+  cursor: pointer;
+  position: relative; /* Add this line to make the positioning of the image relative to this button */
+}
+#ingrExpPersonImage { 
+  all: revert;
+  padding: 0;
+  height: 10px;
+  position: relative;
+  right: 15px;
+}
+#ingrExpPersonImage:hover{
+  box-shadow: 0 0 10px rgb(149, 148, 148); /* Add a box shadow to simulate background covering the margin */
+}
+
 #ingrExpCloseInPopup{
   background-color: white;
   color: rgb(255, 255, 255); 

@@ -240,10 +240,11 @@ function prioritizeProducts(ingredient, productsForIngredient) {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
     if (message.to === 'userHasAccess'){ //returns ingredients from kroger API
         //TODO: Check if free trial is up
+        
         var extpay = ExtPay('ingredient-exporter'); 
         extpay.getUser().then(user => {
             console.log('ext pay user ', user);
-            return user['paid']
+            sendResponse(user['paid']); 
         })
     }else if(message.to === 'launchPayWindow'){
         var extpay = ExtPay('ingredient-exporter'); 

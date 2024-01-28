@@ -32,10 +32,11 @@ if (ingredients != null) {
         */
 
         document.getElementById('ingrExpClose').addEventListener('click', closePopup); 
+        document.getElementById('ingrExpPerson').addEventListener('click', personClicked); 
         document.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
         document.getElementById('ingrExpDownArrow').addEventListener('click', launchLocationPopup); 
         document.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
-        //updateCheckoutButton()
+        updateCheckoutButton();
 
       } catch (error) {
         console.error('ERROR in runExtension.js: ', error);
@@ -113,6 +114,10 @@ function insertEachIngredient(ingredientData){
   } catch (error) {
     console.error('An error occurred:', error);
   }
+}
+
+function personClicked(event){
+  chrome.runtime.sendMessage({to: 'launchPayWindow'}); 
 }
 
 function closePopup(event) {//closes the main popup or the location popup 
@@ -299,6 +304,7 @@ function rightArrowClicked(event){
 }
 
 async function updateCheckoutButton() {
+  console.log('update checkout button');
   let hasAccess = await chrome.runtime.sendMessage({ to: 'userHasAccess'}); 
   console.log('access in checkout button ', hasAccess);
   if (hasAccess){
@@ -333,7 +339,7 @@ async function updateCheckoutButton() {
       document.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items for <span class="bold">$${totalPrice.toFixed(2)}</span>`;
     }
   }else{
-    document.getElementById('ingrExpCheckoutButton').innerHTML = `Sign Up or Log In`;
+    document.getElementById('ingrExpCheckoutButton').innerHTML = `Sign Up or Log In to Export`;
   }
 }
 
