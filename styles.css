@@ -165,18 +165,22 @@
   cursor: pointer;
   background-color: white;
 }
-
+#headerContainer{
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
+}
 #ingrExpClose{
   background-color: white;
   color: rgb(255, 255, 255); 
   min-height: 0px;
   cursor: pointer;
+  margin-right: 10px; /* Add margin to the right of the close button */
+  margin-top: 5px;
 }
 #ingrExpCloseImage {
   all:revert; 
   padding: 0;
   height: 10px;
-  position: absolute;
   right: 15px;
   top: 10px;
   border: 0px;
@@ -199,13 +203,12 @@
   all: revert;
   padding: 0;
   height: 10px;
-  position: relative;
-  right: 15px;
+  margin-top: 7px;
+  margin-right: 10px; /* Add margin to the right of the person button */
 }
 #ingrExpPersonImage:hover{
   box-shadow: 0 0 10px rgb(149, 148, 148); /* Add a box shadow to simulate background covering the margin */
 }
-
 #ingrExpCloseInPopup{
   background-color: white;
   color: rgb(255, 255, 255); 
@@ -228,7 +231,6 @@
 #ingrExpCloseImageInPopup:hover{
   box-shadow: 0 0 10px rgb(149, 148, 148); /* Add a box shadow to simulate background covering the margin */
 }
-
 /*
 #ingrExpCloseImageInPopup{
   all:revert; 
