@@ -1,13 +1,13 @@
 import {clientCredentials, cartWriteAuthorizationCode, productSearch,locationSearchByZipcode, locationSearchByLongLat, addToCart, getAuthToken, getRefreshToken} from './KrogerCalls.js'
 import {loadFromLocalStorage} from './storageHelpers.js'
-import {replaceWords,removeWords} from './stripIngredients.js'
+import {stripIngredients} from './stripIngredients.js'
 import {getRefinedIngredients} from './ChatGPT.js'
 import {ExtPay} from './ExtPay.js'; 
 
 chrome.runtime.onInstalled.addListener(function() {
     // Initialize the counter
     chrome.storage.local.set({'buttonCounter': 0});
-  
+    
     //Initialize the start date of the current month
     const currentDate = new Date();
     const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -162,6 +162,7 @@ function returnImage(images) { //return the correct image based on the prioritie
 }
 
 function prioritizeProducts(ingredient, productsForIngredient) {
+    //TODO: Use Chatgpt 
     //console.log(ingredient, productsForIngredient);
     const priorityUPCs = [
         ["banana", ["0000000004011", "0000000094011"]],
@@ -223,24 +224,8 @@ function prioritizeProducts(ingredient, productsForIngredient) {
     }
 }
 
-/*
-        extpay.openPaymentPage();
-
-        extpay.getUser().then(user => {
-            if (user.paid) {
-                //user has paid
-                document.querySelector('p').innerHTML = 'User has paid! 🎉'
-                document.querySelector('button').remove()
-            }
-        }).catch(err => {
-            document.querySelector('p').innerHTML = "Error fetching data :( Check that your ExtensionPay id is correct and you're connected to the internet"
-        })
-*/
-
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
-    if (message.to === 'userHasAccess'){ //returns ingredients from kroger API
-        //TODO: Check if free trial is up
-        
+    if (message.to === 'userHasAccess'){ //returns ingredients from kroger API        
         var extpay = ExtPay('ingredient-exporter'); 
         extpay.getUser().then(user => {
             console.log('ext pay user ', user);
@@ -254,7 +239,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.log('found ingredients ', ingredients); 
         getRefinedIngredients(ingredients)
         .then(strippedIngredients =>{
-            var products = replaceWords(strippedIngredients); 
+            var products = stripIngredients(strippedIngredients); 
             console.log('final product list ', products); 
             if(strippedIngredients != null){
                 getProductAccessToken()
@@ -305,6 +290,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                         }    
                     }
                     //console.log('allProductsFound', allProductsFound);
+                    console.log('All Ingred ', allIngredientProducts);
+
                     if (allProductsFound.length !== 0){
                         sendResponse({launch: true, ingredientData: allProductsFound}); 
                     }else{

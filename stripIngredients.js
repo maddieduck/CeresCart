@@ -1,45 +1,63 @@
-function replaceWords(products) {
-  const newWordPairs = [
-      ["spring onion", "green onion"],
-      ["great northern bean", "cannellini bean"],
-      ["bramley", "granny smith"],
-      ["swede", "rutabaga"],
-      ["heavy cream", "heavy whipping cream"],
-      ["fennel bulb", "fennel"]
-  ];
-  
-  const resultArray = products.map(product => {
-      // Iterate through each word pair for the current product
-      newWordPairs.forEach(pair => {
-          const [oldWord, newWord] = pair;
-          // Create a regular expression to match the old word globally
-          const regex = new RegExp("\\b" + oldWord + "(?:s)?\\b", "gi");
-          // Replace occurrences of the old word with the new word
-          product = product.replace(regex, (match) => {
-              // Check if the matched word is in plural form (ends with "s")
-              const isPlural = match.toLowerCase().endsWith('s');
-              // If it's plural, replace with the new word in singular form
-              return isPlural ? newWord + 's' : newWord;
-          });
-      });
+function stripIngredients(products) {
+  products = replaceWords(products);
+  products = removeWords(products);
+  // Remove null, undefined, blank strings, and duplicates
+  const uniqueProducts = [...new Set(products.filter(item => item !== null && item !== undefined && item.trim() !== ''))];
 
-      return product;
-  });
-
-  return resultArray;
+  return uniqueProducts;
 }
 
-function removeWords(){
-  const wordsToRemove = [ "ice", "iced cubes",'ice cubes', 'cubed', 'ice cube', 'diced', 'sliced', 'slice of', 'fresh', 'slices', "juiced", "chopped", "softened", "zest", "water", "finely", "cooked", "extra virgin", "extra-virgin", "heaped", "chunks", "hot water", "boiling", "melted", "rolled", "peeled", "wedges", "thinly", "flaked", "for serving", "ripe", "crisp", "healthy", "whopping", "matchstick", "kosher", "roughly", "strip", "strips", "freshly", "fat", "dried", "loosely packed", "mashed", "very", "of", "for", "optional", "garnish", "toasted", "rounded", "in water", "extravirgin", "freerange", "piece", "unbaked", "each", "to taste", "cooked", "bag"]; 
+function replaceWords(products) {
+  const newWordPairs = [
+    ["spring onion", "green onion"],
+    ["great northern bean", "cannellini bean"],
+    ["bramley", "granny smith"],
+    ["swede", "rutabaga"],
+    ["heavy cream", "heavy whipping cream"],
+    ["fennel bulb", "fennel"]
+  ];
+
+  return products.map(product => {
+    newWordPairs.forEach(pair => {
+      const [oldWord, newWord] = pair;
+      const regex = new RegExp("\\b" + oldWord + "(?:s)?\\b", "gi");
+      product = product.replace(regex, match => {
+        const isPlural = match.toLowerCase().endsWith('s');
+        return isPlural ? newWord + 's' : newWord;
+      });
+    });
+
+    return product;
+  });
+}
+
+function removeWords(products) {
+  const wordsToRemove = [ //if one word is in a group of another words, put it last (ice cubes & ice)
+    "iced cubes", 'ice cubes', 'cubed', 'ice cube', "ice", 'diced', 'sliced', 'slice of',
+    'fresh', 'slices', "juiced", "chopped", "softened", "zest", "water", "finely", "cooked",
+    "extra virgin", "extra-virgin", "heaped", "chunks", "hot water", "boiling", "melted", "rolled",
+    "peeled", "wedges", "thinly", "flaked", "for serving", "ripe", "crisp", "healthy", "whopping",
+    "matchstick", "kosher", "roughly", "freshly", "fat", "dried", "loosely packed",
+    "mashed", "very", "of", "for", "optional", "garnish", "toasted", "rounded", "in water", "extravirgin",
+    "freerange", "piece", "unbaked", "each", "to taste", "cooked", "bag"
+  ];
+
+  return products.map(product => {
+    wordsToRemove.forEach(word => {
+      const regex = new RegExp("\\b" + word + "\\b", "gi");
+      product = product.replace(regex, '');
+    });
+
+    return product.trim(); // Trim any leading or trailing spaces
+  });
 }
 
 ////////////////Anything below here is old and will be removed eventually ////////
-
-
 //parses the array of ingredients to only return what you want to search in a Korger search 
-function stripIngredients(recipeIngredients){ //old funtion. Deprecated with the addition of ChatGPT. Just here for reference. 
+
+function stripIngredientsOLD(recipeIngredients){ //old funtion. Deprecated with the addition of ChatGPT. Just here for reference. 
     var strippedIngredients = [] 
-    const quantityPattern = /^\s*\d+(?:\.\d+|\s*\d*\/\d+)?(?:\s+(?:to|\-)\s*\d+(?:\s*\d*\/\d+)?)?(?:\s+and\s+\d+(?:\s*\d*\/\d+)?)?(?:\/\d+)?\s*/;
+    //const quantityPattern = /^\s*\d+(?:\.\d+|\s*\d*\/\d+)?(?:\s+(?:to|\-)\s*\d+(?:\s*\d*\/\d+)?)?(?:\s+and\s+\d+(?:\s*\d*\/\d+)?)?(?:\/\d+)?\s*/;
     const unitPattern = /\b(?:cup|cups|c|teaspoon|teaspoons|tbsp|tbsps|tsp|tsps|tablespoon|tablespoons|oz|ozs|ounce|ounces|fluid ounce|fluid ounces|pound|pounds|g|gs|gram|grams|kg|kgs|kilogram|kilogram|pint|pints|quart|quarts|gallon|gallons|liter|liters|litre|litres|scoop|scoops|batch|batches|pinch of|pinch|inch|package|head|heads|bunch|ml|thumb-sized piece|large|medium|small|sticks|cm|thumbsized)\b/i; // Case-insensitive units
     const wordsToRemove = ['ice cubes', 'cubed', 'diced', 'sliced', 'slice of', 'fresh', 'slices', "juiced", "chopped", "softened", "zest", "water", "finely", "cooked", "extra virgin", "extra-virgin", "heaped", "chunks", "hot water", "boiling", "ice", "iced cubes", "melted", "rolled", "peeled", "wedges", "thinly", "flaked", "for serving", "ripe", "crisp", "healthy", "whopping", "matchstick", "kosher", "roughly", "strip", "strips", "freshly", "fat", "dried", "loosely packed", "mashed", "very", "of", "for", "optional", "garnish", "toasted", "rounded", "in water", "extravirgin", "freerange", "piece", "unbaked", "each", "to taste", "cooked", "bag"]; 
     const regExWordsToRemove = new RegExp('\\b(' + wordsToRemove.join('|') + ')\\b', 'gi');  
@@ -102,8 +120,8 @@ function stripIngredients(recipeIngredients){ //old funtion. Deprecated with the
     //remove duplicates 
     return Array.from(new Set(strippedIngredients));
 }
-/*
-function replaceWords(inputString) {
+
+function replaceWordsOLD(inputString) {
     const wordPairs = [ //replace the first word with the second. Have singular word (no s at end). 
     ["spring onion", "green onion"],
     ["garlic clove", "garlic"],
@@ -135,8 +153,8 @@ function replaceWords(inputString) {
   
     return resultString;
 } 
-*/ 
-function removeFirstWordWithException(ingredient) {
+
+function removeFirstWordWithExceptionOLD(ingredient) {
     const wordPairsWithException = [// remove the first word unless one of the second words exist
     ["sweet", ["potato", "corn", "tea", "onion"]],
     ["grated", ["cheese", "monterey jack"]]
@@ -167,6 +185,6 @@ function removeFirstWordWithException(ingredient) {
     return ingredient.trim();
 }
   
-export{replaceWords,removeWords}
+export{stripIngredients}
 
 
