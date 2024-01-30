@@ -1,7 +1,7 @@
 import {clientCredentials, cartWriteAuthorizationCode, productSearch,locationSearchByZipcode, locationSearchByLongLat, addToCart, getAuthToken, getRefreshToken} from './KrogerCalls.js'
 import {loadFromLocalStorage} from './storageHelpers.js'
 import {stripIngredients} from './stripIngredients.js'
-import {getRefinedIngredients} from './ChatGPT.js'
+import {getRefinedIngredients, prioritizeProducts} from './ChatGPT.js'
 import {ExtPay} from './ExtPay.js'; 
 
 chrome.runtime.onInstalled.addListener(function() {
@@ -160,7 +160,7 @@ function returnImage(images) { //return the correct image based on the prioritie
 
     return imageUrl;
 }
-
+/*
 function prioritizeProducts(ingredient, productsForIngredient) {
     //TODO: Use Chatgpt 
     //console.log(ingredient, productsForIngredient);
@@ -223,7 +223,7 @@ function prioritizeProducts(ingredient, productsForIngredient) {
         }
     }
 }
-
+*/ 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
     if (message.to === 'userHasAccess'){ //returns ingredients from kroger API        
         var extpay = ExtPay('ingredient-exporter'); 
@@ -244,21 +244,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             if(strippedIngredients != null){
                 getProductAccessToken()
                 .then(accessToken => {
-                    const promises = [];
-                    for (const ingredient of products) {
-                      const productsForIngredient = productSearch(accessToken, ingredient);
-                      promises.push(
-                        productsForIngredient.then(products => prioritizeProducts(ingredient, products['data']))
-                      );
-                    }
+                    const promises = products.map(ingredient => productSearch(accessToken, ingredient));
                     return Promise.all(promises);
                   })
                 .then(allIngredientProducts => {
-                    console.log('All Ingred ', allIngredientProducts);
+                    console.log('All Ingred ', allIngredientProducts); 
                     var allProductsFound = []; 
                     for (const j in allIngredientProducts){
-                        if (allIngredientProducts[j] != null){
-                            let productData = allIngredientProducts[j];
+                        if (allIngredientProducts[j]['data'] != null){
+                            let productData = allIngredientProducts[j]['data'];
                             if (productData.length !== 0){
                                 let singularProductsData = [];
                                 for (const index in productData){

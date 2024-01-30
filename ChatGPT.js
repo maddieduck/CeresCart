@@ -42,4 +42,47 @@ async function getRefinedIngredients(userInput) {
   }
 }
 
-export { getRefinedIngredients };
+async function prioritizeProducts(products) {
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          { role: 'system', content: 'You are a helpful assistant.' },
+          { role: 'user', content: `Take this dictionary of key values, 
+          where the key is an ingredinet and the value is an array of product data from a grocery store API. 
+          Organize each array in order of what you think a user would purchase when making the recipe. (${products}`}]
+      })
+    });
+
+    if (!response.ok) {
+      if (response.status === 429) {
+        throw new Error(`HTTP error! Status: ${response.status}. ChatGPT rate limit exceeded.`);
+      } else {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+    }
+
+    const result = await response.json();
+
+    if (!result.choices || result.choices.length === 0 || !result.choices[0].message || !result.choices[0].message.content) {
+      throw new Error('Unexpected response format from OpenAI API');
+    }
+
+    // Split the comma-separated string into an array of ingredients
+    const content = result.choices[0].message.content;
+    const ingredientsArray = content.split(',').map(ingredient => ingredient.trim());
+
+    return ingredientsArray;
+  } catch (error) {
+    console.error('Error in getRefinedIngredients:', error.message);
+    throw error; // Re-throw the error for further handling or logging
+  }
+}
+
+export {getRefinedIngredients,prioritizeProducts};
