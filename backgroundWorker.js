@@ -287,8 +287,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     //console.log('All Ingred Prioritized');
 
                     if (allProductsFound.size !== 0){
-                        console.log('allProductsFound', allProductsFound);
-                        const mapArray = Array.from(allProductsFound.entries());
+                        console.log('allProductsFound', allProductsFound); 
+                        /*
+                        prioritizeProducts(allProductsFound).then(prioritizedProducts => {
+                            console.log('prioritized products ', prioritizedProducts); 
+                            //const mapArray = Array.from(prioritizedProducts.entries()); 
+                            const mapArray = Array.from(allProductsFound); 
+                            sendResponse({launch: true, ingredientData: mapArray}); 
+                        })*/
+                        const mapArray = Array.from(allProductsFound); 
                         sendResponse({launch: true, ingredientData: mapArray}); 
                     }else{
                         sendResponse({launch: false}); 
