@@ -4,19 +4,23 @@ let ingredients = findIngredientsOnPage();
 console.log('ingredients ', ingredients);
 if (ingredients != null) {
   (async () => { // Wrap the block in an async function 
-    let response = await chrome.runtime.sendMessage({ to: 'ingredients', data: ingredients});
-    if (response.launch) {
+    let backgroundResponse = await chrome.runtime.sendMessage({ to: 'ingredients', data: ingredients });
+    console.log('background response ', backgroundResponse);
+
+    if (backgroundResponse.launch) {
       try {
         const htmlContents = await Promise.all([
           fetch(chrome.runtime.getURL('index.html')).then(response => response.text()),
+          fetch(chrome.runtime.getURL('ingredientContainer.html')).then(response => response.text())
         ]);
-        const [indexHtml] = htmlContents;
+        const [indexHtml, ingredientHtml] = htmlContents;
         
-        // insert popup into html
+        // insert popup into html 
         document.body.insertAdjacentHTML('afterbegin', `<div id="ingrExpIngredientExporterPopup">${indexHtml}</div>`);
 
         //insert each ingredient into the popup
-        insertEachIngredient(response.ingredientData);
+        const ingredientData = new Map(backgroundResponse.ingredientData);
+        insertEachIngredient(ingredientHtml, ingredientData);
         //set the location name if it exists in memory 
         chrome.storage.local.get('locationName', (result) => {
           console.log('location Name ', result['locationName']);
@@ -45,75 +49,68 @@ if (ingredients != null) {
   })();
 }
 
-function insertEachIngredient(ingredientData){
+function insertEachIngredient(ingredientHtml, ingredientData){
   //insert each ingredient into html 
-  console.log('insert each ingr');
+  console.log('insert each ingr', ingredientData);
   let ingredDiv = document.getElementById('ingrExpPlaceholderForIngredients');
   allProductData = []
 
-  try {
-    fetch(chrome.runtime.getURL('ingredientContainer.html'))
-      .then(response => response.text()) 
-      .then(ingredientHtml => {
-        for (const index in ingredientData){ 
-          singularIngredientData = ingredientData[index]; 
-          allProductData[index] = {indexOfProductDisplayed: 0, productData: singularIngredientData}; 
-          
-          let nodeClone = document.createElement('div'); // Create a new div 
-          nodeClone.innerHTML = ingredientHtml;  //Set the inner HTML of the div 
-          nodeClone.querySelector('.ingrExpIngredientImage').src = singularIngredientData[0].image; 
-          nodeClone.querySelector('.ingrExpIngredientBrand').textContent = singularIngredientData[0].brand; 
-          nodeClone.querySelector('.ingrExpIngredientDescription').textContent = singularIngredientData[0].description;
-          nodeClone.querySelector('.ingrExpSize').textContent = singularIngredientData[0].size;
-          nodeClone.querySelector('.ingrExpParagraphOutline').id = 'ingrExpIngredient' + index;
-          nodeClone.querySelector('.ingrExpLeftArrowImage').style.opacity = 0;
-          nodeClone.querySelector('.ingrExpLeftArrowImage').style.visibility = 'hidden';
-          nodeClone.querySelector('.ingrExpLeftArrowImage').style.pointerEvents = 'none';
-      
-          var price = singularIngredientData[0].price;
-          if (price !== null){
-            const dollars = Math.floor(price);
-            const cents = Math.round((price - dollars) * 100);
-            nodeClone.querySelector('.ingrExpIngrExpPrice').innerHTML = "$" + dollars + ".";
-            nodeClone.querySelector('.ingrExpCents').innerHTML = String(cents).padStart(2, '0'); 
-          }else{
-            nodeClone.querySelector('.ingrExpIngrExpPrice').innerHTML = ''; 
-            nodeClone.querySelector('.ingrExpCents').innerHTML = '';
-          }
-      
-          if (singularIngredientData.length == 1){
-            nodeClone.querySelector('.ingrExpRightArrowImage').style.opacity = 0;
-            nodeClone.querySelector('.ingrExpRightArrowImage').style.visibility = 'hidden';
-            nodeClone.querySelector('.ingrExpRightArrowImage').style.pointerEvents = 'none';
-          }
-          ingredDiv.appendChild(nodeClone);
-        }
-        var elem = document.getElementsByClassName('ingrExpLeftArrowImage'); 
-        for(var i=0; i<elem.length; i++){
-          elem[i].addEventListener('click', leftArrowClicked);
-        }
+  //ingredientData.forEach((ingredient, productData) => {
+  Array.from(ingredientData.entries()).forEach((entry, index) => {
+    const [ingredient, productData] = entry;
+    //TODO: Save allProductData as a map eventually 
+    allProductData[index] = {indexOfProductDisplayed: 0, productData: productData}; 
+    
+    let nodeClone = document.createElement('div'); // Create a new div 
+    nodeClone.innerHTML = ingredientHtml;  //Set the inner HTML of the div 
+    nodeClone.querySelector('.ingrExpIngredientImage').src = productData[0].image; 
+    nodeClone.querySelector('.ingrExpIngredientBrand').textContent = productData[0].brand; 
+    nodeClone.querySelector('.ingrExpIngredientDescription').textContent = productData[0].description;
+    nodeClone.querySelector('.ingrExpSize').textContent = productData[0].size;
+    nodeClone.querySelector('.ingrExpParagraphOutline').id = 'ingrExpIngredient' + index;
+    nodeClone.querySelector('.ingrExpLeftArrowImage').style.opacity = 0;
+    nodeClone.querySelector('.ingrExpLeftArrowImage').style.visibility = 'hidden';
+    nodeClone.querySelector('.ingrExpLeftArrowImage').style.pointerEvents = 'none';
 
-        var elem = document.getElementsByClassName('ingrExpRightArrowImage'); 
-        for(var i=0; i<elem.length; i++){
-          elem[i].addEventListener('click', rightArrowClicked);
-        }
+    var price = productData[0].price;
+    if (price !== null){
+      const dollars = Math.floor(price);
+      const cents = Math.round((price - dollars) * 100);
+      nodeClone.querySelector('.ingrExpIngrExpPrice').innerHTML = "$" + dollars + ".";
+      nodeClone.querySelector('.ingrExpCents').innerHTML = String(cents).padStart(2, '0'); 
+    }else{
+      nodeClone.querySelector('.ingrExpIngrExpPrice').innerHTML = ''; 
+      nodeClone.querySelector('.ingrExpCents').innerHTML = '';
+    }
 
-        var elem = document.getElementsByClassName('ingrExpPlusButton'); 
-        for(var i=0; i<elem.length; i++){
-          elem[i].addEventListener('click', plusButtonClicked);
-        }
-        
-        var elem = document.getElementsByClassName('ingrExpMinusButton'); 
-        for(var i=0; i<elem.length; i++){
-          elem[i].addEventListener('click', minusButtonClicked);
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching ingredient container HTML:', error);
-      });
-  } catch (error) {
-    console.error('An error occurred:', error);
+    if (productData.length == 1){
+      nodeClone.querySelector('.ingrExpRightArrowImage').style.opacity = 0;
+      nodeClone.querySelector('.ingrExpRightArrowImage').style.visibility = 'hidden';
+      nodeClone.querySelector('.ingrExpRightArrowImage').style.pointerEvents = 'none';
+    }
+    ingredDiv.appendChild(nodeClone);
+  });
+
+  var elem = document.getElementsByClassName('ingrExpLeftArrowImage'); 
+  for(var i=0; i<elem.length; i++){
+    elem[i].addEventListener('click', leftArrowClicked);
   }
+
+  var elem = document.getElementsByClassName('ingrExpRightArrowImage'); 
+  for(var i=0; i<elem.length; i++){
+    elem[i].addEventListener('click', rightArrowClicked);
+  }
+
+  var elem = document.getElementsByClassName('ingrExpPlusButton'); 
+  for(var i=0; i<elem.length; i++){
+    elem[i].addEventListener('click', plusButtonClicked);
+  }
+  
+  var elem = document.getElementsByClassName('ingrExpMinusButton'); 
+  for(var i=0; i<elem.length; i++){
+    elem[i].addEventListener('click', minusButtonClicked);
+  }
+
 }
 
 function personClicked(event){

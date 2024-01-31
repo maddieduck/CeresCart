@@ -239,18 +239,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.log('found ingredients ', ingredients); 
         getRefinedIngredients(ingredients)
         .then(strippedIngredients =>{
-            var products = stripIngredients(strippedIngredients); 
-            console.log('final product list ', products); 
+            var finalIngredients = stripIngredients(strippedIngredients); 
+            console.log('final product list ', finalIngredients); 
             if(strippedIngredients != null){
                 getProductAccessToken()
                 .then(accessToken => {
-                    const promises = products.map(ingredient => productSearch(accessToken, ingredient));
+                    const promises = finalIngredients.map(ingredient => productSearch(accessToken, ingredient));
                     return Promise.all(promises);
                   })
                 .then(allIngredientProducts => {
                     console.log('All Ingred ', allIngredientProducts); 
-                    var allProductsFound = []; 
+                    var allProductsFound = new Map();
                     for (const j in allIngredientProducts){
+                        
                         if (allIngredientProducts[j]['data'] != null){
                             let productData = allIngredientProducts[j]['data'];
                             if (productData.length !== 0){
@@ -278,18 +279,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                                     }
                                 }
                                 if (singularProductsData.length !== 0){
-                                    allProductsFound.push(singularProductsData);
+                                    allProductsFound.set(finalIngredients[j], singularProductsData);
                                 }
                             }
                         }    
                     }
-                    //console.log('allProductsFound', allProductsFound);
-                    console.log('All Ingred ', allIngredientProducts);
+                    //console.log('All Ingred Prioritized');
 
-                    if (allProductsFound.length !== 0){
-                        sendResponse({launch: true, ingredientData: allProductsFound}); 
+                    if (allProductsFound.size !== 0){
+                        console.log('allProductsFound', allProductsFound);
+                        const mapArray = Array.from(allProductsFound.entries());
+                        sendResponse({launch: true, ingredientData: mapArray}); 
                     }else{
-                        sendResponse({launch: false, ingredientData: allProductsFound}); 
+                        sendResponse({launch: false}); 
                     }
                 })        
                 .catch(error => {
