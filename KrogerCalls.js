@@ -145,7 +145,7 @@ async function cartWriteAuthorizationCode(){
 }
 
 async function addToCart(accessToken, items) { //returns true if added successfully 
-  console.log('items ', items)
+  console.log('items to add to cart', items)
   return new Promise((resolve, reject) => {
     const fetchString = "https://api.kroger.com/v1/cart/add";
     fetch(fetchString, {

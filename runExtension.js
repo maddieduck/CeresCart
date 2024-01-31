@@ -380,26 +380,26 @@ function plusButtonClicked(event) {
   updateCheckoutButton(); 
 }
  
-async function checkoutUser(userHasPaid){//lets the user attempt to checkout if they have paid
+async function checkoutUser(quantityAndUPCArray){//lets the user attempt to checkout if they have paid
   let successful = await chrome.runtime.sendMessage({ to: 'checkout', data: quantityAndUPCArray}); 
-    console.log('Was cart successful? ', successful); 
-    if(successful){
-      //make all quantities 0 in array 
-      allProductData.forEach(outerArray => {
-        outerArray.productData.forEach(product => {
-            product.quantity = 0;
-        });
+  console.log('Was cart successful? ', successful); 
+  if(successful){
+    //make all quantities 0 in array 
+    allProductData.forEach(outerArray => {
+      outerArray.productData.forEach(product => {
+          product.quantity = 0;
       });
-      //make all quantities 0
-      const elements = document.querySelectorAll(`.${'ingrExpQuantity'}`);
-      elements.forEach(element => {
-        element.innerText = '0';
-      });
-      //update checkout button
-      document.getElementById('ingrExpCheckoutButton').innerHTML = `Items Successfully Added`;
-    }else{
-      console.log('error when trying to add to cart');
-    }
+    });
+    //make all quantities 0
+    const elements = document.querySelectorAll(`.${'ingrExpQuantity'}`);
+    elements.forEach(element => {
+      element.innerText = '0';
+    });
+    //update checkout button
+    document.getElementById('ingrExpCheckoutButton').innerHTML = `Items Successfully Added`;
+  }else{
+    console.log('error when trying to add to cart');
+  }  
 }
 
 async function checkoutButtonClicked(){
@@ -424,7 +424,7 @@ async function checkoutButtonClicked(){
     console.log('quantity and upc ', quantityAndUPCArray);
     let hasAccess = await chrome.runtime.sendMessage({ to: 'userHasAccess'}); 
     if(hasAccess){
-      checkoutUser()
+      checkoutUser(quantityAndUPCArray)
     }else{
       console.log('User has not paid. Launch Extension Pay.')
       chrome.runtime.sendMessage({ to: 'launchPayWindow', data: quantityAndUPCArray}); 

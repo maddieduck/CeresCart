@@ -284,8 +284,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                             }
                         }    
                     }
-                    //console.log('All Ingred Prioritized');
-
                     if (allProductsFound.size !== 0){
                         console.log('allProductsFound', allProductsFound); 
                         /*
@@ -312,15 +310,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         getCartWriteAuth()
         .then(authCode => {
             console.log('Add to cart auth code received ', authCode);
-            console.log(message.data);
-            if (message.data.length === 0){ //no products selected 
-                console.log('no products selected to check out with ')
-            }else{
-                addToCart(authCode, message.data)
-                .then(success => {
-                    sendResponse(success);
-                })
+            if(authCode == null){
+                sendResponse(false); //OAuth 2 failed 
             }
+            addToCart(authCode, message.data)
+            .then(success => {
+                sendResponse(success); 
+            })
         })
         .catch(error => {
             console.log('error in backgroundWorker.js. when getting checking out', error.message);
