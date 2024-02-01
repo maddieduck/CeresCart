@@ -47,20 +47,17 @@ if (ingredients != null) {
     }
   })();
 }
- 
+
 async function insertEachIngredient(ingredientData){
 
-  try {
-    const htmlContents = await Promise.all([
-      fetch(chrome.runtime.getURL('ingredientContainer.html')).then(response => response.text())
-    ]);
-    const [ingredientHtml] = htmlContents;
-
-      //insert each ingredient into html 
+  fetch(chrome.runtime.getURL('ingredientContainer.html'))
+  .then(response => response.text())
+  .then(ingredientHtml => {
+    //insert each ingredient into html 
     console.log('insert each ingr', ingredientData);
     let ingredDiv = document.getElementById('ingrExpPlaceholderForIngredients');
     allProductData = []
-
+    
     Array.from(ingredientData.entries()).forEach((entry, index) => {
       const [ingredient, productData] = entry;
       //TODO: Save allProductData as a map eventually 
@@ -95,30 +92,28 @@ async function insertEachIngredient(ingredientData){
       }
       ingredDiv.appendChild(nodeClone);
     });
-
+    
     var elem = document.getElementsByClassName('ingrExpLeftArrowImage'); 
     for(var i=0; i<elem.length; i++){
       elem[i].addEventListener('click', leftArrowClicked);
     }
-
+    
     var elem = document.getElementsByClassName('ingrExpRightArrowImage'); 
     for(var i=0; i<elem.length; i++){
       elem[i].addEventListener('click', rightArrowClicked);
     }
-
+    
     var elem = document.getElementsByClassName('ingrExpPlusButton'); 
     for(var i=0; i<elem.length; i++){
       elem[i].addEventListener('click', plusButtonClicked);
     }
-    
+        
     var elem = document.getElementsByClassName('ingrExpMinusButton'); 
     for(var i=0; i<elem.length; i++){
       elem[i].addEventListener('click', minusButtonClicked);
     }
-    
-  } catch (error) {
-    console.error('ERROR in runExtension.js: ', error);
-  }
+  })
+  .catch(error => console.error('Error:', error));
 }
 
 function personClicked(event){
