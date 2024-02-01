@@ -54,13 +54,14 @@ async function insertEachIngredient(ingredientData){
   .then(response => response.text())
   .then(ingredientHtml => {
     //insert each ingredient into html 
-    console.log('insert each ingr', ingredientData);
+    console.log('insert each ingr', ingredientData, " ingred html ", ingredientHtml);
     let ingredDiv = document.getElementById('ingrExpPlaceholderForIngredients');
     allProductData = []
     
     Array.from(ingredientData.entries()).forEach((entry, index) => {
       const [ingredient, productData] = entry;
       //TODO: Save allProductData as a map eventually 
+      //console.log('prod data ', productData); 
       allProductData[index] = {indexOfProductDisplayed: 0, productData: productData}; 
       
       let nodeClone = document.createElement('div'); // Create a new div 
@@ -227,8 +228,10 @@ async function shopStore(event){ //a location has been selected from the locatio
   });
 
   //insert ingredients from the new store location
-  let response = await chrome.runtime.sendMessage({ to: 'ingredients', data: ingredients});
-  insertEachIngredient(response.ingredientData);
+  let backgroundResponse = await chrome.runtime.sendMessage({ to: 'ingredients', data: ingredients});
+  const ingredientData = new Map(backgroundResponse.ingredientData);
+
+  insertEachIngredient(ingredientData);
 }
 
 function minimizePopup() {//TODO: commented out for now, but need to add 

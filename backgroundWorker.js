@@ -284,8 +284,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                             }
                         }    
                     }
-                    if (allProductsFound.size !== 0){
-                        console.log('allProductsFound', allProductsFound); 
+                    if (allProductsFound.size !== 0){ 
                         /*
                         prioritizeProducts(allProductsFound).then(prioritizedProducts => {
                             console.log('prioritized products ', prioritizedProducts); 
@@ -294,6 +293,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                             sendResponse({launch: true, ingredientData: mapArray}); 
                         })*/
                         const mapArray = Array.from(allProductsFound); 
+                        console.log('allProductsFound', mapArray); 
+
                         sendResponse({launch: true, ingredientData: mapArray}); 
                     }else{
                         sendResponse({launch: false}); 
