@@ -11,16 +11,15 @@ if (ingredients != null) {
       try {
         const htmlContents = await Promise.all([
           fetch(chrome.runtime.getURL('index.html')).then(response => response.text()),
-          fetch(chrome.runtime.getURL('ingredientContainer.html')).then(response => response.text())
         ]);
-        const [indexHtml, ingredientHtml] = htmlContents;
+        const [indexHtml] = htmlContents;
         
         // insert popup into html 
         document.body.insertAdjacentHTML('afterbegin', `<div id="ingrExpIngredientExporterPopup">${indexHtml}</div>`);
 
         //insert each ingredient into the popup
         const ingredientData = new Map(backgroundResponse.ingredientData);
-        insertEachIngredient(ingredientHtml, ingredientData);
+        insertEachIngredient(ingredientData);
         //set the location name if it exists in memory 
         chrome.storage.local.get('locationName', (result) => {
           console.log('location Name ', result['locationName']);
@@ -48,69 +47,78 @@ if (ingredients != null) {
     }
   })();
 }
+ 
+async function insertEachIngredient(ingredientData){
 
-function insertEachIngredient(ingredientHtml, ingredientData){
-  //insert each ingredient into html 
-  console.log('insert each ingr', ingredientData);
-  let ingredDiv = document.getElementById('ingrExpPlaceholderForIngredients');
-  allProductData = []
+  try {
+    const htmlContents = await Promise.all([
+      fetch(chrome.runtime.getURL('ingredientContainer.html')).then(response => response.text())
+    ]);
+    const [ingredientHtml] = htmlContents;
 
-  //ingredientData.forEach((ingredient, productData) => {
-  Array.from(ingredientData.entries()).forEach((entry, index) => {
-    const [ingredient, productData] = entry;
-    //TODO: Save allProductData as a map eventually 
-    allProductData[index] = {indexOfProductDisplayed: 0, productData: productData}; 
+      //insert each ingredient into html 
+    console.log('insert each ingr', ingredientData);
+    let ingredDiv = document.getElementById('ingrExpPlaceholderForIngredients');
+    allProductData = []
+
+    Array.from(ingredientData.entries()).forEach((entry, index) => {
+      const [ingredient, productData] = entry;
+      //TODO: Save allProductData as a map eventually 
+      allProductData[index] = {indexOfProductDisplayed: 0, productData: productData}; 
+      
+      let nodeClone = document.createElement('div'); // Create a new div 
+      nodeClone.innerHTML = ingredientHtml;  //Set the inner HTML of the div 
+      nodeClone.querySelector('.ingrExpIngredientImage').src = productData[0].image; 
+      nodeClone.querySelector('.ingrExpIngredientBrand').textContent = productData[0].brand; 
+      nodeClone.querySelector('.ingrExpIngredientDescription').textContent = productData[0].description;
+      nodeClone.querySelector('.ingrExpSize').textContent = productData[0].size;
+      nodeClone.querySelector('.ingrExpParagraphOutline').id = 'ingrExpIngredient' + index;
+      nodeClone.querySelector('.ingrExpLeftArrowImage').style.opacity = 0;
+      nodeClone.querySelector('.ingrExpLeftArrowImage').style.visibility = 'hidden';
+      nodeClone.querySelector('.ingrExpLeftArrowImage').style.pointerEvents = 'none';
+
+      var price = productData[0].price;
+      if (price !== null){
+        const dollars = Math.floor(price);
+        const cents = Math.round((price - dollars) * 100);
+        nodeClone.querySelector('.ingrExpIngrExpPrice').innerHTML = "$" + dollars + ".";
+        nodeClone.querySelector('.ingrExpCents').innerHTML = String(cents).padStart(2, '0'); 
+      }else{
+        nodeClone.querySelector('.ingrExpIngrExpPrice').innerHTML = ''; 
+        nodeClone.querySelector('.ingrExpCents').innerHTML = '';
+      }
+
+      if (productData.length == 1){
+        nodeClone.querySelector('.ingrExpRightArrowImage').style.opacity = 0;
+        nodeClone.querySelector('.ingrExpRightArrowImage').style.visibility = 'hidden';
+        nodeClone.querySelector('.ingrExpRightArrowImage').style.pointerEvents = 'none';
+      }
+      ingredDiv.appendChild(nodeClone);
+    });
+
+    var elem = document.getElementsByClassName('ingrExpLeftArrowImage'); 
+    for(var i=0; i<elem.length; i++){
+      elem[i].addEventListener('click', leftArrowClicked);
+    }
+
+    var elem = document.getElementsByClassName('ingrExpRightArrowImage'); 
+    for(var i=0; i<elem.length; i++){
+      elem[i].addEventListener('click', rightArrowClicked);
+    }
+
+    var elem = document.getElementsByClassName('ingrExpPlusButton'); 
+    for(var i=0; i<elem.length; i++){
+      elem[i].addEventListener('click', plusButtonClicked);
+    }
     
-    let nodeClone = document.createElement('div'); // Create a new div 
-    nodeClone.innerHTML = ingredientHtml;  //Set the inner HTML of the div 
-    nodeClone.querySelector('.ingrExpIngredientImage').src = productData[0].image; 
-    nodeClone.querySelector('.ingrExpIngredientBrand').textContent = productData[0].brand; 
-    nodeClone.querySelector('.ingrExpIngredientDescription').textContent = productData[0].description;
-    nodeClone.querySelector('.ingrExpSize').textContent = productData[0].size;
-    nodeClone.querySelector('.ingrExpParagraphOutline').id = 'ingrExpIngredient' + index;
-    nodeClone.querySelector('.ingrExpLeftArrowImage').style.opacity = 0;
-    nodeClone.querySelector('.ingrExpLeftArrowImage').style.visibility = 'hidden';
-    nodeClone.querySelector('.ingrExpLeftArrowImage').style.pointerEvents = 'none';
-
-    var price = productData[0].price;
-    if (price !== null){
-      const dollars = Math.floor(price);
-      const cents = Math.round((price - dollars) * 100);
-      nodeClone.querySelector('.ingrExpIngrExpPrice').innerHTML = "$" + dollars + ".";
-      nodeClone.querySelector('.ingrExpCents').innerHTML = String(cents).padStart(2, '0'); 
-    }else{
-      nodeClone.querySelector('.ingrExpIngrExpPrice').innerHTML = ''; 
-      nodeClone.querySelector('.ingrExpCents').innerHTML = '';
+    var elem = document.getElementsByClassName('ingrExpMinusButton'); 
+    for(var i=0; i<elem.length; i++){
+      elem[i].addEventListener('click', minusButtonClicked);
     }
-
-    if (productData.length == 1){
-      nodeClone.querySelector('.ingrExpRightArrowImage').style.opacity = 0;
-      nodeClone.querySelector('.ingrExpRightArrowImage').style.visibility = 'hidden';
-      nodeClone.querySelector('.ingrExpRightArrowImage').style.pointerEvents = 'none';
-    }
-    ingredDiv.appendChild(nodeClone);
-  });
-
-  var elem = document.getElementsByClassName('ingrExpLeftArrowImage'); 
-  for(var i=0; i<elem.length; i++){
-    elem[i].addEventListener('click', leftArrowClicked);
+    
+  } catch (error) {
+    console.error('ERROR in runExtension.js: ', error);
   }
-
-  var elem = document.getElementsByClassName('ingrExpRightArrowImage'); 
-  for(var i=0; i<elem.length; i++){
-    elem[i].addEventListener('click', rightArrowClicked);
-  }
-
-  var elem = document.getElementsByClassName('ingrExpPlusButton'); 
-  for(var i=0; i<elem.length; i++){
-    elem[i].addEventListener('click', plusButtonClicked);
-  }
-  
-  var elem = document.getElementsByClassName('ingrExpMinusButton'); 
-  for(var i=0; i<elem.length; i++){
-    elem[i].addEventListener('click', minusButtonClicked);
-  }
-
 }
 
 function personClicked(event){
