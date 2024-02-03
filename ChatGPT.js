@@ -15,10 +15,10 @@ async function getRefinedIngredients(userInput) {
           { role: 'system', content: 'You are a helpful assistant.' },
           { role: 'user', content: `Take this array of ingredients and provide a 
           more concise array of ingredients by stripping out the quantity and unit.
-          Only return the main ingredients that you would use to search in an American 
+          Only return ingredients that you would search for in an American 
           grocery store API. Only return a comma separated string of ingredients. 
           Remove any unneccessary adjectives and words. If ingredients are separated 
-          with an 'or' make it two ingredients in the new list. ${userInput}` }]
+          with an 'or' or 'and' make it two ingredients in the new list. ${userInput}` }]
       })
     });
 
@@ -47,11 +47,11 @@ async function getRefinedIngredients(userInput) {
   }
 }
 
-async function prioritizeProducts(products) {
-  const productsString = JSON.stringify(Array.from(products.entries()));
-  //console.log('prioritze prods ', productsString);
-  try {
-    const response = await fetch(endpoint, {
+async function prioritizeProducts(ingredient, arrayOfProducts) {
+  console.log('ingr ', ingredient, 'array of prod ', arrayOfProducts);
+  return new Promise((resolve, reject) => {
+
+    fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -61,36 +61,37 @@ async function prioritizeProducts(products) {
         model: 'gpt-3.5-turbo',
         messages: [
           { role: 'system', content: 'You are a helpful assistant.' },
-          { role: 'user', content: `Take this javascript map of key values, 
-          where the keys are every ingredient in a recipe and the value is an array of product data from a grocery store API. 
-          Organize each array in order of what you think a user would purchase when making the recipe. Return only a map of the 
-          prioritized ingredients.` + productsString}]
+          { role: 'user', content: `Take this array of data that was returned from 
+          a grocery store API for the ingredient` +  ingredient + `. Prioritize these items 
+          based on what a user should buy if they are using ` + ingredient + ` in a recipe. 
+          Prioritize fresh, high quality ingredients, but prioritize non organic 
+          over organic ingredients if they are similar items. It is ok to keep it 
+          in the same order. Only return the array of objects and no other text, that way 
+          I can parse it easily. Keep all items in the array. ` + JSON.stringify(arrayOfProducts)}]
       })
-    });
-
-    if (!response.ok) {
-      if (response.status === 429) {
-        throw new Error(`HTTP error! Status: ${response.status}. ChatGPT rate limit exceeded.`);
+    })
+    .then(res => {
+      if (res.ok) {
+        return res.json();
       } else {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        if (response.status === 429) {
+          console.log(`HTTP error! Status: ${response.status}. ChatGPT rate limit exceeded.`);
+        } else {
+          console.log(`HTTP error! Status: ${response.status}`);
+        }
+        console.log('ChatGPT prioritize products encountered an error with terms ', ingredient, arrayOfProducts);
+        resolve(null);
       }
-    }
-
-    const result = await response.json();
-    console.log('CHAT result ', result)
-    if (!result.choices || result.choices.length === 0 || !result.choices[0].message || !result.choices[0].message.content) {
-      throw new Error('Unexpected response format from OpenAI API');
-    }
-
-    // Return the result as a map
-    const objectData = JSON.parse(result);
-    const mapOfIngredients = new Map(Object.entries(objectData));
-
-    return mapOfIngredients;
-  } catch (error) {
-    console.error('Error in Prioritize products from Chat GPT:', error.message);
-    throw error; // Re-throw the error for further handling or logging
-  }
+    })
+    .then(data => {
+      resolve(data);
+    })
+    .catch(error => {
+      console.log('ERROR in Kroger Calls Product Search Function', error);
+      resolve(null); 
+    });
+  }); 
 }
 
 export {getRefinedIngredients,prioritizeProducts};
+

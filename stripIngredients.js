@@ -14,7 +14,8 @@ function replaceWords(products) {
     ["bramley", "granny smith"],
     ["swede", "rutabaga"],
     ["heavy cream", "heavy whipping cream"],
-    ["fennel bulb", "fennel"]
+    ["fennel bulb", "fennel"],
+    ["suet", "beef"]
   ];
 
   return products.map(product => {

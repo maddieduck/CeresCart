@@ -6,12 +6,7 @@ import {ExtPay} from './ExtPay.js';
 
 chrome.runtime.onInstalled.addListener(function() {
     // Initialize the counter
-    chrome.storage.local.set({'buttonCounter': 0});
-    
-    //Initialize the start date of the current month
-    const currentDate = new Date();
-    const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    chrome.storage.local.set({'startOfMonth': startOfMonth.getTime()});
+    chrome.storage.local.set({'buttonCounter': 3});
 
     // this line is required to use ExtPay in the rest of your extension
     var extpay = ExtPay('ingredient-exporter'); 
@@ -97,7 +92,7 @@ async function getCartWriteAuth(){
 }
 
 function checkCategories(categories) { //check if a product is part of a valid category. If not, return false.
-    var blackListedCategories = ['Beauty', 'Personal Care', 'Baby', 'Pet Care', 'Cleaning Products', 'Home Decor', 'Natural & Organic'];
+    var blackListedCategories = ['Beauty', 'Personal Care', 'Baby', 'Pet Care', 'Cleaning Products', 'Home Decor', 'Natural & Organic', "Garden & Patio"];
     //TODO: may want to remove Natural & Organic. For 'lavender' was returning 'Cleaning Products' & 'N&O' for Mrs. Meyers Clean Day Soap
     //may want to remove anything containing cleaning products 
     if (!categories || categories.length === 0) {
@@ -226,11 +221,20 @@ function prioritizeProducts(ingredient, productsForIngredient) {
 */ 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
     if (message.to === 'userHasAccess'){ //returns ingredients from kroger API        
-        var extpay = ExtPay('ingredient-exporter'); 
-        extpay.getUser().then(user => {
-            console.log('ext pay user ', user);
-            sendResponse(user['paid']); 
-        })
+        chrome.storage.local.get('buttonCounter', (result) => {
+            var buttonCount = Number(result['buttonCounter']); 
+            if (buttonCount){
+                //free  uses are available 
+                sendResponse(true); 
+            }else{
+                //free uses are up
+                var extpay = ExtPay('ingredient-exporter'); 
+                extpay.getUser().then(user => {
+                    console.log('ext pay user ', user);
+                    sendResponse(user['paid']); 
+                })
+            }
+    });
     }else if(message.to === 'launchPayWindow'){
         var extpay = ExtPay('ingredient-exporter'); 
         extpay.openPaymentPage();
@@ -246,7 +250,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 .then(accessToken => {
                     const promises = finalIngredients.map(ingredient => productSearch(accessToken, ingredient));
                     return Promise.all(promises);
-                  })
+                })
                 .then(allIngredientProducts => {
                     console.log('All Ingred ', allIngredientProducts); 
                     var allProductsFound = new Map();
@@ -285,16 +289,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                         }    
                     }
                     if (allProductsFound.size !== 0){ 
-                        /*
-                        prioritizeProducts(allProductsFound).then(prioritizedProducts => {
-                            console.log('prioritized products ', prioritizedProducts); 
-                            //const mapArray = Array.from(prioritizedProducts.entries()); 
-                            const mapArray = Array.from(allProductsFound); 
-                            sendResponse({launch: true, ingredientData: mapArray}); 
-                        })*/
                         const mapArray = Array.from(allProductsFound); 
-                        console.log('allProductsFound', mapArray); 
+                        // Use Promise.all to get a promise that resolves to an array of results
+                        const promiseArray = mapArray.map(([key, value]) => prioritizeProducts(key, value));
+                        const allPromises = Promise.all(promiseArray); 
 
+                        //console.log('allProductsFound', mapArray); 
+                        console.log('all promises ', allPromises)
                         sendResponse({launch: true, ingredientData: mapArray}); 
                     }else{
                         sendResponse({launch: false}); 
@@ -316,6 +317,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             }
             addToCart(authCode, message.data)
             .then(success => {
+                if(success){//decrement free trial variable if relevant 
+                    chrome.storage.local.get('buttonCounter', (result) => {
+                        var buttonCount = Number(result['buttonCounter']); 
+                        if(buttonCount>0){ 
+                            buttonCount--; 
+                            chrome.storage.local.set({'buttonCounter': buttonCount});
+                        }
+                    }); 
+                }
                 sendResponse(success); 
             })
         })

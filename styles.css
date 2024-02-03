@@ -231,45 +231,6 @@
 #ingrExpCloseImageInPopup:hover{
   box-shadow: 0 0 10px rgb(149, 148, 148); /* Add a box shadow to simulate background covering the margin */
 }
-/*
-#ingrExpCloseImageInPopup{
-  all:revert; 
-  padding: 0;
-  height: 10px;
-  position: absolute;
-  right: 15px;
-  top: 10px;
-  border: 0px;
-  background: none;
-  margin: 0px;
-  background-color: white;
-  color: rgb(255, 255, 255); 
-}
-#ingrExpCloseImageLocationPopup:hover{
-  box-shadow: 0 0 10px rgb(149, 148, 148); /* Add a box shadow to simulate background covering the margin 
-}
-#ingrExpCloseImageLocationPopup{
-  all:revert; 
-  padding: 0;
-  height: 10px;
-  position: absolute;
-  right: 15px;
-  top: 10px;
-  border: 0px;
-  background: none;
-  margin: 0px;
-  background-color: white;
-  color: rgb(255, 255, 255); 
-}
-.ingrExpMinimize {
-  padding: 0;
-  height: 10px;
-  position: absolute;
-  right: 35px; /* Adjust the distance from the right edge 
-  top: 10px;
-}
-*/ 
-
 .ingrExpMinimize:hover{
   box-shadow: 0 0 10px rgb(149, 148, 148); /* Add a box shadow to simulate background covering the margin */
 }
