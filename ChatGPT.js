@@ -48,7 +48,7 @@ async function getRefinedIngredients(userInput) {
 }
 
 async function prioritizeProducts(ingredient, arrayOfProducts) {
-  console.log('ingr ', ingredient, 'array of prod ', arrayOfProducts);
+  //console.log('ingr ', ingredient, 'array of prod ', arrayOfProducts);
   return new Promise((resolve, reject) => {
 
     fetch(endpoint, {
@@ -72,7 +72,7 @@ async function prioritizeProducts(ingredient, arrayOfProducts) {
     })
     .then(res => {
       if (res.ok) {
-        return res.json();
+        return res.json(); 
       } else {
         if (response.status === 429) {
           console.log(`HTTP error! Status: ${response.status}. ChatGPT rate limit exceeded.`);
@@ -84,7 +84,16 @@ async function prioritizeProducts(ingredient, arrayOfProducts) {
       }
     })
     .then(data => {
-      resolve(data);
+      // Split the comma-separated string into an array of ingredients
+      //console.log('data ', data)
+      if(data == null){
+        console.log('ChatGPT Error. Data is null for ingredient ', ingredient)
+        resolve(null);
+      }else{
+        const content = data.choices[0].message.content; 
+        console.log('prioritize prod executed'); 
+        resolve([ingredient, JSON.parse(content)]); 
+      }
     })
     .catch(error => {
       console.log('ERROR in Kroger Calls Product Search Function', error);

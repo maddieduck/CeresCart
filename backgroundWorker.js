@@ -288,18 +288,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                             }
                         }    
                     }
+                    console.log('all ingred products ', allProductsFound)
                     if (allProductsFound.size !== 0){ 
                         const mapArray = Array.from(allProductsFound); 
-                        // Use Promise.all to get a promise that resolves to an array of results
+                        console.log('map array ', mapArray) 
                         const promiseArray = mapArray.map(([key, value]) => prioritizeProducts(key, value));
-                        const allPromises = Promise.all(promiseArray); 
-
-                        //console.log('allProductsFound', mapArray); 
-                        console.log('all promises ', allPromises)
-                        sendResponse({launch: true, ingredientData: mapArray}); 
+                        Promise.all(promiseArray).then(allCompletedPromises => {
+                            //TODO: remove any null values 
+                            console.log('all completed promises ', allCompletedPromises);  
+                            sendResponse({launch: true, ingredientData: allCompletedPromises}); 
+                        })
                     }else{
                         sendResponse({launch: false}); 
-                    }
+                    } 
                 })        
                 .catch(error => {
                     console.log('error in backgroundWorker.js. when getting ingredients', error.message);
