@@ -161,7 +161,6 @@ async function loadLocationsInPopup(newLocationData){
 async function insertLocations(){
   let backgroundResponse = await chrome.runtime.sendMessage({to: 'locations'}); 
   console.log('background response ', backgroundResponse)
-  allLocationData = backgroundResponse.locationData; 
   if(backgroundResponse.locationsFound){
     loadLocationsInPopup(backgroundResponse.locationData); 
     document.getElementById('ingrExpNoLocationsFound').style.display = 'none'; 
@@ -263,6 +262,9 @@ function displayNewIngredient(id, rightOrLeft){ //loads the image and product in
     const cents = Math.round((ingredientClickedData['productData'][newIngredientIndex]['price'] - dollars) * 100);
     document.getElementById(id).querySelector('.ingrExpIngrExpPrice').innerHTML = "$" + dollars + ".";
     document.getElementById(id).querySelector('.ingrExpCents').innerHTML = String(cents).padStart(2, '0'); 
+  }else{
+    document.getElementById(id).querySelector('.ingrExpIngrExpPrice').innerHTML = "";
+    document.getElementById(id).querySelector('.ingrExpCents').innerHTML = "";
   }
 
   //check if arrow should be removed or shown 

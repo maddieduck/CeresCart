@@ -18,7 +18,7 @@ async function getRefinedIngredients(userInput) {
           Only return ingredients that you would search for in an American 
           grocery store API. Only return a comma separated string of ingredients. 
           Remove any unneccessary adjectives and words. If ingredients are separated 
-          with an 'or' or 'and' make it two ingredients in the new list. ${userInput}` }]
+          with an 'or' or 'and' make it two ingredients in the new list. Consolidate duplicates. ${userInput}` }]
       })
     });
 
@@ -47,7 +47,7 @@ async function getRefinedIngredients(userInput) {
   }
 }
 
-async function prioritizeProducts(ingredient, arrayOfProducts) {
+async function prioritizeProductsChatGPT(ingredient, arrayOfProducts) {
   //console.log('ingr ', ingredient, 'array of prod ', arrayOfProducts);
   return new Promise((resolve, reject) => {
 
@@ -102,5 +102,5 @@ async function prioritizeProducts(ingredient, arrayOfProducts) {
   }); 
 }
 
-export {getRefinedIngredients,prioritizeProducts};
+export {getRefinedIngredients,prioritizeProductsChatGPT};
 

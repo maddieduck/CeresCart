@@ -179,7 +179,7 @@ async function productSearch(accessToken, term) {
   return new Promise((resolve, reject) => {
     chrome.storage.local.get('locationId', (result) => {
       var locationId = result['locationId'];
-      let fetchString = "https://api.kroger.com/v1/products?filter.term=" + term + "&filter.fulfillment=ais"; //,csp
+      let fetchString = "https://api.kroger.com/v1/products?filter.term=" + term + "&filter.fulfillment=csp"; //ais
       if (locationId) {
         fetchString += "&filter.locationId=" + locationId;
       }

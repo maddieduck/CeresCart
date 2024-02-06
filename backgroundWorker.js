@@ -1,7 +1,7 @@
 import {clientCredentials, cartWriteAuthorizationCode, productSearch,locationSearchByZipcode, locationSearchByLongLat, addToCart, getAuthToken, getRefreshToken} from './KrogerCalls.js'
 import {loadFromLocalStorage} from './storageHelpers.js'
 import {stripIngredients} from './stripIngredients.js'
-import {getRefinedIngredients, prioritizeProducts} from './ChatGPT.js'
+import {getRefinedIngredients, prioritizeProductsChatGPT} from './ChatGPT.js'
 import {ExtPay} from './ExtPay.js'; 
 
 chrome.runtime.onInstalled.addListener(function() {
@@ -155,7 +155,7 @@ function returnImage(images) { //return the correct image based on the prioritie
 
     return imageUrl;
 }
-/*
+
 function prioritizeProducts(ingredient, productsForIngredient) {
     //TODO: Use Chatgpt 
     //console.log(ingredient, productsForIngredient);
@@ -218,7 +218,7 @@ function prioritizeProducts(ingredient, productsForIngredient) {
         }
     }
 }
-*/ 
+ 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
     if (message.to === 'userHasAccess'){ //returns ingredients from kroger API        
         chrome.storage.local.get('buttonCounter', (result) => {
@@ -254,50 +254,62 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 .then(allIngredientProducts => {
                     console.log('All Ingred ', allIngredientProducts); 
                     var allProductsFound = new Map();
-                    for (const j in allIngredientProducts){
-                        
-                        if (allIngredientProducts[j]['data'] != null){
+
+                    for (const j in allIngredientProducts) {
+                        if (allIngredientProducts[j]['data'] != null) {
                             let productData = allIngredientProducts[j]['data'];
-                            if (productData.length !== 0){
+                            if (productData.length !== 0) {
                                 let singularProductsData = [];
-                                for (const index in productData){
+                                for (const index in productData) {
                                     let product = productData[index];
                                     var price = null;
                                     if ('price' in product['items'][0] && product['items'][0]['price']['regular'] !== null) {
                                         price = product['items'][0]['price']['regular'];
                                     } else {
-                                        price = null; 
+                                        price = null;
                                     }
-                                    if (checkCategories(product['categories'])){                           
-                                        var newProduct = {
-                                            "description": product['description'],
-                                            "brand": product['brand'],
-                                            "image": returnImage(product['images']),
-                                            "price": price,
-                                            "upc": product['upc'],
-                                            "quantity": 0,
-                                            "size": product['items'][0]['size']
-                                        };
-                                        // TODO: factor in promo price 
-                                        singularProductsData.push(newProduct);
+                                    if (checkCategories(product['categories'])) {
+                                        // Only append to singularProductsData if price exists and is not null
+                                        if (price !== null) {
+                                            var newProduct = {
+                                                "description": product['description'],
+                                                "brand": product['brand'],
+                                                "image": returnImage(product['images']),
+                                                "price": price,
+                                                "upc": product['upc'],
+                                                "quantity": 0,
+                                                "size": product['items'][0]['size']
+                                            };
+                                            singularProductsData.push(newProduct);
+                                        }
                                     }
                                 }
-                                if (singularProductsData.length !== 0){
+                                if (singularProductsData.length !== 0) {
                                     allProductsFound.set(finalIngredients[j], singularProductsData);
                                 }
                             }
-                        }    
+                        }
                     }
+                    
                     console.log('all ingred products ', allProductsFound)
                     if (allProductsFound.size !== 0){ 
-                        const mapArray = Array.from(allProductsFound); 
+                        //const mapArray = Array.from(allProductsFound); 
+                        /* //ChatGPT version of prioritiznig products 
                         console.log('map array ', mapArray) 
-                        const promiseArray = mapArray.map(([key, value]) => prioritizeProducts(key, value));
+                        const promiseArray = mapArray.map(([key, value]) => prioritizeProductsChatGPT(key, value));
                         Promise.all(promiseArray).then(allCompletedPromises => {
                             //TODO: remove any null values 
                             console.log('all completed promises ', allCompletedPromises);  
                             sendResponse({launch: true, ingredientData: allCompletedPromises}); 
                         })
+                        */ 
+                        // Iterate through the array and call the function 
+                        // Convert the Map to an array 
+                        const prioritizedMap = Array.from(allProductsFound).map(([ingredients, products]) => {
+                            const prioritizedProducts = prioritizeProducts(ingredients, products); 
+                            return [ingredients, prioritizedProducts]; 
+                        });
+                        sendResponse({launch: true, ingredientData: prioritizedMap}); 
                     }else{
                         sendResponse({launch: false}); 
                     } 
