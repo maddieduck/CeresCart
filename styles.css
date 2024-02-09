@@ -140,12 +140,12 @@
 }
 .ingrExpRightArrowImage{
   all:revert; 
-  height: 20px;
+  height: 20px !important; 
   cursor: pointer;
 }
 .ingrExpLeftArrowImage{
   all:revert; 
-  height: 20px;
+  height: 20px !important; 
   cursor: pointer;
 }
 #ingrExpDownArrow{

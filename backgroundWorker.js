@@ -156,9 +156,9 @@ function returnImage(images) { //return the correct image based on the prioritie
     return imageUrl;
 }
 
-function prioritizeProducts(ingredient, productsForIngredient) {
-    //TODO: Use Chatgpt 
-    //console.log(ingredient, productsForIngredient);
+/*
+function prioritizeProductsOLD(ingredient, productsForIngredient) {
+
     const priorityUPCs = [
         ["banana", ["0000000004011", "0000000094011"]],
         ["baking soda", ["0001111090765", "0001990000320"]],
@@ -175,6 +175,10 @@ function prioritizeProducts(ingredient, productsForIngredient) {
     const descriptionPriority = productsForIngredient.filter(product =>
         product.description.toLowerCase().includes(normalizedIngredient)
     );
+    if (ingredient == 'mayonnaise'){
+        console.log('mayo ', productsForIngredient);
+        console.log('descriptionPriority ', descriptionPriority);
+    }
 
     if (descriptionPriority.length > 0) {
         // Sort by the percentage of the description occupied by the ingredient
@@ -191,7 +195,10 @@ function prioritizeProducts(ingredient, productsForIngredient) {
         const nonPriorityProducts = sortedByPercentage.filter(product =>
             !priorityUPCs.some(pair => pair[1].includes(product.upc))
         );
-
+        if (ingredient == 'mayonnaise'){
+            console.log('priority ', priorityProducts);
+            console.log('non priority ', nonPriorityProducts);
+        }
         // Concatenate priority and non-priority products
         const prioritizedProducts = [...priorityProducts, ...nonPriorityProducts];
 
@@ -218,6 +225,43 @@ function prioritizeProducts(ingredient, productsForIngredient) {
         }
     }
 }
+*/ 
+
+function prioritizeProducts(ingredient, productsForIngredient) {
+    const percentagePriority = (a, b) => {
+      const percentageA = (a.description.toLowerCase().match(new RegExp(ingredient, 'g')) || []).length / a.description.length;
+      const percentageB = (b.description.toLowerCase().match(new RegExp(ingredient, 'g')) || []).length / b.description.length;
+      return percentageB - percentageA;
+    };
+  
+    const upcPriority = (upc) => {
+      if (upc.includes('4')) return 1; // Higher priority for UPC with '4'
+      if (upc.includes('94')) return 2; // Lower priority for UPC with '94'
+      return 0; // Default priority
+    };
+  
+    const containsIngredient = productsForIngredient.filter(product =>
+      product.description.toLowerCase().includes(ingredient)
+    );
+  
+    const sortedByPercentage = containsIngredient.sort(percentagePriority);
+  
+    const priorityUPCs = sortedByPercentage.filter(product =>
+      product.upc.includes('4') || product.upc.includes('94')
+    );
+  
+    const nonPriorityUPCs = sortedByPercentage.filter(product =>
+      !product.upc.includes('4') && !product.upc.includes('94')
+    );
+  
+    const prioritizedProducts = [
+      ...priorityUPCs.sort((a, b) => upcPriority(a.upc) - upcPriority(b.upc)),
+      ...nonPriorityUPCs,
+      ...productsForIngredient.filter(product => !containsIngredient.includes(product))
+    ];
+  
+    return prioritizedProducts;
+  }
  
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
     if (message.to === 'userHasAccess'){ //returns ingredients from kroger API        
@@ -254,7 +298,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 .then(allIngredientProducts => {
                     console.log('All Ingred ', allIngredientProducts); 
                     var allProductsFound = new Map();
-
                     for (const j in allIngredientProducts) {
                         if (allIngredientProducts[j]['data'] != null) {
                             let productData = allIngredientProducts[j]['data'];
@@ -290,7 +333,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                             }
                         }
                     }
-                    
                     console.log('all ingred products ', allProductsFound)
                     if (allProductsFound.size !== 0){ 
                         //const mapArray = Array.from(allProductsFound); 
@@ -309,6 +351,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                             const prioritizedProducts = prioritizeProducts(ingredients, products); 
                             return [ingredients, prioritizedProducts]; 
                         });
+                        console.log("prioritized items ", prioritizedMap);
                         sendResponse({launch: true, ingredientData: prioritizedMap}); 
                     }else{
                         sendResponse({launch: false}); 

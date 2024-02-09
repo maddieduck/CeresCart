@@ -10,15 +10,17 @@ async function getRefinedIngredients(userInput) {
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-3.5-turbo',//'gpt-4', //'gpt-3.5-turbo',
         messages: [
           { role: 'system', content: 'You are a helpful assistant.' },
-          { role: 'user', content: `Take this array of ingredients and provide a 
-          more concise array of ingredients by stripping out the quantity and unit.
-          Only return ingredients that you would search for in an American 
-          grocery store API. Only return a comma separated string of ingredients. 
-          Remove any unneccessary adjectives and words. If ingredients are separated 
-          with an 'or' or 'and' make it two ingredients in the new list. Consolidate duplicates. ${userInput}` }]
+          { role: 'user', content: `Take this array of ingredients and provide a more 
+          concise list by stripping out the quantity and unit. Only include essential 
+          product names that you would search for in an American grocery store API. Return ONLY a 
+          comma-separated string of ingredients. Exclude any non-essential words, adjectives or descriptors 
+          that don't represent the core product. If ingredients are separated with 'or' or 
+          'and,' make them two distinct items in the new list. Consolidate duplicates. Remove
+          any unnecessary symbols or characters like parentheses. 
+          ${userInput}` }]
       })
     });
 
@@ -29,6 +31,7 @@ async function getRefinedIngredients(userInput) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
     }
+    //console.log('Chat GPT Ingredient response ', response);
 
     const result = await response.json();
 
