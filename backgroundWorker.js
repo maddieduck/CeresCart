@@ -156,114 +156,25 @@ function returnImage(images) { //return the correct image based on the prioritie
     return imageUrl;
 }
 
-/*
-function prioritizeProductsOLD(ingredient, productsForIngredient) {
+function sortByPercentInDescription(ingredient, productsForIngredient) {
+    // Ensure the ingredient is lowercase for case-insensitive comparison
+    ingredient = ingredient.toLowerCase();
 
-    const priorityUPCs = [
-        ["banana", ["0000000004011", "0000000094011"]],
-        ["baking soda", ["0001111090765", "0001990000320"]],
-        ["garlic", ["0000000004608", "0001111002882"]],
-        ["onion", ["0000000004663", "0000000004082", "0000000004093", "0000000094093","0000000004166"]],
-        ["lemon", ["0000000004053"]]
-        //add lime and spinach 
-        // Add more priorityUPCs as needed
-    ];
-    //check plural values as well 
-    const normalizedIngredient = ingredient.toLowerCase().endsWith('s') ? ingredient.slice(0, -1) : ingredient.toLowerCase();
+    // Sort the array by the largest percent in descending order
+    const sortedProducts = productsForIngredient.sort((a, b) => {
+        const descriptionA = a.description.toLowerCase();
+        const descriptionB = b.description.toLowerCase();
 
-    // Check if the ingredient is found in the description and prioritize those
-    const descriptionPriority = productsForIngredient.filter(product =>
-        product.description.toLowerCase().includes(normalizedIngredient)
-    );
-    if (ingredient == 'mayonnaise'){
-        console.log('mayo ', productsForIngredient);
-        console.log('descriptionPriority ', descriptionPriority);
-    }
+        // Calculate the percentage of the ingredient in each description
+        const percentA = (descriptionA.split(ingredient).length - 1) / descriptionA.split(' ').length;
+        const percentB = (descriptionB.split(ingredient).length - 1) / descriptionB.split(' ').length;
 
-    if (descriptionPriority.length > 0) {
-        // Sort by the percentage of the description occupied by the ingredient
-        const sortedByPercentage = descriptionPriority.sort((a, b) => {
-            const percentageA = (a.description.toLowerCase().match(new RegExp(normalizedIngredient, 'g')) || []).length / a.description.length;
-            const percentageB = (b.description.toLowerCase().match(new RegExp(normalizedIngredient, 'g')) || []).length / b.description.length;
-            return percentageB - percentageA;
-        });
+        // Sort by the largest percent in descending order
+        return percentB - percentA;
+    });
 
-        // Separate products into priority and non-priority based on UPC
-        const priorityProducts = sortedByPercentage.filter(product =>
-            priorityUPCs.some(pair => pair[1].includes(product.upc))
-        );
-        const nonPriorityProducts = sortedByPercentage.filter(product =>
-            !priorityUPCs.some(pair => pair[1].includes(product.upc))
-        );
-        if (ingredient == 'mayonnaise'){
-            console.log('priority ', priorityProducts);
-            console.log('non priority ', nonPriorityProducts);
-        }
-        // Concatenate priority and non-priority products
-        const prioritizedProducts = [...priorityProducts, ...nonPriorityProducts];
-
-        return prioritizedProducts;
-    } else {
-        // Continue with the existing logic for priorityUPCs
-        const matchingPriorityUPC = priorityUPCs.find(pair => normalizedIngredient.includes(pair[0].toLowerCase()));
-
-        if (matchingPriorityUPC) {
-            const [_, npriorityUPCs] = matchingPriorityUPC;
-
-            const priorityProducts = productsForIngredient.filter(product =>
-                npriorityUPCs.includes(product.upc)
-            );
-            const nonPriorityProducts = productsForIngredient.filter(product =>
-                !npriorityUPCs.includes(product.upc)
-            );
-
-            const prioritizedProducts = [...priorityProducts, ...nonPriorityProducts];
-
-            return prioritizedProducts;
-        } else {
-            return productsForIngredient;
-        }
-    }
+    return sortedProducts;
 }
-*/ 
-
-/*
-function prioritizeProducts(ingredient, productsForIngredient) {
-    const percentagePriority = (a, b) => {
-      const percentageA = (a.description.toLowerCase().match(new RegExp(ingredient, 'g')) || []).length / a.description.length;
-      const percentageB = (b.description.toLowerCase().match(new RegExp(ingredient, 'g')) || []).length / b.description.length;
-      return percentageB - percentageA;
-    };
-  
-    const upcPriority = (upc) => {
-      if (upc.includes('4')) return 1; // Higher priority for UPC with '4'
-      if (upc.includes('94')) return 2; // Lower priority for UPC with '94'
-      return 0; // Default priority
-    };
-  
-    const containsIngredient = productsForIngredient.filter(product =>
-      product.description.toLowerCase().includes(ingredient)
-    );
-  
-    const sortedByPercentage = containsIngredient.sort(percentagePriority);
-  
-    const priorityUPCs = sortedByPercentage.filter(product =>
-      product.upc.includes('4') || product.upc.includes('94')
-    );
-  
-    const nonPriorityUPCs = sortedByPercentage.filter(product =>
-      !product.upc.includes('4') && !product.upc.includes('94')
-    );
-  
-    const prioritizedProducts = [
-      ...priorityUPCs.sort((a, b) => upcPriority(a.upc) - upcPriority(b.upc)),
-      ...nonPriorityUPCs,
-      ...productsForIngredient.filter(product => !containsIngredient.includes(product))
-    ];
-  
-    return prioritizedProducts;
-  }
-*/ 
 
 function prioritizeProducts(ingredient, productsForIngredient) {
 //make sure ingredient is not plural
@@ -299,8 +210,9 @@ productsWithIngredient.forEach(product => {
         productsWithIngredientOther.push(product);
     }
 });
-
-//TODO:sort the 3 arrays by %? 
+//products that are produce
+var productsWithIngredientProduce = sortByPercentInDescription(ingredient, [...productsWithIngredient4, ...productsWithIngredient94]);
+productsWithIngredientOther = sortByPercentInDescription(ingredient, productsWithIngredientOther);
 
 //sort UPC that have ingredient
 let productsWithoutIngredient94 = [];
@@ -317,7 +229,7 @@ productsWithoutIngredient.forEach(product => {
     }
 });
 
-return [...productsWithIngredient4, ...productsWithIngredient94, ...productsWithIngredientOther, ...productsWithoutIngredient4, ...productsWithoutIngredient94, ...productsWithoutIngredientOther]; 
+return [...productsWithIngredientProduce, ...productsWithIngredientOther, ...productsWithoutIngredient4, ...productsWithoutIngredient94, ...productsWithoutIngredientOther]; 
 }
  
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
