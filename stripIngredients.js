@@ -17,7 +17,8 @@ function replaceWords(products) {
     ["fennel bulb", "fennel"],
     ["suet", "beef"],
     ["white sugar", "sugar"],
-    ["pepper", "black pepper"]
+    ["pepper", "black pepper"],
+    ["chive", "green onion"]
   ];
 
   return products.map(product => {

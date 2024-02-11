@@ -227,6 +227,7 @@ function prioritizeProductsOLD(ingredient, productsForIngredient) {
 }
 */ 
 
+/*
 function prioritizeProducts(ingredient, productsForIngredient) {
     const percentagePriority = (a, b) => {
       const percentageA = (a.description.toLowerCase().match(new RegExp(ingredient, 'g')) || []).length / a.description.length;
@@ -262,6 +263,62 @@ function prioritizeProducts(ingredient, productsForIngredient) {
   
     return prioritizedProducts;
   }
+*/ 
+
+function prioritizeProducts(ingredient, productsForIngredient) {
+//make sure ingredient is not plural
+if (ingredient.endsWith("s")){
+    ingredient = ingredient.slice(0, -1);
+}else if (ingredient.endsWith("es")){
+    ingredient = ingredient.slice(0, -2);
+}
+// Initialize variables for products with and without the ingredient
+let productsWithIngredient = [];
+let productsWithoutIngredient = [];
+
+// Iterate through the array and sort into respective variables
+productsForIngredient.forEach(product => {
+    if (product.description.toLowerCase().includes(ingredient.toLowerCase())) {
+        productsWithIngredient.push(product);
+    } else {
+        productsWithoutIngredient.push(product);
+    }
+});
+
+//sort UPC that have ingredient
+let productsWithIngredient94 = [];
+let productsWithIngredient4 = [];
+let productsWithIngredientOther = [];
+productsWithIngredient.forEach(product => {
+    let numberString = product.upc.toString();
+    if (numberString.length >= 10 && numberString[8] === '9' && numberString[9] === '4') {
+        productsWithIngredient94.push(product);
+    }else if (numberString.length >= 10 && numberString[9] === '4') {
+        productsWithIngredient4.push(product);
+    }else{
+        productsWithIngredientOther.push(product);
+    }
+});
+
+//TODO:sort the 3 arrays by %? 
+
+//sort UPC that have ingredient
+let productsWithoutIngredient94 = [];
+let productsWithoutIngredient4 = [];
+let productsWithoutIngredientOther = [];
+productsWithoutIngredient.forEach(product => {
+    let numberString = product.upc.toString();
+    if (numberString.length >= 10 && numberString[8] === '9' && numberString[9] === '4') {
+        productsWithoutIngredient94.push(product);
+    }else if (numberString.length >= 10 && numberString[9] === '4') {
+        productsWithoutIngredient4.push(product);
+    }else{
+        productsWithoutIngredientOther.push(product);
+    }
+});
+
+return [...productsWithIngredient4, ...productsWithIngredient94, ...productsWithIngredientOther, ...productsWithoutIngredient4, ...productsWithoutIngredient94, ...productsWithoutIngredientOther]; 
+}
  
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
     if (message.to === 'userHasAccess'){ //returns ingredients from kroger API        
