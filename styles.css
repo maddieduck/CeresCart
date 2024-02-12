@@ -521,6 +521,7 @@
   border: 0px;
   margin: 10px;
   padding: 0px;
+  height: 22px;
 }
 .ingrExpNoLocationsFound{
   all:revert; 

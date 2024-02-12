@@ -17,7 +17,7 @@ async function getRefinedIngredients(userInput) {
           concise list by stripping out the quantity and unit. Only include essential 
           product names that you would search for in an American grocery store API. Return ONLY a 
           comma-separated string of ingredients. Exclude any non-essential words, adjectives or descriptors 
-          that don't represent the core product. If ingredients are separated with 'or' or 
+          that don't represent the core product you want to buy. If ingredients are separated with 'or' or 
           'and,' make them two distinct items in the new list. Consolidate duplicates. Remove
           any unnecessary symbols or characters like parentheses. 
           ${userInput}` }]

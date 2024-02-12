@@ -268,7 +268,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     console.log('All Ingred ', allIngredientProducts); 
                     var allProductsFound = new Map();
                     for (const j in allIngredientProducts) {
-                        if (allIngredientProducts[j]['data'] != null) {
+                        if (allIngredientProducts[j] && allIngredientProducts[j]['data'] != null) {
                             let productData = allIngredientProducts[j]['data'];
                             if (productData.length !== 0) {
                                 let singularProductsData = [];

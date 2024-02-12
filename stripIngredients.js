@@ -22,18 +22,29 @@ function replaceWords(products) {
   ];
 
   return products.map(product => {
+    const productWords = product.split(' ');
+    
     newWordPairs.forEach(pair => {
       const [oldWord, newWord] = pair;
-      const regex = new RegExp("\\b" + oldWord + "(?:s)?\\b", "gi");
-      product = product.replace(regex, match => {
-        const isPlural = match.toLowerCase().endsWith('s');
-        return isPlural ? newWord + 's' : newWord;
-      });
+      
+      if (productWords.length > 0 && productWords[0].toLowerCase() === oldWord.toLowerCase()) {
+        const regex = new RegExp("\\b" + oldWord + "(?:s)?\\b", "gi");
+        product = product.replace(regex, match => {
+          const isPlural = match.toLowerCase().endsWith('s');
+          return isPlural ? newWord + 's' : newWord;
+        });
+      }
     });
 
     return product;
   });
 }
+
+// Example usage:
+const products = ["spring onion soup", "bramley apple pie", "pepperoni pizza"];
+const updatedProducts = replaceWords(products);
+console.log(updatedProducts);
+
 
 function removeWords(products) {
   const wordsToRemove = [ //if one word is in a group of another words, put it last (ice cubes & ice)
@@ -43,7 +54,7 @@ function removeWords(products) {
     "peeled", "wedges", "thinly", "flaked", "for serving", "ripe", "crisp", "healthy", "whopping",
     "matchstick", "kosher", "roughly", "freshly", "fat", "dried", "loosely packed",
     "mashed", "very", "of", "for", "optional", "garnish", "toasted", "rounded", "in water", "extravirgin",
-    "freerange", "piece", "unbaked", "each", "to taste", "cooked", "bag", "large", "medium", "small"
+    "freerange", "piece", "unbaked", "each", "to taste", "cooked", "bag", "large", "medium", "small" 
   ];
 
   return products.map(product => {
