@@ -282,7 +282,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                                     }
                                     if (checkCategories(product['categories'])) {
                                         // Only append to singularProductsData if price exists and is not null
-                                        if (price !== null) {
+                                        if ((message.locationExists && price !== null) || (!message.locationExists)) {
                                             var newProduct = {
                                                 "description": product['description'],
                                                 "brand": product['brand'],

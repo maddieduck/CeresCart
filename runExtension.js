@@ -4,7 +4,9 @@ let ingredients = findIngredientsOnPage();
 console.log('ingredients ', ingredients);
 if (ingredients != null) {
   (async () => { // Wrap the block in an async function 
-    let backgroundResponse = await chrome.runtime.sendMessage({ to: 'ingredients', data: ingredients });
+    var locationExists = await loadFromLocalStorage('locationName');
+    console.log('location exists ', locationExists);
+    let backgroundResponse = await chrome.runtime.sendMessage({ to: 'ingredients', data: ingredients, locationExists: locationExists}); //TODO:Update
     console.log('background response ', backgroundResponse);
 
     if (backgroundResponse.launch) {
@@ -46,6 +48,14 @@ if (ingredients != null) {
       }
     }
   })();
+}
+
+function loadFromLocalStorage(key) {
+  return new Promise((resolve) => {
+    chrome.storage.local.get(key, (result) => {
+      resolve(result[key]);
+    });
+  });
 }
 
 async function insertEachIngredient(ingredientData){
