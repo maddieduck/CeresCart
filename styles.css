@@ -543,3 +543,18 @@
   font-size: 17px; /* Adjust font size as needed */
   font-weight: bold;
 }
+#ingrExpCheckoutButtonPopup{
+  all:revert; 
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+  padding: 10px 20px; /* Adjust padding as needed */
+  font-size: 16px; /* Adjust font size as needed */
+  background-color: rgb(52, 122, 132);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 350px;
+  margin-bottom: 10px;
+  display: none;
+  z-index: 2147483647;
+}

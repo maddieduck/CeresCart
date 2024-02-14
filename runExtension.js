@@ -6,7 +6,7 @@ if (ingredients != null) {
   (async () => { // Wrap the block in an async function 
     var locationExists = await loadFromLocalStorage('locationName');
     console.log('location exists ', locationExists);
-    let backgroundResponse = await chrome.runtime.sendMessage({ to: 'ingredients', data: ingredients, locationExists: locationExists}); //TODO:Update
+    let backgroundResponse = await chrome.runtime.sendMessage({ to: 'ingredients', data: ingredients, locationExists: locationExists}); 
     console.log('background response ', backgroundResponse);
 
     if (backgroundResponse.launch) {
@@ -39,6 +39,7 @@ if (ingredients != null) {
         document.getElementById('ingrExpClose').addEventListener('click', closePopup); 
         document.getElementById('ingrExpPerson').addEventListener('click', personClicked); 
         document.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
+        document.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonPopup); //TODO
         document.getElementById('ingrExpDownArrow').addEventListener('click', launchLocationPopup); 
         document.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
         updateCheckoutButton();
@@ -48,6 +49,15 @@ if (ingredients != null) {
       }
     }
   })();
+}
+
+function checkoutButtonPopup(){
+  var popup = document.getElementById('ingrExpCheckoutButtonPopup');
+  popup.style.display = 'block';
+
+  setTimeout(function () {
+      popup.style.display = 'none';
+  }, 3000); // Adjust the time (in milliseconds) as needed
 }
 
 function loadFromLocalStorage(key) {
@@ -237,10 +247,11 @@ async function shopStore(event){ //a location has been selected from the locatio
   });
 
   //insert ingredients from the new store location
-  let backgroundResponse = await chrome.runtime.sendMessage({ to: 'ingredients', data: ingredients});
+  let backgroundResponse = await chrome.runtime.sendMessage({ to: 'ingredients', data: ingredients, locationExists: true});
   const ingredientData = new Map(backgroundResponse.ingredientData);
 
   insertEachIngredient(ingredientData);
+  updateCheckoutButton();
 }
 
 function minimizePopup() {//TODO: commented out for now, but need to add 
