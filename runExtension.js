@@ -123,27 +123,26 @@ async function insertEachIngredient(ingredientData){
       }
       ingredDiv.appendChild(nodeClone);
     });
-    /* TODO
-    var elem = shadowRoot.getElementsByClassName('ingrExpLeftArrowImage'); 
-    for(var i=0; i<elem.length; i++){
-      elem[i].addEventListener('click', leftArrowClicked);
-    }
     
-    var elem = shadowRoot.getElementsByClassName('ingrExpRightArrowImage'); 
-    for(var i=0; i<elem.length; i++){
-      elem[i].addEventListener('click', rightArrowClicked);
-    }
-    
-    var elem = shadowRoot.getElementsByClassName('ingrExpPlusButton'); 
-    for(var i=0; i<elem.length; i++){
-      elem[i].addEventListener('click', plusButtonClicked);
-    }
-        
-    var elem = shadowRoot.getElementsByClassName('ingrExpMinusButton'); 
-    for(var i=0; i<elem.length; i++){
-      elem[i].addEventListener('click', minusButtonClicked);
-    }
-    */ 
+    var elementsWithClass = shadowRoot.querySelectorAll('.ingrExpLeftArrowImage');
+    elementsWithClass.forEach(element => {
+      element.addEventListener('click', leftArrowClicked);
+    });
+
+    elementsWithClass = shadowRoot.querySelectorAll('.ingrExpRightArrowImage');
+    elementsWithClass.forEach(element => {
+      element.addEventListener('click', rightArrowClicked);
+    });
+
+    elementsWithClass = shadowRoot.querySelectorAll('.ingrExpPlusButton');
+    elementsWithClass.forEach(element => {
+      element.addEventListener('click', plusButtonClicked);
+    });
+
+    elementsWithClass = shadowRoot.querySelectorAll('.ingrExpMinusButton');
+    elementsWithClass.forEach(element => {
+      element.addEventListener('click', minusButtonClicked);
+    });
   })
   .catch(error => console.error('Error:', error));
 }
@@ -256,7 +255,7 @@ async function launchLocationPopup() {
 }
 
 async function shopStore(event){ //a location has been selected from the location popup.
-  shadowRoot.getElementById('ingrExpLocationPopup').remove(); 
+  document.getElementById('ingrExpLocationPopup').remove(); 
   var id = event.target.closest('[id]').id; 
   var locationIndex = Number(id.replace(/ingrExpTopLocationDiv/g, '')); 
   console.log('shop store pressed ', locationIndex); 
@@ -269,9 +268,8 @@ async function shopStore(event){ //a location has been selected from the locatio
   chrome.storage.local.set({['locationName']: locationName});
 
   //remove store locations from the popup 
-  var elementsToRemove = shadowRoot.getElementsByClassName('ingrExpParagraphOutline');
-  var elementsArray = Array.from(elementsToRemove);
-  elementsArray.forEach(function(element) {
+  var elementsWithClass = locationShadowRoot.querySelectorAll('.ingrExpParagraphOutline');
+  elementsWithClass.forEach(element => {
     element.parentNode.removeChild(element);
   });
 
@@ -556,13 +554,12 @@ function zipCodeEdited(event) {
 }
 
 function zipCodeInPopupEdited(event) {
-  console.log('zip code in popup edited')
-  var zipCode = shadowRoot.getElementById('ingrExpZipCodeInPopup').value;
+  console.log('zip code in popup edited ', event.key)
+  var zipCode = locationShadowRoot.getElementById('ingrExpZipCodeInPopup').value;
   if (event.key === 'Enter' && zipCode.trim() !== '') {
     //remove all existing locations before running again
-    var elementsToRemove = shadowRoot.getElementsByClassName('ingrExpTopLocationDiv'); //Get elements by class name
-    var elementsArray = Array.from(elementsToRemove); // Convert HTMLCollection to an array
-    elementsArray.forEach(function(element) { //Remove each element
+    var elementsToRemove = locationShadowRoot.querySelectorAll('.ingrExpTopLocationDiv'); // Use a dot for class name
+    elementsToRemove.forEach(element => {
       element.parentNode.removeChild(element);
     });
 
