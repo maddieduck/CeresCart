@@ -1,5 +1,7 @@
-let allProductData = []; 
-let allLocationData = []; 
+var allProductData = []; 
+var allLocationData = []; 
+var shadowRoot; 
+var locationShadowRoot; 
 let ingredients = findIngredientsOnPage();
 console.log('ingredients ', ingredients);
 if (ingredients != null) {
@@ -13,37 +15,45 @@ if (ingredients != null) {
       try {
         const htmlContents = await Promise.all([
           fetch(chrome.runtime.getURL('index.html')).then(response => response.text()),
+          fetch(chrome.runtime.getURL('styles.css')).then(response => response.text()),
         ]);
-        const [indexHtml] = htmlContents;
+        const [indexHtml, cssStyle] = htmlContents;
         
-        // insert popup into html 
-        document.body.insertAdjacentHTML('afterbegin', `<div id="ingrExpIngredientExporterPopup">${indexHtml}</div>`);
+        //insert HTML with shadowroot and css. 
+        const containerDiv = document.createElement('div');
+        containerDiv.id = 'ingrExpIngredientExporterPopup';
+        shadowRoot = containerDiv.attachShadow({ mode: 'open', name: 'mainShadowRoot'});
+        shadowRoot.innerHTML = indexHtml;
+        const style = document.createElement('style'); 
+        style.textContent = cssStyle; 
+        shadowRoot.appendChild(style);
+        document.body.insertAdjacentElement('afterbegin', containerDiv);
 
         //insert each ingredient into the popup
         const ingredientData = new Map(backgroundResponse.ingredientData);
         insertEachIngredient(ingredientData);
         //set the location name if it exists in memory 
+        
         chrome.storage.local.get('locationName', (result) => {
           console.log('location Name ', result['locationName']);
           if (result['locationName'] != undefined){
-            document.getElementById('ingrExpZipCode').style.display = 'none';
-            document.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
-            document.getElementById('ingrExpPickupAt').textContent = result['locationName']
+            shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
+            shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
+            shadowRoot.getElementById('ingrExpPickupAt').textContent = result['locationName']
           }
         });
 
         /*
-        document.getElementById('minimize').addEventListener('click', minimizePopup); 
+        shadowRoot.getElementById('minimize').addEventListener('click', minimizePopup); 
         */
 
-        document.getElementById('ingrExpClose').addEventListener('click', closePopup); 
-        document.getElementById('ingrExpPerson').addEventListener('click', personClicked); 
-        document.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
-        document.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonPopup); //TODO
-        document.getElementById('ingrExpDownArrow').addEventListener('click', launchLocationPopup); 
-        document.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
+        shadowRoot.getElementById('ingrExpClose').addEventListener('click', closePopup); 
+        shadowRoot.getElementById('ingrExpPerson').addEventListener('click', personClicked); 
+        shadowRoot.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
+        shadowRoot.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonPopup); //TODO
+        shadowRoot.getElementById('ingrExpDownArrow').addEventListener('click', launchLocationPopup); 
+        shadowRoot.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
         updateCheckoutButton();
-
       } catch (error) {
         console.error('ERROR in runExtension.js: ', error);
       }
@@ -52,7 +62,7 @@ if (ingredients != null) {
 }
 
 function checkoutButtonPopup(){
-  var popup = document.getElementById('ingrExpCheckoutButtonPopup');
+  var popup = shadowRoot.getElementById('ingrExpCheckoutButtonPopup');
   popup.style.display = 'block';
 
   setTimeout(function () {
@@ -75,7 +85,7 @@ async function insertEachIngredient(ingredientData){
   .then(ingredientHtml => {
     //insert each ingredient into html 
     console.log('insert each ingr', ingredientData, " ingred html ", ingredientHtml);
-    let ingredDiv = document.getElementById('ingrExpPlaceholderForIngredients');
+    let ingredDiv = shadowRoot.getElementById('ingrExpPlaceholderForIngredients');
     allProductData = []
     
     Array.from(ingredientData.entries()).forEach((entry, index) => {
@@ -113,26 +123,27 @@ async function insertEachIngredient(ingredientData){
       }
       ingredDiv.appendChild(nodeClone);
     });
-    
-    var elem = document.getElementsByClassName('ingrExpLeftArrowImage'); 
+    /* TODO
+    var elem = shadowRoot.getElementsByClassName('ingrExpLeftArrowImage'); 
     for(var i=0; i<elem.length; i++){
       elem[i].addEventListener('click', leftArrowClicked);
     }
     
-    var elem = document.getElementsByClassName('ingrExpRightArrowImage'); 
+    var elem = shadowRoot.getElementsByClassName('ingrExpRightArrowImage'); 
     for(var i=0; i<elem.length; i++){
       elem[i].addEventListener('click', rightArrowClicked);
     }
     
-    var elem = document.getElementsByClassName('ingrExpPlusButton'); 
+    var elem = shadowRoot.getElementsByClassName('ingrExpPlusButton'); 
     for(var i=0; i<elem.length; i++){
       elem[i].addEventListener('click', plusButtonClicked);
     }
         
-    var elem = document.getElementsByClassName('ingrExpMinusButton'); 
+    var elem = shadowRoot.getElementsByClassName('ingrExpMinusButton'); 
     for(var i=0; i<elem.length; i++){
       elem[i].addEventListener('click', minusButtonClicked);
     }
+    */ 
   })
   .catch(error => console.error('Error:', error));
 }
@@ -156,7 +167,7 @@ function closePopup(event) {//closes the main popup or the location popup
 }
 
 async function loadLocationsInPopup(newLocationData){
-  let locationPlaceholder = document.getElementById('ingrExpPlaceholderForLocations');
+  let locationPlaceholder = locationShadowRoot.getElementById('ingrExpPlaceholderForLocations');
   const locationResponse = await fetch(chrome.runtime.getURL('location.html'));
   const locationHtml = await locationResponse.text();
   allLocationData = newLocationData; 
@@ -183,39 +194,57 @@ async function insertLocations(){
   console.log('background response ', backgroundResponse)
   if(backgroundResponse.locationsFound){
     loadLocationsInPopup(backgroundResponse.locationData); 
-    document.getElementById('ingrExpNoLocationsFound').style.display = 'none'; 
+    locationShadowRoot.getElementById('ingrExpNoLocationsFound').style.display = 'none'; 
   }else{
-    document.getElementById('ingrExpNoLocationsFound').style.display = 'inline-block'; 
+    locationShadowRoot.getElementById('ingrExpNoLocationsFound').style.display = 'inline-block'; 
   }
 }
 
 async function launchLocationPopup() {
-  var locationPopup = document.getElementById('ingrExpLocationPopup'); 
+  var locationPopup = shadowRoot.getElementById('ingrExpLocationPopup'); 
   console.log('launch location popup ', locationPopup); 
   //display or hide the zip code in the lcoations popup 
-  var pickupAt = document.getElementById('ingrExpPickupAt'); //check if the location is being displayed in main popup
+  var pickupAt = shadowRoot.getElementById('ingrExpPickupAt'); //check if the location is being displayed in main popup
   console.log('pickup at ', pickupAt.style.display)
   if (locationPopup == null){//check if popup is already open 
     try{ //insert the popup
       const locationPopupResponse = await fetch(chrome.runtime.getURL('locationPopup.html'));
       const locationPopupHtml = await locationPopupResponse.text();
-      document.body.insertAdjacentHTML('afterbegin', `<div id="ingrExpLocationPopup">${locationPopupHtml}</div>`); 
-      document.getElementById('ingrExpCloseInPopup').addEventListener('click', closePopup); 
+      //document.body.insertAdjacentHTML('afterbegin', `<div id="ingrExpLocationPopup">${locationPopupHtml}</div>`); 
+      
+      const htmlContents = await Promise.all([
+        fetch(chrome.runtime.getURL('locationPopup.html')).then(response => response.text()),
+        fetch(chrome.runtime.getURL('styles.css')).then(response => response.text()),
+      ]);
+      const [locationHtml, cssStyle] = htmlContents;
 
+      //insert HTML with shadowroot and css. 
+      const containerDiv = document.createElement('div');
+      containerDiv.id = 'ingrExpLocationPopup';
+      locationShadowRoot = containerDiv.attachShadow({ mode: 'open', name: 'locationShadowRoot'});
+      locationShadowRoot.innerHTML = locationHtml;
+      const style = document.createElement('style'); 
+      style.textContent = cssStyle; 
+      locationShadowRoot.appendChild(style);
+      document.body.insertAdjacentElement('afterbegin', containerDiv);
+
+      locationShadowRoot.getElementById('ingrExpCloseInPopup').addEventListener('click', closePopup); 
+
+      
       console.log('display style ', pickupAt.style.display);
       if (pickupAt.style.display == '-webkit-box'){ //The store location is showing, show the zip code 
         console.log('show zip code')
-        document.getElementById('ingrExpZipCodeInPopup').style.display = '-webkit-box';
+        locationShadowRoot.getElementById('ingrExpZipCodeInPopup').style.display = '-webkit-box';
         chrome.storage.local.get('zipCode', (result) => {
           if (result['zipCode'] != undefined){
             console.log('zip code being used in location popup ', result['zipCode']);
-            document.getElementById('ingrExpZipCodeInPopup').value = result['zipCode']
-            document.getElementById('ingrExpZipCodeInPopup').addEventListener('keyup', zipCodeInPopupEdited);
+            locationShadowRoot.getElementById('ingrExpZipCodeInPopup').value = result['zipCode']
+            locationShadowRoot.getElementById('ingrExpZipCodeInPopup').addEventListener('keyup', zipCodeInPopupEdited);
           } 
         }); 
       }else{ 
         console.log('dont display zipcode');
-        document.getElementById('ingrExpZipCodeInPopup').style.display = 'none';
+        locationShadowRoot.getElementById('ingrExpZipCodeInPopup').style.display = 'none';
       }
       insertLocations()
     }catch (error) {
@@ -227,20 +256,20 @@ async function launchLocationPopup() {
 }
 
 async function shopStore(event){ //a location has been selected from the location popup.
-  document.getElementById('ingrExpLocationPopup').remove(); 
+  shadowRoot.getElementById('ingrExpLocationPopup').remove(); 
   var id = event.target.closest('[id]').id; 
   var locationIndex = Number(id.replace(/ingrExpTopLocationDiv/g, '')); 
   console.log('shop store pressed ', locationIndex); 
   var locationId = allLocationData[locationIndex]['id'];
   var locationName = allLocationData[locationIndex]['name'];
-  document.getElementById('ingrExpZipCode').style.display = 'none';
-  document.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
-  document.getElementById('ingrExpPickupAt').textContent = locationName; 
+  shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
+  shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
+  shadowRoot.getElementById('ingrExpPickupAt').textContent = locationName; 
   chrome.storage.local.set({['locationId']: locationId});
   chrome.storage.local.set({['locationName']: locationName});
 
   //remove store locations from the popup 
-  var elementsToRemove = document.getElementsByClassName('ingrExpParagraphOutline');
+  var elementsToRemove = shadowRoot.getElementsByClassName('ingrExpParagraphOutline');
   var elementsArray = Array.from(elementsToRemove);
   elementsArray.forEach(function(element) {
     element.parentNode.removeChild(element);
@@ -255,7 +284,7 @@ async function shopStore(event){ //a location has been selected from the locatio
 }
 
 function minimizePopup() {//TODO: commented out for now, but need to add 
-  var popupContainer = document.getElementById('ingrExpIngredientExporterPopup');
+  var popupContainer = shadowRoot.getElementById('ingrExpIngredientExporterPopup');
   if (popupContainer) {
     popupContainer.remove();
   }
@@ -273,48 +302,48 @@ function displayNewIngredient(id, rightOrLeft){ //loads the image and product in
   }
   allProductData[productIndex]['indexOfProductDisplayed'] = newIngredientIndex 
   //display the new ingredient 
-  document.getElementById(id).querySelector('.ingrExpIngredientImage').src = ingredientClickedData['productData'][newIngredientIndex]['image'];
-  document.getElementById(id).querySelector('.ingrExpIngredientBrand').textContent = ingredientClickedData['productData'][newIngredientIndex]['brand'];
-  document.getElementById(id).querySelector('.ingrExpIngredientDescription').textContent = ingredientClickedData['productData'][newIngredientIndex]['description'];
-  document.getElementById(id).querySelector('.ingrExpSize').textContent = ingredientClickedData['productData'][newIngredientIndex]['size'];
-  document.getElementById(id).querySelector('.ingrExpQuantity').innerText = String(ingredientClickedData['productData'][newIngredientIndex]['quantity']);
+  shadowRoot.getElementById(id).querySelector('.ingrExpIngredientImage').src = ingredientClickedData['productData'][newIngredientIndex]['image'];
+  shadowRoot.getElementById(id).querySelector('.ingrExpIngredientBrand').textContent = ingredientClickedData['productData'][newIngredientIndex]['brand'];
+  shadowRoot.getElementById(id).querySelector('.ingrExpIngredientDescription').textContent = ingredientClickedData['productData'][newIngredientIndex]['description'];
+  shadowRoot.getElementById(id).querySelector('.ingrExpSize').textContent = ingredientClickedData['productData'][newIngredientIndex]['size'];
+  shadowRoot.getElementById(id).querySelector('.ingrExpQuantity').innerText = String(ingredientClickedData['productData'][newIngredientIndex]['quantity']);
   if(ingredientClickedData['productData'][newIngredientIndex]['price'] != null){
     const dollars = Math.floor(ingredientClickedData['productData'][newIngredientIndex]['price']);
     const cents = Math.round((ingredientClickedData['productData'][newIngredientIndex]['price'] - dollars) * 100);
-    document.getElementById(id).querySelector('.ingrExpIngrExpPrice').innerHTML = "$" + dollars + ".";
-    document.getElementById(id).querySelector('.ingrExpCents').innerHTML = String(cents).padStart(2, '0'); 
+    shadowRoot.getElementById(id).querySelector('.ingrExpIngrExpPrice').innerHTML = "$" + dollars + ".";
+    shadowRoot.getElementById(id).querySelector('.ingrExpCents').innerHTML = String(cents).padStart(2, '0'); 
   }else{
-    document.getElementById(id).querySelector('.ingrExpIngrExpPrice').innerHTML = "";
-    document.getElementById(id).querySelector('.ingrExpCents').innerHTML = "";
+    shadowRoot.getElementById(id).querySelector('.ingrExpIngrExpPrice').innerHTML = "";
+    shadowRoot.getElementById(id).querySelector('.ingrExpCents').innerHTML = "";
   }
 
   //check if arrow should be removed or shown 
   var totalIndexes = allProductData[productIndex]['productData'].length 
   if (rightOrLeft == 'right'){
-    document.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.visibility = 'visible';
-    document.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.pointerEvents = 'auto';
-    document.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.opacity = '1';
+    shadowRoot.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.visibility = 'visible';
+    shadowRoot.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.pointerEvents = 'auto';
+    shadowRoot.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.opacity = '1';
     if ((newIngredientIndex + 1) >= totalIndexes) {
-      document.getElementById(id).querySelector('.ingrExpRightArrowImage').style.visibility = 'hidden';
-      document.getElementById(id).querySelector('.ingrExpRightArrowImage').style.pointerEvents = 'none';
-      document.getElementById(id).querySelector('.ingrExpRightArrowImage').style.opacity = '0';
+      shadowRoot.getElementById(id).querySelector('.ingrExpRightArrowImage').style.visibility = 'hidden';
+      shadowRoot.getElementById(id).querySelector('.ingrExpRightArrowImage').style.pointerEvents = 'none';
+      shadowRoot.getElementById(id).querySelector('.ingrExpRightArrowImage').style.opacity = '0';
     }else{
-      document.getElementById(id).querySelector('.ingrExpRightArrowImage').style.visibility = 'visible';
-      document.getElementById(id).querySelector('.ingrExpRightArrowImage').style.pointerEvents = 'auto';
-      document.getElementById(id).querySelector('.ingrExpRightArrowImage').style.opacity = '1';
+      shadowRoot.getElementById(id).querySelector('.ingrExpRightArrowImage').style.visibility = 'visible';
+      shadowRoot.getElementById(id).querySelector('.ingrExpRightArrowImage').style.pointerEvents = 'auto';
+      shadowRoot.getElementById(id).querySelector('.ingrExpRightArrowImage').style.opacity = '1';
     }
   }else if (rightOrLeft == 'left'){ 
-    document.getElementById(id).querySelector('.ingrExpRightArrowImage').style.visibility = 'visible';
-    document.getElementById(id).querySelector('.ingrExpRightArrowImage').style.pointerEvents = 'auto';
-    document.getElementById(id).querySelector('.ingrExpRightArrowImage').style.opacity = '1';
+    shadowRoot.getElementById(id).querySelector('.ingrExpRightArrowImage').style.visibility = 'visible';
+    shadowRoot.getElementById(id).querySelector('.ingrExpRightArrowImage').style.pointerEvents = 'auto';
+    shadowRoot.getElementById(id).querySelector('.ingrExpRightArrowImage').style.opacity = '1';
     if (newIngredientIndex == 0) {
-      document.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.visibility = 'hidden';
-      document.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.pointerEvents = 'none';
-      document.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.opacity = '0';
+      shadowRoot.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.visibility = 'hidden';
+      shadowRoot.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.pointerEvents = 'none';
+      shadowRoot.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.opacity = '0';
     }else{
-      document.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.visibility = 'visible';
-      document.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.pointerEvents = 'auto';
-      document.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.opacity = '1';
+      shadowRoot.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.visibility = 'visible';
+      shadowRoot.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.pointerEvents = 'auto';
+      shadowRoot.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.opacity = '1';
     }
   }
 }
@@ -358,14 +387,14 @@ async function updateCheckoutButton() {
     });
   
     if (hasNullPrices) {
-      document.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items`;
+      shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items`;
     } else if (totalQuantity == 0) {
-      document.getElementById('ingrExpCheckoutButton').innerHTML = `No Items Selected`;
+      shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `No Items Selected`;
     } else {
-      document.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items for <span class="bold">$${totalPrice.toFixed(2)}</span>`;
+      shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items for <span class="bold">$${totalPrice.toFixed(2)}</span>`;
     }
   }else{
-    document.getElementById('ingrExpCheckoutButton').innerHTML = `Sign Up or Log In to Export`;
+    shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Sign Up or Log In to Export`;
   }
 }
 
@@ -420,12 +449,12 @@ async function checkoutUser(quantityAndUPCArray){//lets the user attempt to chec
       });
     });
     //make all quantities 0
-    const elements = document.querySelectorAll(`.${'ingrExpQuantity'}`);
+    const elements = shadowRoot.querySelectorAll(`.${'ingrExpQuantity'}`);
     elements.forEach(element => {
       element.innerText = '0';
     });
     //update checkout button
-    document.getElementById('ingrExpCheckoutButton').innerHTML = `Items Successfully Added`;
+    shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Items Successfully Added`;
   }else{
     console.log('error when trying to add to cart');
   }  
@@ -434,7 +463,7 @@ async function checkoutUser(quantityAndUPCArray){//lets the user attempt to chec
 async function checkoutButtonClicked(){
    
   //disable button until products are done being added
-  document.getElementById("ingrExpCheckoutButton").disabled = true;
+  shadowRoot.getElementById("ingrExpCheckoutButton").disabled = true;
 
   //get the quantity of items to add to cart 
   const quantityAndUPCArray = [];
@@ -463,7 +492,7 @@ async function checkoutButtonClicked(){
     console.log('No items selected. Do nothing.');
   }
   //enable button again
-  document.getElementById("ingrExpCheckoutButton").disabled = false;
+  shadowRoot.getElementById("ingrExpCheckoutButton").disabled = false;
 }
 
 function stringIngredientsFromRecipe(i){
@@ -517,7 +546,7 @@ function findIngredientsOnPage() {
 }
 
 function zipCodeEdited(event) {
-  var zipCode = document.getElementById('ingrExpZipCode').value;
+  var zipCode = shadowRoot.getElementById('ingrExpZipCode').value;
   // Check if the Enter key is pressed and the zip code is not blank
   if (event.key === 'Enter' && zipCode.trim() !== '') {
     console.log('zip code used ', zipCode)
@@ -528,10 +557,10 @@ function zipCodeEdited(event) {
 
 function zipCodeInPopupEdited(event) {
   console.log('zip code in popup edited')
-  var zipCode = document.getElementById('ingrExpZipCodeInPopup').value;
+  var zipCode = shadowRoot.getElementById('ingrExpZipCodeInPopup').value;
   if (event.key === 'Enter' && zipCode.trim() !== '') {
     //remove all existing locations before running again
-    var elementsToRemove = document.getElementsByClassName('ingrExpTopLocationDiv'); //Get elements by class name
+    var elementsToRemove = shadowRoot.getElementsByClassName('ingrExpTopLocationDiv'); //Get elements by class name
     var elementsArray = Array.from(elementsToRemove); // Convert HTMLCollection to an array
     elementsArray.forEach(function(element) { //Remove each element
       element.parentNode.removeChild(element);
