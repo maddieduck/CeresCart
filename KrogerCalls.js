@@ -143,7 +143,7 @@ async function cartWriteAuthorizationCode(){
     })
   })
 }
-
+ 
 async function addToCart(accessToken, items) { //returns true if added successfully 
   console.log('items to add to cart', items)
   return new Promise((resolve, reject) => {
