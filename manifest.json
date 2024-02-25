@@ -16,7 +16,7 @@
      "background":{
         "service_worker": "backgroundWorker.js",
         "type": "module"
-    },
+    },  
      "permissions": [
        "storage",
        "identity"
