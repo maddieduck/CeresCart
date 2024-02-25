@@ -1,5 +1,5 @@
-var clientID = 'chromeextension-9164a765a55fbb5196e486a21816eebc2545707629365177077'
-var clientSecret = '-K-l4m3_XtLtLDYzWbhRyuCiR9esN3Oo2BRX00Kz'
+var clientID = 'cerescart-f4187f9b0cfa74e1107fe736009f3e24587190955792211001'
+var clientSecret = '62Lrcggsmt2_tlRQLMkaDiP4CCS74QmerojFSJEt'
 var redirectURI = 'https://nckacfgoolkhaedphbknecabckccgffe.chromiumapp.org' 
 import {saveToLocalStorage} from './storageHelpers.js'
 
