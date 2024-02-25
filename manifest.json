@@ -1,12 +1,12 @@
 {
     "manifest_version":3,
-    "name": "Recipe Ingredient Exporter",
+    "name": "Ceres Cart",
     "version": "1.0.0",
     "description": "Extracts ingredients from recipes found on the page and allows user to export to grocery stores.",
     "author": "Maddie Drake",
     "action": {
         "default_popup": "defaultPopup.html",
-        "default_title": "ingredinet exporter",
+        "default_title": "Ceres Cart",
         "default_icon":{
             "16": "/images/cart.png",
             "48": "/images/cart.png",
@@ -34,5 +34,5 @@
           "matches": ["<all_urls>"]
         }
       ],
-      "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmWaHqBYFI1cO/jMiLouPGkCY3HrwH9eSq/VbGgA1QsziSPVwKxWWymmti8Gadx/owBJzHLht6bHpoBIUbJEAVrlqVDlHj+99yrZMpZ0x1aTo3uh/8N2OyjVUAne4TwuVeOZHYJiY/7ozjXQ00ugoISL60Six2cuOCXjK7e2VfZGHFXYX2h/OATGy+3Lvoh3RJvgWTwngNMeqdQgMPeibfhmCV7SGEt+zTkpr/aThc49+9w60YIcuDjG59fUTWtI4EOIUKp/f14uPegINtMnmo0hSUd+sZVjb7uQ0mm/ZQCzzwhYrtWx4ik9369+6A7YDdVkyFnyGXcoe9805qhzqsQIDAQAB"
+      "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoDYfy2AY8x703pYGXXpkikhGhaBElTuJ2TcSHbRHXm/V+OW3JM0Em9VcgViKehWAWqNrgzHPvizQCF00cppX3NJXjIoN2H+WyvdB1ZwT30h9zzYdoYjMLFe5+vNnCj9KNcWshPicwmOKu1+ikBKjbYdor/P/dUa4oLg0kG8fuOYHC9pu1i/dGxyxylcA1NDRawyCFZVhDVfOwK2tmSnZNs967RkuRdj5I2cISWBgtCTmEtZKhvEuhrs/zcqpieolOaBrpncMvBphkkxqXYgVkUwZZ5VbKkOTHRRDs6wQqXhSDV+Igcx2uHbL1ujaxwKqu+jKTmk3qvfEWfzcsHMXUQIDAQAB"
     }
