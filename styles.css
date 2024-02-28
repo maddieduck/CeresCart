@@ -96,26 +96,29 @@
   height: 25px;
   padding-left: 16px;
 }
-.ingrExpParagraphOutline{
-  outline: 1px solid rgb(191, 191, 191); ;
-  border-radius: 25px;
-  display: block;
-  width: 350px;
-  height: 125px;
-  margin-bottom: 5px;
-  margin-top: 5px;   
-  margin-left: 5px;
-}
-.ingrExpPriceAndQuantity{
-  all:revert; 
-  width: 65px;
-}
-.ingrExpMainDiv{
-  all:revert; 
+.ingrExpOuterContainer{
   display: flex;
+  width: 424px;
+  height: 192px;
+  margin-bottom: 8px;
+  margin-top: 8px;   
+  justify-content: center; 
+  align-items: center; 
+}
+.ingrExpParagraphOutline{
+  position: relative; 
+  outline: 1px solid rgb(228, 230, 232);
+  border-radius: 25px;
+  width: 280px;
+  height: 192px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  padding-bottom: 10px;
-  justify-content: space-between; /* evenly space elements horizontally */
+}
+.ImageAndQuantity{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .ingrExpEmptyBackgroundButton{
   all:revert; 
@@ -128,25 +131,53 @@
   color: rgb(255, 255, 255) !important;
   min-height: 0px ;
 }
-.ingrExpEmptyBackgroundButton:hover{
-  all:revert; 
-  padding: 0px;
-  border: 0px;
-  background: none;
-  margin: 0px;
-  background-color: white;
-  color: rgb(255, 255, 255);
-  min-height: 0px ;
+.leftArrow{
+  border-width: 1px;
+  border: 2px solid; 
+  margin-right: 16px;
+  height: 40px;
+  width: 40px;
+  background-color: rgb(240, 240, 240);
+  border-radius: 50%; 
+  border-color: rgb(228, 230, 232);
 }
-.ingrExpRightArrowImage{
-  all:revert; 
-  height: 20px !important; 
-  cursor: pointer;
+.leftArrow:focus {
+  border-color: rgb(228, 230, 232);
+}
+.leftArrow:hover {
+  border-color: rgb(228, 230, 232);
+}
+.leftArrow:active {
+  border-color: rgb(228, 230, 232);
 }
 .ingrExpLeftArrowImage{
-  all:revert; 
-  height: 20px !important; 
-  cursor: pointer;
+  height: 20px;
+  padding-top: 2px;
+  padding-right: 2px;
+}
+.rightArrow{
+  border-width: 1px;
+  border: 2px solid; 
+  margin-left: 16px;
+  height: 40px;
+  width: 40px;
+  background-color: rgb(240, 240, 240);
+  border-radius: 50%; 
+  border-color: rgb(228, 230, 232);
+}
+.rightArrow:focus {
+  border-color: rgb(228, 230, 232);
+}
+.rightArrow:hover {
+  border-color: rgb(228, 230, 232);
+}
+.rightArrow:active {
+  border-color: rgb(228, 230, 232);
+}
+.ingrExpRightArrowImage{
+  height: 20px;
+  padding-left: 2px;
+  padding-top: 2px;
 }
 #ingrExpDownArrow{
   background-color: white;
@@ -243,32 +274,48 @@
   margin-right: 10px;
   background-color: white;
 }
-.ingrExpIngredientDiv{
-  display: flex;
-  align-items: center;
-}
 .ingrExpIngredientBrand{
-  margin-top: 10px;
-  margin-bottom: 0px;
-  padding-left: 25px;
   font-weight: 345;
-  font-size: 17px;
+  font-size: 16px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   height: 30px;
+  display: flex;
+  color: #1D1C1C;
+  text-align: center;
+  margin: auto;
 
-  display: -webkit-box; /* Limit the text to three lines */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1; 
+  overflow: hidden;
+}
+.ingredientDescription{
+  font-weight: 345;
+  font-size: 16px;
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+  height: 40px;
+  display: flex;
+  color: #1D1C1C;
+  text-align: center;
+  margin: auto;
+
+  display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1; 
   overflow: hidden;
 }
 .ingrExpIngrExpPrice{
   all:revert; 
-  margin-top: 5px;
+  margin-top: 5px; 
   margin-bottom: 5px;
   font-weight: 500;
   font-size: 20px;
-  color: rgb(0, 0, 0);
+  color: rgb(40, 34, 125); 
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+}
+.ingrExpPriceContainer {
+  display: flex;
+  align-items: baseline;
 }
 .ingrExpCents{ 
   vertical-align: super;
@@ -290,7 +337,6 @@
   font-size: 15px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   color: rgb(0, 0, 0);
-  width: 170px;
   text-align: left;
   line-height: 1.2; /* Adjust the value to your preference */
 
@@ -301,11 +347,12 @@
 }
 .ingrExpSize{
   font-weight: 325; 
-  font-size: 15px;
+  font-size: 14px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
-  color: rgb(151, 151, 151);
+  color: #1D1C1C;
   width: 170px;
-  text-align: left;
+  text-align: center;
+  margin: auto;
   
   display: -webkit-box; /* Limit the text to 1 line */
   -webkit-box-orient: vertical;
@@ -362,11 +409,9 @@
   display: flex;
   border-radius: 20%;
   height: 25px;
-  width: 65px;
   align-items: center;
   justify-content: center;
   text-align: center;
- 
 }
 .ingrExpQuantity{
   all:revert; 
@@ -377,16 +422,15 @@
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 } 
 .ingrExpIngredientImage{
-  width: 40px;
-  height: 60px; 
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-top: 4px;
+  height: 72px; 
+  width: 72px;
   object-fit: contain;
 }
 #ingrExpTopLevelDiv{
   background-color: white; 
   max-height: 98%;
-  width: 360px;
+  width: 424px;
   position: fixed;
   z-index: 2147483646;
   display: block;

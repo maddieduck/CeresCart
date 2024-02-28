@@ -84,7 +84,7 @@ async function insertEachIngredient(ingredientData){
   .then(response => response.text())
   .then(ingredientHtml => {
     //insert each ingredient into html 
-    console.log('insert each ingr', ingredientData, " ingred html ", ingredientHtml);
+    console.log('insert each ingr');
     let ingredDiv = shadowRoot.getElementById('ingrExpPlaceholderForIngredients');
     allProductData = []
     
@@ -98,7 +98,7 @@ async function insertEachIngredient(ingredientData){
       nodeClone.innerHTML = ingredientHtml;  //Set the inner HTML of the div 
       nodeClone.querySelector('.ingrExpIngredientImage').src = productData[0].image; 
       nodeClone.querySelector('.ingrExpIngredientBrand').textContent = productData[0].brand; 
-      nodeClone.querySelector('.ingrExpIngredientDescription').textContent = productData[0].description;
+      nodeClone.querySelector('.ingredientDescription').textContent = productData[0].description;
       nodeClone.querySelector('.ingrExpSize').textContent = productData[0].size;
       nodeClone.querySelector('.ingrExpParagraphOutline').id = 'ingrExpIngredient' + index;
       nodeClone.querySelector('.ingrExpLeftArrowImage').style.opacity = 0;
@@ -302,9 +302,10 @@ function displayNewIngredient(id, rightOrLeft){ //loads the image and product in
   //display the new ingredient 
   shadowRoot.getElementById(id).querySelector('.ingrExpIngredientImage').src = ingredientClickedData['productData'][newIngredientIndex]['image'];
   shadowRoot.getElementById(id).querySelector('.ingrExpIngredientBrand').textContent = ingredientClickedData['productData'][newIngredientIndex]['brand'];
-  shadowRoot.getElementById(id).querySelector('.ingrExpIngredientDescription').textContent = ingredientClickedData['productData'][newIngredientIndex]['description'];
+  shadowRoot.getElementById(id).querySelector('.ingredientDescription').textContent = ingredientClickedData['productData'][newIngredientIndex]['description'];
   shadowRoot.getElementById(id).querySelector('.ingrExpSize').textContent = ingredientClickedData['productData'][newIngredientIndex]['size'];
-  shadowRoot.getElementById(id).querySelector('.ingrExpQuantity').innerText = String(ingredientClickedData['productData'][newIngredientIndex]['quantity']);
+  //TODO
+  //shadowRoot.getElementById(id).querySelector('.ingrExpQuantity').innerText = String(ingredientClickedData['productData'][newIngredientIndex]['quantity']);
   if(ingredientClickedData['productData'][newIngredientIndex]['price'] != null){
     const dollars = Math.floor(ingredientClickedData['productData'][newIngredientIndex]['price']);
     const cents = Math.round((ingredientClickedData['productData'][newIngredientIndex]['price'] - dollars) * 100);
