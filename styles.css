@@ -293,11 +293,12 @@
   font-weight: 345;
   font-size: 16px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
-  height: 40px;
+  height: 50px;
   display: flex;
   color: #1D1C1C;
   text-align: center;
   margin: auto;
+  line-height: 0.9; 
 
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -310,7 +311,7 @@
   margin-bottom: 5px;
   font-weight: 500;
   font-size: 20px;
-  color: rgb(40, 34, 125); 
+  color: rgb(29, 28, 28); 
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 }
 .ingrExpPriceContainer {
@@ -322,7 +323,7 @@
   margin-top: 5px; 
   font-size: 15px; 
   font-weight: 500;
-  color: rgb(0, 0, 0);
+  color: rgb(29, 28, 28); 
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 }
 .ingrExpDescriptionAndQuantity * {
@@ -331,19 +332,6 @@
   margin: 0;
   padding: 0;
   border: 0;
-}
-.ingrExpIngredientDescription{
-  font-weight: 325; 
-  font-size: 15px;
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
-  color: rgb(0, 0, 0);
-  text-align: left;
-  line-height: 1.2; /* Adjust the value to your preference */
-
-  display: -webkit-box; /* Limit the text to three lines */
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3; 
-  overflow: hidden;
 }
 .ingrExpSize{
   font-weight: 325; 
@@ -449,27 +437,29 @@
   z-index: 2147483647;
   display: block;
   overflow-y: auto;
-  top: 65px; /* Adjust as needed */
-  right: 20px; /* Adjust as needed */
+  top: 65px; 
+  right: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  border-radius: 10px; /* Adjust the radius for the desired roundness */
+  border-radius: 10px; 
   text-align: center;
 }
 #ingrExpCheckoutButton {
-  all:revert; 
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
-  padding: 10px 20px; /* Adjust padding as needed */
-  font-size: 16px; /* Adjust font size as needed */
-  background-color: rgb(52, 122, 132);
+  padding: 10px 20px; 
+  font-size: 20px; 
+  background-color: rgb(109, 171, 155);
+  font-weight: 450;
+
   color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
-  width: 350px;
+  width: 392px;
+  height: 55px;
   margin-bottom: 10px;
 }
 #ingrExpCheckoutButton:hover {
-  box-shadow: 0 0 10px rgb(38, 90, 98); /* Add a box shadow to simulate background covering the margin */
+  box-shadow: 0 0 10px rgb(109, 171, 155);
 }
 .ingrExpTopLocationDiv{
   outline: 1px solid rgb(191, 191, 191); ;

@@ -100,10 +100,11 @@ async function insertEachIngredient(ingredientData){
       nodeClone.querySelector('.ingrExpIngredientBrand').textContent = productData[0].brand; 
       nodeClone.querySelector('.ingredientDescription').textContent = productData[0].description;
       nodeClone.querySelector('.ingrExpSize').textContent = productData[0].size;
-      nodeClone.querySelector('.ingrExpParagraphOutline').id = 'ingrExpIngredient' + index;
-      nodeClone.querySelector('.ingrExpLeftArrowImage').style.opacity = 0;
-      nodeClone.querySelector('.ingrExpLeftArrowImage').style.visibility = 'hidden';
-      nodeClone.querySelector('.ingrExpLeftArrowImage').style.pointerEvents = 'none';
+      nodeClone.querySelector('.ingrExpOuterContainer').id = 'ingrExpIngredient' + index;
+      
+      nodeClone.querySelector('.leftArrow').style.opacity = 0;
+      nodeClone.querySelector('.leftArrow').style.visibility = 'hidden';
+      nodeClone.querySelector('.leftArrow').style.pointerEvents = 'none';
 
       var price = productData[0].price;
       if (price !== null){
@@ -319,30 +320,30 @@ function displayNewIngredient(id, rightOrLeft){ //loads the image and product in
   //check if arrow should be removed or shown 
   var totalIndexes = allProductData[productIndex]['productData'].length 
   if (rightOrLeft == 'right'){
-    shadowRoot.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.visibility = 'visible';
-    shadowRoot.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.pointerEvents = 'auto';
-    shadowRoot.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.opacity = '1';
+    shadowRoot.getElementById(id).querySelector('.leftArrow').style.visibility = 'visible';
+    shadowRoot.getElementById(id).querySelector('.leftArrow').style.pointerEvents = 'auto';
+    shadowRoot.getElementById(id).querySelector('.leftArrow').style.opacity = '1';
     if ((newIngredientIndex + 1) >= totalIndexes) {
-      shadowRoot.getElementById(id).querySelector('.ingrExpRightArrowImage').style.visibility = 'hidden';
-      shadowRoot.getElementById(id).querySelector('.ingrExpRightArrowImage').style.pointerEvents = 'none';
-      shadowRoot.getElementById(id).querySelector('.ingrExpRightArrowImage').style.opacity = '0';
+      shadowRoot.getElementById(id).querySelector('.rightArrow').style.visibility = 'hidden';
+      shadowRoot.getElementById(id).querySelector('.rightArrow').style.pointerEvents = 'none';
+      shadowRoot.getElementById(id).querySelector('.rightArrow').style.opacity = '0';
     }else{
-      shadowRoot.getElementById(id).querySelector('.ingrExpRightArrowImage').style.visibility = 'visible';
-      shadowRoot.getElementById(id).querySelector('.ingrExpRightArrowImage').style.pointerEvents = 'auto';
-      shadowRoot.getElementById(id).querySelector('.ingrExpRightArrowImage').style.opacity = '1';
+      shadowRoot.getElementById(id).querySelector('.rightArrow').style.visibility = 'visible';
+      shadowRoot.getElementById(id).querySelector('.rightArrow').style.pointerEvents = 'auto';
+      shadowRoot.getElementById(id).querySelector('.rightArrow').style.opacity = '1';
     }
   }else if (rightOrLeft == 'left'){ 
-    shadowRoot.getElementById(id).querySelector('.ingrExpRightArrowImage').style.visibility = 'visible';
-    shadowRoot.getElementById(id).querySelector('.ingrExpRightArrowImage').style.pointerEvents = 'auto';
-    shadowRoot.getElementById(id).querySelector('.ingrExpRightArrowImage').style.opacity = '1';
+    shadowRoot.getElementById(id).querySelector('.rightArrow').style.visibility = 'visible';
+    shadowRoot.getElementById(id).querySelector('.rightArrow').style.pointerEvents = 'auto';
+    shadowRoot.getElementById(id).querySelector('.rightArrow').style.opacity = '1';
     if (newIngredientIndex == 0) {
-      shadowRoot.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.visibility = 'hidden';
-      shadowRoot.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.pointerEvents = 'none';
-      shadowRoot.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.opacity = '0';
+      shadowRoot.getElementById(id).querySelector('.leftArrow').style.visibility = 'hidden';
+      shadowRoot.getElementById(id).querySelector('.leftArrow').style.pointerEvents = 'none';
+      shadowRoot.getElementById(id).querySelector('.leftArrow').style.opacity = '0';
     }else{
-      shadowRoot.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.visibility = 'visible';
-      shadowRoot.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.pointerEvents = 'auto';
-      shadowRoot.getElementById(id).querySelector('.ingrExpLeftArrowImage').style.opacity = '1';
+      shadowRoot.getElementById(id).querySelector('.leftArrow').style.visibility = 'visible';
+      shadowRoot.getElementById(id).querySelector('.leftArrow').style.pointerEvents = 'auto';
+      shadowRoot.getElementById(id).querySelector('.leftArrow').style.opacity = '1';
     }
   }
 }
