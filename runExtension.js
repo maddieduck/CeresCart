@@ -51,7 +51,7 @@ if (ingredients != null) {
         shadowRoot.getElementById('ingrExpPerson').addEventListener('click', personClicked); 
         shadowRoot.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
         shadowRoot.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonPopup); //TODO
-        shadowRoot.getElementById('ingrExpDownArrow').addEventListener('click', launchLocationPopup); 
+        shadowRoot.getElementById('change').addEventListener('click', launchLocationPopup); 
         shadowRoot.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
         updateCheckoutButton();
       } catch (error) {
@@ -118,9 +118,9 @@ async function insertEachIngredient(ingredientData){
       }
 
       if (productData.length == 1){
-        nodeClone.querySelector('.ingrExpRightArrowImage').style.opacity = 0;
-        nodeClone.querySelector('.ingrExpRightArrowImage').style.visibility = 'hidden';
-        nodeClone.querySelector('.ingrExpRightArrowImage').style.pointerEvents = 'none';
+        nodeClone.querySelector('.rightArrow').style.opacity = 0;
+        nodeClone.querySelector('.rightArrow').style.visibility = 'hidden';
+        nodeClone.querySelector('.rightArrow').style.pointerEvents = 'none';
       }
       ingredDiv.appendChild(nodeClone);
     });
