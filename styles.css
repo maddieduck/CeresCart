@@ -56,11 +56,6 @@
 }
 #ingrExpZipCodeInPopup{
   color: black;
-  margin-left: 87px;
-  margin-right: 10px;
-  margin-top: 10px;
-  margin-bottom: 0px;
-  padding-bottom: 0px;
   font-weight: 325;
   font-size: 17px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
@@ -68,8 +63,12 @@
   border: none;
   border-radius: 25px;
   text-align: center;
+  height: 20px;
+  align-items: center; /* Center vertically */
+  margin-left: 88px;
+  width: 200px;
 
-  display: -webkit-box; /* Limit the text to three lines */
+  display: -webkit-box; 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1; 
   overflow: hidden;
@@ -77,20 +76,6 @@
 #ingrExpZipCodeInPopup:placeholder{
   color: black;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
-}
-#ingrExpZipCodeInPopup:focus {
-  margin-left: 87px;
-  margin-right: 10px;
-  margin-top: 10px;
-  margin-bottom: 0px;
-  padding-bottom: 0px;
-  font-weight: 325;
-  font-size: 17px;
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
-  outline: 1px solid rgb(191, 191, 191); ;
-  border: none;
-  border-radius: 25px;
-  text-align: center;
 }
 #location{
   height: 25px;
@@ -181,14 +166,12 @@
   padding-top: 4px;
 }
 #ingrExpClose{
-  margin-right: 10px;
-  margin-top: 5px;
-  border-width: 1px;
+  margin-right: 8px;
+  margin-top: 8px;
   border: none;
   height: 24px;
   width: 24px;
   border-radius: 50%; 
-  border-color: rgb(228, 230, 232);
   background-color: rgb(240, 240, 240);
   cursor: pointer;
 }
@@ -197,15 +180,28 @@
   height: auto;
   padding-top: 3px;
 }
+#ingrExpCloseInPopup{
+  border: none;
+  height: 24px;
+  width: 24px;
+  border-radius: 50%; 
+  background-color: rgb(240, 240, 240);
+  cursor: pointer;
+  margin-left: auto; 
+  padding-top: 3px;
+}
+#ingrExpCloseImageInPopup {
+  width: 90%;
+  height: auto;
+}
 #headerContainer{
   display: flex;
   justify-content: flex-end; 
 }
 #ingrExpPerson {
-  margin-right: 10px;
-  margin-top: 5px;
-  border: none;
   margin-right: 8px;
+  margin-top: 8px;
+  border: none;
   height: 24px;
   width: 24px;
   border-radius: 50%; 
@@ -218,25 +214,6 @@
   height: auto;
   padding-top: 3px;
 }
-#ingrExpCloseInPopup{
-  background-color: white;
-  color: rgb(255, 255, 255); 
-  min-height: 0px;
-  cursor: pointer;
-}
-#ingrExpCloseImageInPopup {
-  padding: 0;
-  height: 10px;
-  position: absolute;
-  right: 15px;
-  top: 10px;
-  border: 0px;
-  background: none;
-  margin: 0px;
-  background-color: white;
-  color: rgb(255, 255, 255); 
-}
-
 .ingrExpCircleButton{
   height: 30px;
   width: 30px;
@@ -394,19 +371,20 @@
   border-radius: 10px; 
   text-align: center;
 }
-.ingrExpTopLevelLocationPopup{
+#ingrExpTopLevelLocationPopup{
   background-color: white;
-  height: 50%;
-  width: 340px;
+  width: 392px;
   position: fixed;
   z-index: 2147483647;
   display: block;
   overflow-y: auto;
-  top: 65px; 
-  right: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  right: 26px;
   border-radius: 10px; 
   text-align: center;
+  outline: 1px solid rgb(228, 230, 232);
+  top: 88px; 
+  height: 436px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 #ingrExpCheckoutButton {
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
@@ -426,13 +404,12 @@
 
 .ingrExpTopLocationDiv{
   outline: 1px solid rgb(191, 191, 191); ;
-  border-radius: 25px;
+  border-radius: 8px;
   display: block;
-  width: 330px;
   height: 125px;
-  margin-bottom: 5px;
-  margin-top: 8px;   
-  margin-left: 5px;
+  width: calc(100% - 16px); /* Set the width of the child div */
+  margin: 0 8px; /* Set the margin on both sides */
+  margin-bottom: 8px;
 }
 .ingrExpLocationName{
   margin-bottom: 0px;
@@ -476,7 +453,7 @@
   margin-bottom: 0px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   color: rgb(0, 0, 0);
-  width: 170px;
+  width: 216px;
   text-align: left;
   line-height: 1.2; /* Adjust the value to your preference */
 }
@@ -494,11 +471,12 @@
   border: none;
   height: 25px;
   width: 100px;
-  border-radius: 7px;
-  background-color: rgb(52, 122, 132);
+  border-radius: 8px;
+  background-color: #6DAB9B;
   color: white;
   font-size: 15px;
-  text-align: center; /* horizontally centers the text within the div */
+  text-align: center; 
+  cursor: pointer;
 }
 .ingrExpPlaceholderForLocations{
   border: 0px;
@@ -507,9 +485,10 @@
 }
 #ingrExpLocationZipDiv{
   border: 0px;
-  margin: 10px;
+  margin: 8px;
   padding: 0px;
   height: 22px;
+  display: flex;
 }
 .ingrExpNoLocationsFound{
   border: 0px;
