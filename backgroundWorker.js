@@ -241,7 +241,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 sendResponse(true); 
             }else{
                 //free uses are up
-                var extpay = ExtPay('ingredient-exporter'); 
+                const extpay = ExtPay('ceres-cart');
                 extpay.getUser().then(user => {
                     console.log('ext pay user ', user);
                     sendResponse(user['paid']); 
@@ -249,7 +249,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             }
     });
     }else if(message.to === 'launchPayWindow'){
-        var extpay = ExtPay('ingredient-exporter'); 
+        const extpay = ExtPay('ceres-cart')
         extpay.openPaymentPage();
     }else if (message.to === 'ingredients'){ //returns ingredients from kroger API
         var ingredients = Object.values(message.data); 
