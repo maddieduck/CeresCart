@@ -268,9 +268,10 @@ async function shopStore(event){ //a location has been selected from the locatio
   chrome.storage.local.set({['locationId']: locationId});
   chrome.storage.local.set({['locationName']: locationName});
 
-  //remove store locations from the popup 
-  var elementsWithClass = locationShadowRoot.querySelectorAll('.ingrExpParagraphOutline');
+  //remove ingredients from the main popup
+  var elementsWithClass = shadowRoot.querySelectorAll('.ingrExpOuterContainer');
   elementsWithClass.forEach(element => {
+    console.log('remove element')
     element.parentNode.removeChild(element);
   });
 
