@@ -3,7 +3,7 @@
   outline: 1px solid rgb(228, 230, 232);
   border-radius: 8px;
   height: 40px;
-  width: 264px;
+  width: 280px;
   margin: 0 auto; 
   align-items: center; 
 }
@@ -93,7 +93,7 @@
 .ingrExpParagraphOutline{
   position: relative; 
   outline: 1px solid rgb(228, 230, 232);
-  border-radius: 25px;
+  border-radius: 8px;
   width: 280px;
   height: 192px;
   display: flex;
@@ -383,7 +383,7 @@
   text-align: center;
   outline: 1px solid rgb(228, 230, 232);
   top: 88px; 
-  height: 436px;
+  height: 492px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 #ingrExpCheckoutButton {
@@ -392,35 +392,31 @@
   font-size: 20px; 
   background-color: rgb(109, 171, 155);
   font-weight: 450;
-
   color: #fff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   width: 392px;
-  height: 55px;
+  height: 48px;
   margin-bottom: 10px;
 }
-
 .ingrExpTopLocationDiv{
-  outline: 1px solid rgb(191, 191, 191); ;
+  outline: 1px solid rgb(228, 230, 232);
   border-radius: 8px;
   display: block;
-  height: 125px;
+  height: 144px;
   width: calc(100% - 16px); /* Set the width of the child div */
   margin: 0 8px; /* Set the margin on both sides */
   margin-bottom: 8px;
 }
 .ingrExpLocationName{
-  margin-bottom: 0px;
-  border: 0px;
-  margin-top: 0px;
-  padding-top: 5px;
-  padding-left: 15px;
+  padding-top: 8px;
+  margin-left: 8px;
+  padding-left: 0px;
   font-weight: 600;
-  font-size: 17px;
+  font-size: 14px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
-  height: 30px;
+  height: 20px;
   text-align: left;
   color: rgb(0, 0, 0);
 
@@ -430,15 +426,16 @@
   overflow: hidden;
 }
 .ingrExpLocationAddress{
-  margin-top: 0px;
-  padding-left: 15px;
+  margin-top: 8px;
   font-weight: 325; 
-  font-size: 15px;
+  padding-left: 8px;
+  font-size: 14px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
-  color: rgb(0, 0, 0);
+  color: rgb(29, 28, 28, 0.5);
+
   width: 170px;
   text-align: left;
-  line-height: 1.2; /* Adjust the value to your preference */
+  line-height: 1.2;
 
   display: -webkit-box; /* Limit the text to three lines */
   -webkit-box-orient: vertical;
@@ -446,37 +443,28 @@
   overflow: hidden;
 }
 .ingrExpPhoneNumber{
-  margin-top: 0px;
-  padding-left: 15px;
+  margin-top: 8px;
+  padding-left: 8px;
   font-weight: 325; 
-  font-size: 15px;
+  font-size: 14px;
   margin-bottom: 0px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
-  color: rgb(0, 0, 0);
+  color: rgb(29, 28, 28, 0.5);
   width: 216px;
   text-align: left;
   line-height: 1.2; /* Adjust the value to your preference */
 }
-.ingrExpLocationImage{
-  height: 20px;
-  padding-left: 15px;
-  padding-top: 9px;
-}
-.ingrExpPhoneImage{
-  height: 20px;
-  padding-left: 15px;
-  padding-top: 3px;
-}
 .ingrExpShopStore{
   border: none;
-  height: 25px;
-  width: 100px;
+  height: 34px;
   border-radius: 8px;
   background-color: #6DAB9B;
   color: white;
-  font-size: 15px;
+  font-size: 14px;
   text-align: center; 
   cursor: pointer;
+  width: calc(100% - 16px); /* Subtract 16px (8px margin on each side) from 100% */
+  margin: 8px; /* Add margin of 8px */
 }
 .ingrExpPlaceholderForLocations{
   border: 0px;

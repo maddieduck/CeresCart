@@ -125,12 +125,12 @@ async function insertEachIngredient(ingredientData){
       ingredDiv.appendChild(nodeClone);
     });
     
-    var elementsWithClass = shadowRoot.querySelectorAll('.ingrExpLeftArrowImage');
+    var elementsWithClass = shadowRoot.querySelectorAll('.ingrExpLeftArrow');
     elementsWithClass.forEach(element => {
       element.addEventListener('click', leftArrowClicked);
     });
 
-    elementsWithClass = shadowRoot.querySelectorAll('.ingrExpRightArrowImage');
+    elementsWithClass = shadowRoot.querySelectorAll('.rightArrow');
     elementsWithClass.forEach(element => {
       element.addEventListener('click', rightArrowClicked);
     });
