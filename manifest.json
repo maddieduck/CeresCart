@@ -8,10 +8,17 @@
         "default_popup": "defaultPopup.html",
         "default_title": "Ceres Cart",
         "default_icon":{
-            "16": "/images/cart.png",
-            "48": "/images/cart.png",
-            "128": "/images/cart.png"
+            "16": "/images/Ceres Logo.png",
+            "32": "/images/Ceres Logo.png",
+            "48": "/images/Ceres Logo.png",
+            "128": "/images/Ceres Logo.png"
         }
+     },
+     "icons": {
+      "16": "/images/Ceres Cart Logo.png",
+      "32": "/images/Ceres Cart Logo Large.png",
+      "48": "/images/Ceres Cart Logo Large.png",
+      "128": "/images/Ceres Cart Logo Large.png"
      },
      "background":{
         "service_worker": "backgroundWorker.js",

@@ -238,13 +238,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             var buttonCount = Number(result['buttonCounter']); 
             if (buttonCount){
                 //free  uses are available 
+                sendResponse({'userPaid': true, "exportsLeft": buttonCount}); 
+
                 sendResponse(true); 
             }else{
                 //free uses are up
                 const extpay = ExtPay('ceres-cart');
                 extpay.getUser().then(user => {
-                    console.log('ext pay user ', user);
-                    sendResponse(user['paid']); 
+                    console.log('ext pay user ', user); 
+                    sendResponse({'userPaid': user['paid'], "exportsLeft": 0}); 
+
+                    sendResponse(); 
                 })
             }
     });
@@ -336,9 +340,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.log('checkout pressed'); 
         getCartWriteAuth()
         .then(authCode => {
-            console.log('Add to cart auth code received ', authCode);
-            if(authCode == null){
-                sendResponse(false); //OAuth 2 failed 
+            console.log('Add to cart auth code ', authCode);
+            if(authCode === null){
+                sendResponse({'success': false, "errorMessage": "Cannot Authorize User"}); 
             }
             addToCart(authCode, message.data)
             .then(success => {
@@ -348,13 +352,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                         if(buttonCount>0){ 
                             buttonCount--; 
                             chrome.storage.local.set({'buttonCounter': buttonCount});
-                        }
+                        } 
                     }); 
+                    sendResponse({'success': true, "errorMessage": "Successfully Added To Cart"}); 
+                }else{
+                    sendResponse({'success': false, "errorMessage": "Error When Adding To Cart"}); 
                 }
-                sendResponse(success); 
             })
         })
         .catch(error => {
+            sendResponse({'success': false, "errorMessage": "Error When Authorizing"}); 
             console.log('error in backgroundWorker.js. when getting checking out', error.message);
         })
     }else if(message.to === 'locations'){

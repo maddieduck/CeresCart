@@ -50,7 +50,6 @@ if (ingredients != null) {
         shadowRoot.getElementById('ingrExpClose').addEventListener('click', closePopup); 
         shadowRoot.getElementById('ingrExpPerson').addEventListener('click', personClicked); 
         shadowRoot.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
-        shadowRoot.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonPopup); //TODO
         shadowRoot.getElementById('change').addEventListener('click', launchLocationPopup); 
         shadowRoot.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
         updateCheckoutButton();
@@ -61,13 +60,13 @@ if (ingredients != null) {
   })();
 }
 
-function checkoutButtonPopup(){
+function warningPopup(){
   var popup = shadowRoot.getElementById('ingrExpCheckoutButtonPopup');
   popup.style.display = 'block';
 
   setTimeout(function () {
       popup.style.display = 'none';
-  }, 3000); // Adjust the time (in milliseconds) as needed
+  }, 3000); 
 }
 
 function loadFromLocalStorage(key) {
@@ -101,7 +100,7 @@ async function insertEachIngredient(ingredientData){
       nodeClone.querySelector('.ingredientDescription').textContent = productData[0].description;
       nodeClone.querySelector('.ingrExpSize').textContent = productData[0].size;
       nodeClone.querySelector('.ingrExpOuterContainer').id = 'ingrExpIngredient' + index;
-      
+
       nodeClone.querySelector('.leftArrow').style.opacity = 0;
       nodeClone.querySelector('.leftArrow').style.visibility = 'hidden';
       nodeClone.querySelector('.leftArrow').style.pointerEvents = 'none';
@@ -135,14 +134,23 @@ async function insertEachIngredient(ingredientData){
       element.addEventListener('click', rightArrowClicked);
     });
 
-    elementsWithClass = shadowRoot.querySelectorAll('.ingrExpPlusButton');
+    elementsWithClass = shadowRoot.querySelectorAll('.leftArrow');
     elementsWithClass.forEach(element => {
-      element.addEventListener('click', plusButtonClicked);
+      element.addEventListener('click', leftArrowClicked);
+    });
+    elementsWithClass = shadowRoot.querySelectorAll('.startingPlusButton');
+    elementsWithClass.forEach(element => {
+      element.addEventListener('click', startingPlusButtonClicked);
     });
 
-    elementsWithClass = shadowRoot.querySelectorAll('.ingrExpMinusButton');
+    elementsWithClass = shadowRoot.querySelectorAll('.minusButton');
     elementsWithClass.forEach(element => {
       element.addEventListener('click', minusButtonClicked);
+    });
+
+    elementsWithClass = shadowRoot.querySelectorAll('.plusButton');
+    elementsWithClass.forEach(element => {
+      element.addEventListener('click', plusButtonClicked);
     });
   })
   .catch(error => console.error('Error:', error));
@@ -360,9 +368,9 @@ function rightArrowClicked(event){
 }
 
 async function updateCheckoutButton() {
-  console.log('update checkout button');
+  //console.log('update checkout button');
   let hasAccess = await chrome.runtime.sendMessage({ to: 'userHasAccess'}); 
-  console.log('access in checkout button ', hasAccess);
+  //console.log('access in checkout button ', hasAccess);
   if (hasAccess){
     var totalQuantity = 0;
     var totalPrice = 0.0;
@@ -399,9 +407,46 @@ async function updateCheckoutButton() {
   }
 }
 
+function startingPlusButtonClicked(event) {
+  var quantityButtons = event.target.closest('.ingrExpOuterContainer').querySelector('.quantityButtons');
+
+  quantityButtons.style.display = 'flex';
+  quantityButtons.style.width = '108px';
+  quantityButtons.style.height = '40px';
+
+  var id = event.target.closest('[id]').id;
+  var productIndex = Number(id.replace(/ingrExpIngredient/g, ''));
+  var indexOfProductDisplayed = allProductData[productIndex]['indexOfProductDisplayed'];
+
+  resetTimeoutOnQuantityButtons(event);
+
+  //if the quantity is 0 then increment the array of data 
+  var currentQuantity = allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'];
+  if (currentQuantity == 0) {
+    plusButtonClicked(event);
+  }
+}
+
+function updateStartingPlusButton(event){ //updates the original plus button with a quantity 
+  var startingPlusButton = event.target.closest('.ingrExpOuterContainer').querySelector('.startingPlusButton');
+  var id = event.target.closest('[id]').id;
+  var productIndex = Number(id.replace(/ingrExpIngredient/g, ''));
+  var indexOfProductDisplayed = allProductData[productIndex]['indexOfProductDisplayed'];
+  if(startingPlusButton){
+    var quantity = allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'];
+    if(quantity == 0){
+      startingPlusButton.innerText = "+";
+      startingPlusButton.style.fontSize = '28px';
+    }else{
+      startingPlusButton.innerText = String(quantity);
+      startingPlusButton.style.fontSize = '18px';
+    }
+  }
+}
+
 function minusButtonClicked(event) {
   // Find the quantity element within the closest ancestor
-  var quantityElement = event.target.closest('.ingrExpMainDiv').querySelector('.ingrExpQuantity');
+  var quantityElement = event.target.closest('.ingrExpOuterContainer').querySelector('.quantity');
 
   // Check if the element is found
   if (quantityElement) {
@@ -415,14 +460,17 @@ function minusButtonClicked(event) {
       var productIndex = Number(id.replace(/ingrExpIngredient/g, ''));
       var indexOfProductDisplayed = allProductData[productIndex]['indexOfProductDisplayed'];
       allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'] = currentQuantity - 1;
+
+      updateStartingPlusButton(event);
+      updateCheckoutButton(); 
     }
   }
-  updateCheckoutButton(); 
+  resetTimeoutOnQuantityButtons(event);
 }
 
 function plusButtonClicked(event) {
   // Find the quantity element within the closest ancestor
-  var quantityElement = event.target.closest('.ingrExpMainDiv').querySelector('.ingrExpQuantity');
+  var quantityElement = event.target.closest('.ingrExpOuterContainer').querySelector('.quantity');
   // Check if the element is found
   if (quantityElement) {
     // Update the content of the quantity element (increment, for example)
@@ -435,14 +483,30 @@ function plusButtonClicked(event) {
     console.log('all prod data ', productIndex); 
     var indexOfProductDisplayed = allProductData[productIndex]['indexOfProductDisplayed'];
     allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'] = currentQuantity + 1;
+    
+    updateStartingPlusButton(event);
+    updateCheckoutButton(); 
   }
-  updateCheckoutButton(); 
+  resetTimeoutOnQuantityButtons(event);
+}
+
+function resetTimeoutOnQuantityButtons(event){
+  //console.log('reset timeout ');
+  var quantityButtons = event.target.closest('.ingrExpOuterContainer').querySelector('.quantityButtons');
+  // Clear any existing timeout
+  clearTimeout(quantityButtons.timeout);
+  // Set new timeout for hiding the button
+  quantityButtons.timeout = setTimeout(() => {
+    quantityButtons.style.width = '40px';
+    quantityButtons.style.height = '40px';
+    quantityButtons.style.display = 'none';
+  }, 2000);
 }
  
 async function checkoutUser(quantityAndUPCArray){//lets the user attempt to checkout if they have paid
-  let successful = await chrome.runtime.sendMessage({ to: 'checkout', data: quantityAndUPCArray}); 
-  console.log('Was cart successful? ', successful); 
-  if(successful){
+  let response = await chrome.runtime.sendMessage({ to: 'checkout', data: quantityAndUPCArray}); 
+  console.log('Was cart successful? ', response.successful); 
+  if(response.successful){ 
     //make all quantities 0 in array 
     allProductData.forEach(outerArray => {
       outerArray.productData.forEach(product => {
@@ -457,6 +521,7 @@ async function checkoutUser(quantityAndUPCArray){//lets the user attempt to chec
     //update checkout button
     shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Items Successfully Added`;
   }else{
+    warningPopup(response.errorMessage);
     console.log('error when trying to add to cart');
   }  
 }
@@ -481,10 +546,11 @@ async function checkoutButtonClicked(){
 
   if(quantityAndUPCArray.length != 0){
     console.log('quantity and upc ', quantityAndUPCArray);
-    let hasAccess = await chrome.runtime.sendMessage({ to: 'userHasAccess'}); 
-    if(hasAccess){
+    let response = await chrome.runtime.sendMessage({ to: 'userHasAccess'}); 
+    if(response.userPaid){
       checkoutUser(quantityAndUPCArray)
     }else{
+      warningPopup(response.exportsLeft + "Exports Left");
       console.log('User has not paid. Launch Extension Pay.')
       chrome.runtime.sendMessage({ to: 'launchPayWindow', data: quantityAndUPCArray}); 
       //change button if the user has paid 

@@ -274,12 +274,6 @@
   color: rgb(29, 28, 28); 
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 }
-.ingrExpDescriptionAndQuantity * {
-  flex-direction: column; 
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
 .ingrExpSize{
   font-weight: 325; 
   font-size: 14px;
@@ -289,22 +283,12 @@
   text-align: center;
   margin: auto;
   
-  display: -webkit-box; /* Limit the text to 1 line */
+  display: -webkit-box; 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1; 
   overflow: hidden;
 }
 .ingrExpMinusButton{
-  border: none;
-  height: 25px;
-  width: 22px;
-  border-radius: 20%;
-  background-color: rgb(52, 122, 132);
-  color: white;
-  font-size: 20px;
-  cursor: pointer;
-}
-.ingrExpMinusButton:hover{
   border: none;
   height: 25px;
   width: 22px;
@@ -324,16 +308,6 @@
   font-size: 20px;
   cursor: pointer;
 }
-.ingrExpPlusButton:hover{
-  border: none;
-  height: 25px;
-  width: 22px;
-  border-radius: 20%;
-  background-color: rgb(52, 122, 132);
-  color: white;
-  font-size: 20px;
-  cursor: pointer;
-}
 .ingrExpPlusMinusDiv{
   background-color: rgb(52, 122, 132);
   border-radius: 12px;
@@ -344,13 +318,6 @@
   justify-content: center;
   text-align: center;
 }
-.ingrExpQuantity{
-  color: white;
-  width: 65px;
-  font-weight: 350;
-  font-size: 16px;
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
-} 
 .ingrExpIngredientImage{
   margin-top: 4px;
   height: 72px; 
@@ -386,9 +353,25 @@
   height: 492px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
+#ingrExpCheckoutButtonPopup {
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+  font-size: 20px; 
+  background-color: rgb(228, 230, 232); 
+  font-weight: 450;
+  color: #6DAB9B;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 392px;
+  height: 48px;
+  margin-bottom: 10px;
+  position: absolute;
+  left: 50%; 
+  transform: translateX(-50%); 
+  display: none;
+}
 #ingrExpCheckoutButton {
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
-  padding: 10px 20px; 
   font-size: 20px; 
   background-color: rgb(109, 171, 155);
   font-weight: 450;
@@ -452,7 +435,7 @@
   color: rgb(29, 28, 28, 0.5);
   width: 216px;
   text-align: left;
-  line-height: 1.2; /* Adjust the value to your preference */
+  line-height: 1.2; 
 }
 .ingrExpShopStore{
   border: none;
@@ -463,8 +446,8 @@
   font-size: 14px;
   text-align: center; 
   cursor: pointer;
-  width: calc(100% - 16px); /* Subtract 16px (8px margin on each side) from 100% */
-  margin: 8px; /* Add margin of 8px */
+  width: calc(100% - 16px); 
+  margin: 8px; 
 }
 .ingrExpPlaceholderForLocations{
   border: 0px;
@@ -494,20 +477,59 @@
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 }
 .ingrExpBold{
-  font-size: 17px; /* Adjust font size as needed */
+  font-size: 17px; 
   font-weight: bold;
 }
-#ingrExpCheckoutButtonPopup{
+.startingPlusButton{
+  height: 40px;
+  width: 40px;
+  border-radius: 50%; 
+  background-color: #6DAB9B;
+  color: #fff;
+  cursor: pointer;
+  font-size: 28px;
+  border: none;
+  position: absolute; 
+  right: 16px; 
+  top: 8px; 
+}
+.quantityButtons{
+  display: none;
+  border-radius: 8px; 
+  background-color: #6DAB9B;
+  align-items: center; 
+  color: #fff;
+  justify-content: center;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
-  padding: 10px 20px; /* Adjust padding as needed */
-  font-size: 16px; /* Adjust font size as needed */
-  background-color: rgb(52, 122, 132);
+  align-items: center; 
+  position: absolute; 
+  right: 16px; 
+  top: 8px; 
+}
+.minusButton{
+  width: 40px;
+  height: 40px;
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+  background-color: #6DAB9B;
+  cursor: pointer;
+  font-size: 28px;
   color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px; 
+}
+.plusButton{
+  width: 40px;
+  height: 40px;
+  background-color: #6DAB9B;
   cursor: pointer;
-  width: 350px;
-  margin-bottom: 10px;
-  display: none;
-  z-index: 2147483647;
+  font-size: 28px;
+  color: #fff;
+  border: none;
+  border-radius: 8px; 
+}
+.quantity{
+  width: 28px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
 }
