@@ -502,11 +502,11 @@ function resetTimeoutOnQuantityButtons(event){
     quantityButtons.style.display = 'none';
   }, 2000);
 }
- 
+
 async function checkoutUser(quantityAndUPCArray){//lets the user attempt to checkout if they have paid
   let response = await chrome.runtime.sendMessage({ to: 'checkout', data: quantityAndUPCArray}); 
   console.log('Was cart successful? ', response.successful); 
-  if(response.successful){ 
+  if(response.success){ 
     //make all quantities 0 in array 
     allProductData.forEach(outerArray => {
       outerArray.productData.forEach(product => {
@@ -514,9 +514,10 @@ async function checkoutUser(quantityAndUPCArray){//lets the user attempt to chec
       });
     });
     //make all quantities 0
-    const elements = shadowRoot.querySelectorAll(`.${'ingrExpQuantity'}`);
+    const elements = shadowRoot.querySelectorAll(`.${'startingPlusButton'}`);
     elements.forEach(element => {
-      element.innerText = '0';
+      element.innerText = '+';
+      element.style.fontSize = "28px"; 
     });
     //update checkout button
     shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Items Successfully Added`;

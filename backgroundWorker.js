@@ -341,27 +341,30 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         getCartWriteAuth()
         .then(authCode => {
             console.log('Add to cart auth code ', authCode);
-            if(authCode === null){
-                sendResponse({'success': false, "errorMessage": "Cannot Authorize User"}); 
+            if(authCode == null){
+                sendResponse({success: false, "errorMessage": "Cannot Authorize User"}); 
+            }else{
+                addToCart(authCode, message.data)
+                .then(success => {
+                    console.log('add to cart successful? ', success);
+                    if(success){//decrement free trial variable if relevant 
+                        chrome.storage.local.get('buttonCounter', (result) => {
+                            var buttonCount = Number(result['buttonCounter']); 
+                            if(buttonCount>0){ 
+                                buttonCount--; 
+                                chrome.storage.local.set({'buttonCounter': buttonCount});
+                            } 
+                        }); 
+                        sendResponse({success: true, errorMessage: "Successfully Added To Cart"}); 
+                    }else{
+                        console.log('Error when adding to cart.')
+                        sendResponse({success: false, errorMessage: "Error When Adding To Cart"}); 
+                    }
+                })
             }
-            addToCart(authCode, message.data)
-            .then(success => {
-                if(success){//decrement free trial variable if relevant 
-                    chrome.storage.local.get('buttonCounter', (result) => {
-                        var buttonCount = Number(result['buttonCounter']); 
-                        if(buttonCount>0){ 
-                            buttonCount--; 
-                            chrome.storage.local.set({'buttonCounter': buttonCount});
-                        } 
-                    }); 
-                    sendResponse({'success': true, "errorMessage": "Successfully Added To Cart"}); 
-                }else{
-                    sendResponse({'success': false, "errorMessage": "Error When Adding To Cart"}); 
-                }
-            })
         })
         .catch(error => {
-            sendResponse({'success': false, "errorMessage": "Error When Authorizing"}); 
+            sendResponse({success: false, "errorMessage": "Error When Authorizing"}); 
             console.log('error in backgroundWorker.js. when getting checking out', error.message);
         })
     }else if(message.to === 'locations'){
