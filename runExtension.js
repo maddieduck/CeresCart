@@ -209,16 +209,17 @@ async function insertLocations(){
 }
 
 async function launchLocationPopup() {
-  var locationPopup = shadowRoot.getElementById('ingrExpLocationPopup'); 
-  console.log('launch location popup ', locationPopup); 
+  console.log('launch location popup ', locationShadowRoot); 
   //display or hide the zip code in the lcoations popup 
   var pickupAt = shadowRoot.getElementById('ingrExpPickupAt'); //check if the location is being displayed in main popup
   console.log('pickup at ', pickupAt.style.display)
-  if (locationPopup == null){//check if popup is already open 
+  if(locationShadowRoot != undefined){
+    console.log('location popup ', locationShadowRoot.getElementById('ingrExpTopLevelLocationPopup'))
+  }
+  if (locationShadowRoot === undefined){//check if popup is already open 
     try{ //insert the popup
       const locationPopupResponse = await fetch(chrome.runtime.getURL('locationPopup.html'));
       const locationPopupHtml = await locationPopupResponse.text();
-      //document.body.insertAdjacentHTML('afterbegin', `<div id="ingrExpLocationPopup">${locationPopupHtml}</div>`); 
       
       const htmlContents = await Promise.all([
         fetch(chrome.runtime.getURL('locationPopup.html')).then(response => response.text()),
@@ -299,7 +300,7 @@ function minimizePopup() {//TODO: commented out for now, but need to add
   //TODO: make new screen to display
 }
 
-function displayNewIngredient(id, rightOrLeft){ //loads the image and product info when an arrow is clicked 
+function displayNewIngredient(id, rightOrLeft, event){ //loads the image and product info when an arrow is clicked 
   console.log('all product Data', allProductData);
   var productIndex = Number(id.replace(/ingrExpIngredient/g, '')); 
   var ingredientClickedData = allProductData[productIndex]; 
@@ -314,8 +315,12 @@ function displayNewIngredient(id, rightOrLeft){ //loads the image and product in
   shadowRoot.getElementById(id).querySelector('.ingrExpIngredientBrand').textContent = ingredientClickedData['productData'][newIngredientIndex]['brand'];
   shadowRoot.getElementById(id).querySelector('.ingredientDescription').textContent = ingredientClickedData['productData'][newIngredientIndex]['description'];
   shadowRoot.getElementById(id).querySelector('.ingrExpSize').textContent = ingredientClickedData['productData'][newIngredientIndex]['size'];
-  //TODO
-  //shadowRoot.getElementById(id).querySelector('.ingrExpQuantity').innerText = String(ingredientClickedData['productData'][newIngredientIndex]['quantity']);
+  updateStartingPlusButton(event); 
+  //remove timer from quantity button 
+  var quantityButtons = event.target.closest('.ingrExpOuterContainer').querySelector('.quantityButtons');
+  clearTimeout(quantityButtons.timeout);
+  quantityButtons.style.display = 'none';
+
   if(ingredientClickedData['productData'][newIngredientIndex]['price'] != null){
     const dollars = Math.floor(ingredientClickedData['productData'][newIngredientIndex]['price']);
     const cents = Math.round((ingredientClickedData['productData'][newIngredientIndex]['price'] - dollars) * 100);
@@ -359,12 +364,12 @@ function displayNewIngredient(id, rightOrLeft){ //loads the image and product in
 
 function leftArrowClicked(event){
   var id = event.target.closest('[id]').id; 
-  displayNewIngredient(id, 'left'); 
+  displayNewIngredient(id, 'left', event); 
 }
 
 function rightArrowClicked(event){
   var id = event.target.closest('[id]').id; 
-  displayNewIngredient(id, 'right'); 
+  displayNewIngredient(id, 'right', event); 
 }
 
 async function updateCheckoutButton() {
@@ -408,20 +413,21 @@ async function updateCheckoutButton() {
 }
 
 function startingPlusButtonClicked(event) {
-  var quantityButtons = event.target.closest('.ingrExpOuterContainer').querySelector('.quantityButtons');
-
-  quantityButtons.style.display = 'flex';
-  quantityButtons.style.width = '108px';
-  quantityButtons.style.height = '40px';
-
   var id = event.target.closest('[id]').id;
   var productIndex = Number(id.replace(/ingrExpIngredient/g, ''));
   var indexOfProductDisplayed = allProductData[productIndex]['indexOfProductDisplayed'];
 
   resetTimeoutOnQuantityButtons(event);
 
-  //if the quantity is 0 then increment the array of data 
+  var quantityButtons = event.target.closest('.ingrExpOuterContainer').querySelector('.quantityButtons');
+  quantityButtons.style.display = 'flex';
+  quantityButtons.style.width = '108px';
+  quantityButtons.style.height = '40px';
   var currentQuantity = allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'];
+  var currentQuantityButton = event.target.closest('.ingrExpOuterContainer').querySelector('.quantity');
+  currentQuantityButton.innerText = String(currentQuantity);
+
+  //if the quantity is 0 then increment the array of data 
   if (currentQuantity == 0) {
     plusButtonClicked(event);
   }
@@ -447,19 +453,25 @@ function updateStartingPlusButton(event){ //updates the original plus button wit
 function minusButtonClicked(event) {
   // Find the quantity element within the closest ancestor
   var quantityElement = event.target.closest('.ingrExpOuterContainer').querySelector('.quantity');
+  // Check if the element is found
+  var id = event.target.closest('[id]').id;
+  var productIndex = Number(id.replace(/ingrExpIngredient/g, ''));
+  var indexOfProductDisplayed = allProductData[productIndex]['indexOfProductDisplayed'];
 
   // Check if the element is found
   if (quantityElement) {
-    // Update the content of the quantity element (decrement, for example)
-    var currentQuantity = Number(quantityElement.innerText);
+    // Update the content of the quantity element 
+    var currentQuantity = allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'] 
+    console.log('current quantity ', currentQuantity);
     if (currentQuantity > 0) {
+      // Update the content of the quantity element 
       quantityElement.innerText = String(currentQuantity - 1);
-
       // Update the corresponding data in allProductData
       var id = event.target.closest('[id]').id;
       var productIndex = Number(id.replace(/ingrExpIngredient/g, ''));
       var indexOfProductDisplayed = allProductData[productIndex]['indexOfProductDisplayed'];
       allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'] = currentQuantity - 1;
+      console.log('current quantity updated', currentQuantity); 
 
       updateStartingPlusButton(event);
       updateCheckoutButton(); 
@@ -472,9 +484,13 @@ function plusButtonClicked(event) {
   // Find the quantity element within the closest ancestor
   var quantityElement = event.target.closest('.ingrExpOuterContainer').querySelector('.quantity');
   // Check if the element is found
+  var id = event.target.closest('[id]').id;
+  var productIndex = Number(id.replace(/ingrExpIngredient/g, ''));
+  var indexOfProductDisplayed = allProductData[productIndex]['indexOfProductDisplayed'];
+
   if (quantityElement) {
-    // Update the content of the quantity element (increment, for example)
-    var currentQuantity = Number(quantityElement.innerText);
+    // Update the content of the quantity element 
+    var currentQuantity = allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'] //Number(quantityElement.innerText);
     quantityElement.innerText = String(currentQuantity + 1);
 
     // Update the corresponding data in allProductData
@@ -554,7 +570,6 @@ async function checkoutButtonClicked(){
       warningPopup(response.exportsLeft + "Exports Left");
       console.log('User has not paid. Launch Extension Pay.')
       chrome.runtime.sendMessage({ to: 'launchPayWindow', data: quantityAndUPCArray}); 
-      //change button if the user has paid 
     }
   }else{
     console.log('No items selected. Do nothing.');
