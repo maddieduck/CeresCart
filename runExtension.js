@@ -60,10 +60,10 @@ if (ingredients != null) {
   })();
 }
 
-function warningPopup(){
+function warningPopup(warningText){
   var popup = shadowRoot.getElementById('ingrExpCheckoutButtonPopup');
   popup.style.display = 'block';
-
+  popup.textContent = warningText; 
   setTimeout(function () {
       popup.style.display = 'none';
   }, 3000); 
@@ -236,7 +236,6 @@ async function launchLocationPopup() {
 
       locationShadowRoot.getElementById('ingrExpCloseInPopup').addEventListener('click', closePopup); 
 
-      
       console.log('display style ', pickupAt.style.display);
       if (pickupAt.style.display == '-webkit-box'){ //The store location is showing, show the zip code 
         console.log('show zip code')
@@ -274,6 +273,9 @@ async function shopStore(event){ //a location has been selected from the locatio
   chrome.storage.local.set({['locationId']: locationId});
   chrome.storage.local.set({['locationName']: locationName});
 
+  allProductData = [];
+  updateCheckoutButton();  
+  
   //remove ingredients from the main popup
   var elementsWithClass = shadowRoot.querySelectorAll('.ingrExpOuterContainer');
   elementsWithClass.forEach(element => {
@@ -284,9 +286,7 @@ async function shopStore(event){ //a location has been selected from the locatio
   //insert ingredients from the new store location
   let backgroundResponse = await chrome.runtime.sendMessage({ to: 'ingredients', data: ingredients, locationExists: true});
   const ingredientData = new Map(backgroundResponse.ingredientData);
-
   insertEachIngredient(ingredientData);
-  updateCheckoutButton();
 }
 
 function minimizePopup() {//TODO: commented out for now, but need to add 
@@ -298,7 +298,7 @@ function minimizePopup() {//TODO: commented out for now, but need to add
 }
 
 function displayNewIngredient(id, rightOrLeft, event){ //loads the image and product info when an arrow is clicked 
-  console.log('all product Data', allProductData);
+  console.log('all product Data',  productData);
   var productIndex = Number(id.replace(/ingrExpIngredient/g, '')); 
   var ingredientClickedData = allProductData[productIndex]; 
   if (rightOrLeft == 'right'){
@@ -518,7 +518,7 @@ function resetTimeoutOnQuantityButtons(event){
 
 async function checkoutUser(quantityAndUPCArray){//lets the user attempt to checkout if they have paid
   let response = await chrome.runtime.sendMessage({ to: 'checkout', data: quantityAndUPCArray}); 
-  console.log('Was cart successful? ', response.successful); 
+  console.log('Was cart successful? ', response.success); 
   if(response.success){ 
     //make all quantities 0 in array 
     allProductData.forEach(outerArray => {
@@ -526,7 +526,7 @@ async function checkoutUser(quantityAndUPCArray){//lets the user attempt to chec
           product.quantity = 0;
       });
     });
-    //make all quantities 0
+    //make all quantities 0 in UI
     const elements = shadowRoot.querySelectorAll(`.${'startingPlusButton'}`);
     elements.forEach(element => {
       element.innerText = '+';
@@ -538,6 +538,7 @@ async function checkoutUser(quantityAndUPCArray){//lets the user attempt to chec
     warningPopup(response.errorMessage);
     console.log('error when trying to add to cart');
   }  
+  return (response); 
 }
 
 async function checkoutButtonClicked(){
@@ -562,11 +563,18 @@ async function checkoutButtonClicked(){
     console.log('quantity and upc ', quantityAndUPCArray);
     let response = await chrome.runtime.sendMessage({ to: 'userHasAccess'}); 
     if(response.userPaid){
-      checkoutUser(quantityAndUPCArray)
+      console.log('User has paid.');
+      checkoutUser(quantityAndUPCArray);
+    }else if (response.exportsLeft > 0){
+      console.log('User has not paid, but has exports left. Exports left. ', response.exportsLeft);
+      let checkoutResponse = await checkoutUser(quantityAndUPCArray); 
+      if (checkoutResponse.success){
+        warningPopup(response.exportsLeft + " Exports Left");
+      }
     }else{
-      warningPopup(response.exportsLeft + "Exports Left");
-      console.log('User has not paid. Launch Extension Pay.')
-      chrome.runtime.sendMessage({ to: 'launchPayWindow', data: quantityAndUPCArray}); 
+      console.log('User has not paid. Launch Extension Pay.'); 
+      warningPopup("No Free Exports Left"); 
+      chrome.runtime.sendMessage({ to: 'launchPayWindow'}); 
     }
   }else{
     console.log('No items selected. Do nothing.');

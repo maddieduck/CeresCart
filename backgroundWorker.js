@@ -237,15 +237,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         //check if the user has paid 
         const extpay = ExtPay('ceres-cart');
         extpay.getUser().then(user => { 
-            console.log('ext pay user ', user); 
+            console.log('ext pay user ', user, 'paid ', user['paid']); 
             if(user['paid']){
-                sendResponse({'userPaid': user['paid'], "exportsLeft": null}); 
+                sendResponse({'userPaid': true, "exportsLeft": null}); 
             }else{
                 chrome.storage.local.get('buttonCounter', (result) => {
                     var buttonCount = Number(result['buttonCounter']); 
                     if (buttonCount){
                         //free  uses are available 
-                        sendResponse({'userPaid': true, "exportsLeft": buttonCount}); 
+                        sendResponse({'userPaid': false, "exportsLeft": buttonCount}); 
                     }else{
                         //free uses are up
                         sendResponse({'userPaid': false, "exportsLeft": 0}); 
@@ -354,6 +354,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                             if(buttonCount>0){ 
                                 buttonCount--; 
                                 chrome.storage.local.set({'buttonCounter': buttonCount});
+                                console.log('exports left ', buttonCount);
                             } 
                         }); 
                         sendResponse({success: true, errorMessage: "Successfully Added To Cart"}); 
