@@ -161,14 +161,18 @@ function personClicked(event){
 }
 
 function closePopup(event) {//closes the main popup or the location popup 
+  //mainShadowRoot 
   console.log('close id ', event.target.id);
   var id = event.target.id;
   if (id === 'ingrExpCloseImage'){
-    document.getElementById('ingrExpIngredientExporterPopup').remove();
+    // Assuming containerDiv is already defined
+    document.getElementById('ingrExpIngredientExporterPopup').remove(); 
+
     var locationPopup = document.getElementById('ingrExpLocationPopup');
     if (locationPopup){
       locationPopup.remove();
     }
+    
   }else if (id === "ingrExpCloseImageInPopup"){
     document.getElementById('ingrExpLocationPopup').remove();
   }
@@ -212,15 +216,8 @@ async function launchLocationPopup() {
   console.log('launch location popup ', locationShadowRoot); 
   //display or hide the zip code in the lcoations popup 
   var pickupAt = shadowRoot.getElementById('ingrExpPickupAt'); //check if the location is being displayed in main popup
-  console.log('pickup at ', pickupAt.style.display)
-  if(locationShadowRoot != undefined){
-    console.log('location popup ', locationShadowRoot.getElementById('ingrExpTopLevelLocationPopup'))
-  }
-  if (locationShadowRoot === undefined){//check if popup is already open 
-    try{ //insert the popup
-      const locationPopupResponse = await fetch(chrome.runtime.getURL('locationPopup.html'));
-      const locationPopupHtml = await locationPopupResponse.text();
-      
+  if (document.getElementById('ingrExpLocationPopup') == null){//check if popup is already open 
+    try{ //insert the popup       
       const htmlContents = await Promise.all([
         fetch(chrome.runtime.getURL('locationPopup.html')).then(response => response.text()),
         fetch(chrome.runtime.getURL('styles.css')).then(response => response.text()),

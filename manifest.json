@@ -34,7 +34,13 @@
         "js": ["runExtension.js"],
         "type": "module",
         "css": ["styles.css"]        
-      }],
+      },
+      {
+        "matches": ["https://extensionpay.com/*"],
+        "js": ["ExtensionPayCallback.js"],
+        "run_at": "document_start"
+      }
+    ],
       "web_accessible_resources": [
         {
           "resources": ["index.html", "ingredientContainer.html", "locationPopup.html", "location.html", "images/*.png", "index.js", "styles.css"],

@@ -2,14 +2,14 @@ import {clientCredentials, cartWriteAuthorizationCode, productSearch,locationSea
 import {loadFromLocalStorage} from './storageHelpers.js'
 import {stripIngredients} from './stripIngredients.js'
 import {getRefinedIngredients, prioritizeProductsChatGPT} from './ChatGPT.js'
-import {ExtPay} from './ExtPay.js'; 
+import {ExtPay} from './ExtPay.js'
 
 chrome.runtime.onInstalled.addListener(function() {
     // Initialize the counter
     chrome.storage.local.set({'buttonCounter': 3});
 
     // this line is required to use ExtPay in the rest of your extension
-    var extpay = ExtPay('ingredient-exporter'); 
+    const extpay = ExtPay('ceres-cart');
     extpay.startBackground(); 
     console.log('ext pay started');
 });
@@ -231,24 +231,26 @@ productsWithoutIngredient.forEach(product => {
 
 return [...productsWithIngredientProduce, ...productsWithIngredientOther, ...productsWithoutIngredient4, ...productsWithoutIngredient94, ...productsWithoutIngredientOther]; 
 }
- 
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
     if (message.to === 'userHasAccess'){ //returns ingredients from kroger API        
         chrome.storage.local.get('buttonCounter', (result) => {
+            /*
+            console.log('call callback');
+            const extpay = ExtPay('ceres-cart');
+            extpay.onPaid.addListener(user => {
+                console.log('call', user)
+            })*/
             var buttonCount = Number(result['buttonCounter']); 
             if (buttonCount){
                 //free  uses are available 
                 sendResponse({'userPaid': true, "exportsLeft": buttonCount}); 
-
-                sendResponse(true); 
             }else{
                 //free uses are up
                 const extpay = ExtPay('ceres-cart');
                 extpay.getUser().then(user => {
                     console.log('ext pay user ', user); 
                     sendResponse({'userPaid': user['paid'], "exportsLeft": 0}); 
-
-                    sendResponse(); 
                 })
             }
     });
