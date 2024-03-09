@@ -231,9 +231,8 @@ async function launchLocationPopup() {
       locationShadowRoot.innerHTML = locationHtml;
       const style = document.createElement('style'); 
       style.textContent = cssStyle; 
-      locationShadowRoot.appendChild(style);
+      locationShadowRoot.appendChild(style); 
       document.body.insertAdjacentElement('afterbegin', containerDiv);
-
       locationShadowRoot.getElementById('ingrExpCloseInPopup').addEventListener('click', closePopup); 
 
       console.log('display style ', pickupAt.style.display);

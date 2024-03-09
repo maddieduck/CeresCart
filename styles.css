@@ -6,6 +6,7 @@
   width: 280px;
   margin: 0 auto; 
   align-items: center; 
+  margin-top: 8px;
 }
 #ingrExpPickupAt{
   font-weight: 325;
@@ -99,6 +100,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+
 }
 .ImageAndQuantity{
   display: flex;
@@ -232,6 +234,8 @@
   color: #1D1C1C;
   text-align: center;
   margin: auto;
+  padding-right: 16px;
+  padding-left: 16px;
 
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -240,7 +244,7 @@
 }
 .ingredientDescription{
   font-weight: 345;
-  font-size: 16px;
+  font-size: 14px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   height: 50px;
   display: flex;
@@ -248,6 +252,8 @@
   text-align: center;
   margin: auto;
   line-height: 0.9; 
+  padding-right: 16px;
+  padding-left: 16px;
 
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -278,7 +284,7 @@
   font-weight: 325; 
   font-size: 14px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
-  color: #1D1C1C;
+  color: #8E8D8D;
   width: 170px;
   text-align: center;
   margin: auto;
@@ -319,9 +325,9 @@
   text-align: center;
 }
 .ingrExpIngredientImage{
-  margin-top: 4px;
-  height: 72px; 
-  width: 72px;
+  margin-top: 8px;
+  height: 68px; 
+  width: 68px;
   object-fit: contain;
 }
 #ingrExpTopLevelDiv{
