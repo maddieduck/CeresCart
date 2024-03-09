@@ -233,27 +233,26 @@ return [...productsWithIngredientProduce, ...productsWithIngredientOther, ...pro
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
-    if (message.to === 'userHasAccess'){ //returns ingredients from kroger API        
-        chrome.storage.local.get('buttonCounter', (result) => {
-            /*
-            console.log('call callback');
-            const extpay = ExtPay('ceres-cart');
-            extpay.onPaid.addListener(user => {
-                console.log('call', user)
-            })*/
-            var buttonCount = Number(result['buttonCounter']); 
-            if (buttonCount){
-                //free  uses are available 
-                sendResponse({'userPaid': true, "exportsLeft": buttonCount}); 
+    if (message.to === 'userHasAccess'){ //returns ingredients from kroger API
+        //check if the user has paid 
+        const extpay = ExtPay('ceres-cart');
+        extpay.getUser().then(user => { 
+            console.log('ext pay user ', user); 
+            if(user['paid']){
+                sendResponse({'userPaid': user['paid'], "exportsLeft": null}); 
             }else{
-                //free uses are up
-                const extpay = ExtPay('ceres-cart');
-                extpay.getUser().then(user => {
-                    console.log('ext pay user ', user); 
-                    sendResponse({'userPaid': user['paid'], "exportsLeft": 0}); 
-                })
+                chrome.storage.local.get('buttonCounter', (result) => {
+                    var buttonCount = Number(result['buttonCounter']); 
+                    if (buttonCount){
+                        //free  uses are available 
+                        sendResponse({'userPaid': true, "exportsLeft": buttonCount}); 
+                    }else{
+                        //free uses are up
+                        sendResponse({'userPaid': false, "exportsLeft": 0}); 
+                    }
+                });
             }
-    });
+        })
     }else if(message.to === 'launchPayWindow'){
         const extpay = ExtPay('ceres-cart')
         extpay.openPaymentPage();
