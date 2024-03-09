@@ -1,8 +1,8 @@
-var allProductData = []; 
+var allProductData = []; //2D array of all data from grocery store
 var allLocationData = []; 
 var shadowRoot; 
 var locationShadowRoot; 
-let ingredients = findIngredientsOnPage();
+let ingredients = findIngredientsOnPage(); //array of ingredients? 
 console.log('ingredients ', ingredients);
 if (ingredients != null) {
   (async () => { // Wrap the block in an async function 
@@ -239,6 +239,7 @@ async function launchLocationPopup() {
       console.log('display style ', pickupAt.style.display);
       if (pickupAt.style.display == '-webkit-box'){ //The store location is showing, show the zip code 
         console.log('show zip code')
+
         locationShadowRoot.getElementById('ingrExpZipCodeInPopup').style.display = '-webkit-box';
         chrome.storage.local.get('zipCode', (result) => {
           if (result['zipCode'] != undefined){
@@ -247,6 +248,7 @@ async function launchLocationPopup() {
             locationShadowRoot.getElementById('ingrExpZipCodeInPopup').addEventListener('keyup', zipCodeInPopupEdited);
           } 
         }); 
+
       }else{ 
         console.log('dont display zipcode');
         locationShadowRoot.getElementById('ingrExpZipCodeInPopup').style.display = 'none';
@@ -298,7 +300,7 @@ function minimizePopup() {//TODO: commented out for now, but need to add
 }
 
 function displayNewIngredient(id, rightOrLeft, event){ //loads the image and product info when an arrow is clicked 
-  console.log('all product Data',  productData);
+  console.log('all product Data',  allProductData);
   var productIndex = Number(id.replace(/ingrExpIngredient/g, '')); 
   var ingredientClickedData = allProductData[productIndex]; 
   if (rightOrLeft == 'right'){
@@ -547,7 +549,7 @@ async function checkoutButtonClicked(){
   shadowRoot.getElementById("ingrExpCheckoutButton").disabled = true;
 
   //get the quantity of items to add to cart 
-  const quantityAndUPCArray = [];
+  const quantityAndUPCArray = []; 
   for (const productData of allProductData) {
     for (const product of productData.productData) {
       const quantity = product.quantity;
@@ -558,7 +560,7 @@ async function checkoutButtonClicked(){
       }
     }
   }
-
+  
   if(quantityAndUPCArray.length != 0){
     console.log('quantity and upc ', quantityAndUPCArray);
     let response = await chrome.runtime.sendMessage({ to: 'userHasAccess'}); 
@@ -569,7 +571,7 @@ async function checkoutButtonClicked(){
       console.log('User has not paid, but has exports left. Exports left. ', response.exportsLeft);
       let checkoutResponse = await checkoutUser(quantityAndUPCArray); 
       if (checkoutResponse.success){
-        warningPopup(response.exportsLeft + " Exports Left");
+        warningPopup((response.exportsLeft - 1) + " Exports Left");
       }
     }else{
       console.log('User has not paid. Launch Extension Pay.'); 

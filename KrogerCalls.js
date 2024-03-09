@@ -115,7 +115,7 @@ async function getRefreshToken(refreshToken){
 }
 
 async function cartWriteAuthorizationCode(){
-  var scope = 'cart.basic:write'
+  var scope = 'cart.basic:write' //'cart.basic:rw'
   var endString = 'https://api.kroger.com/v1/connect/oauth2/authorize?scope=' + scope + '&response_type=code&client_id=' + clientID + '&redirect_uri=' + redirectURI
   return new Promise((resolve, rejects)=>{
     fetch(endString, {
