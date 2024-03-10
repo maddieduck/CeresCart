@@ -40,6 +40,7 @@ if (ingredients != null) {
             shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
             shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
             shadowRoot.getElementById('ingrExpPickupAt').textContent = result['locationName']
+            shadowRoot.getElementById('change').style.display = '-webkit-box'; 
           }
         });
 
@@ -97,9 +98,9 @@ async function insertEachIngredient(ingredientData){
       nodeClone.querySelector('.ingrExpIngredientImage').src = productData[0].image; 
       if(productData[0].brand != undefined){
         nodeClone.querySelector('.ingrExpIngredientBrand').textContent = productData[0].brand; 
-        nodeClone.querySelector('.ingredientDescription').style.display = '-webkit-box';
+        nodeClone.querySelector('.ingrExpIngredientBrand').style.display = '-webkit-box';
       }else{
-        nodeClone.querySelector('.ingredientDescription').style.display = 'none';
+        nodeClone.querySelector('.ingrExpIngredientBrand').style.display = 'none';
       }
       if(productData[0].description != undefined){
         nodeClone.querySelector('.ingredientDescription').textContent = productData[0].description;
@@ -333,8 +334,20 @@ function displayNewIngredient(id, rightOrLeft, event){ //loads the image and pro
   allProductData[productIndex]['indexOfProductDisplayed'] = newIngredientIndex 
   //display the new ingredient 
   shadowRoot.getElementById(id).querySelector('.ingrExpIngredientImage').src = ingredientClickedData['productData'][newIngredientIndex]['image'];
-  shadowRoot.getElementById(id).querySelector('.ingrExpIngredientBrand').textContent = ingredientClickedData['productData'][newIngredientIndex]['brand'];
-  shadowRoot.getElementById(id).querySelector('.ingredientDescription').textContent = ingredientClickedData['productData'][newIngredientIndex]['description'];
+
+  if(ingredientClickedData['productData'][newIngredientIndex]['brand'] != undefined){
+    shadowRoot.getElementById(id).querySelector('.ingrExpIngredientBrand').textContent = ingredientClickedData['productData'][newIngredientIndex]['brand'];
+    shadowRoot.getElementById(id).querySelector('.ingrExpIngredientBrand').style.display = '-webkit-box';
+  }else{
+    shadowRoot.getElementById(id).querySelector('.ingrExpIngredientBrand').style.display = 'none';
+  }
+  if(ingredientClickedData['productData'][newIngredientIndex]['description'] != undefined){
+    shadowRoot.getElementById(id).querySelector('.ingredientDescription').textContent = ingredientClickedData['productData'][newIngredientIndex]['description'];
+    shadowRoot.getElementById(id).querySelector('.ingredientDescription').style.display = '-webkit-box';
+  }else{
+    shadowRoot.getElementById(id).querySelector('.ingredientDescription').style.display = 'none';
+  }
+
   shadowRoot.getElementById(id).querySelector('.ingrExpSize').textContent = ingredientClickedData['productData'][newIngredientIndex]['size'];
   updateStartingPlusButton(event); 
   //remove timer from quantity button 

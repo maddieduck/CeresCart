@@ -93,9 +93,8 @@
 .ingrExpOuterContainer{
   display: flex;
   width: 424px;
-  height: 192px;
-  margin-bottom: 8px;
-  margin-top: 8px;   
+  margin-bottom: 16px;
+  margin-top: 16px;   
   justify-content: center; 
   align-items: center; 
 }
@@ -257,13 +256,13 @@
   color: #1D1C1C;
   text-align: center;
   margin: auto;
-  line-height: 0.9; 
+  line-height: 1.2; 
   padding-right: 16px;
   padding-left: 16px;
 
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1; 
+  -webkit-line-clamp: 2; 
   overflow: hidden;
 }
 .ingrExpIngrExpPrice{
@@ -277,10 +276,10 @@
 .ingrExpPriceContainer {
   display: flex;
   align-items: baseline;
+  height: 32px;
+  margin-bottom: 8px;
 }
 .ingrExpCents{ 
-  vertical-align: super;
-  margin-top: 5px; 
   font-size: 15px; 
   font-weight: 500;
   color: rgb(29, 28, 28); 
