@@ -27,11 +27,12 @@
   font-size: 12px;
   width: 180px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
-  outline: 1px solid rgb(191, 191, 191); ;
   border: none;
   border-radius: 25px;
-  text-align: center;
+  text-align: left;
   margin-right: 1px;
+  height: auto;
+  height: 25px;
 
   display: -webkit-box; /* Limit the text to three lines */
   -webkit-box-orient: vertical;
@@ -46,14 +47,21 @@
   border: none;
   margin-right: 5px;
   text-align: right; 
+  display: none;
 }
 #ingrExpZipCode:placeholder{
   color: grey;
   text-align: center;
+  text-align: left;
 }
 #ingrExpZipCode::placeholder{
   color: grey;
   text-align: center;
+  text-align: left;
+}
+#ingrExpZipCode:focus {
+  outline: none;
+  outline: none;
 }
 #ingrExpZipCodeInPopup{
   color: black;
@@ -96,11 +104,10 @@
   outline: 1px solid rgb(228, 230, 232);
   border-radius: 8px;
   width: 280px;
-  height: 192px;
+  max-height: 192px;
   display: flex;
   flex-direction: column;
   align-items: center;
-
 }
 .ImageAndQuantity{
   display: flex;
@@ -229,7 +236,7 @@
   font-weight: 345;
   font-size: 16px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
-  height: 30px;
+  height: 20px;
   display: flex;
   color: #1D1C1C;
   text-align: center;
@@ -246,8 +253,7 @@
   font-weight: 345;
   font-size: 14px;
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
-  height: 50px;
-  display: flex;
+  height: auto;
   color: #1D1C1C;
   text-align: center;
   margin: auto;

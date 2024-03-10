@@ -50,7 +50,7 @@ if (ingredients != null) {
         shadowRoot.getElementById('ingrExpClose').addEventListener('click', closePopup); 
         shadowRoot.getElementById('ingrExpPerson').addEventListener('click', personClicked); 
         shadowRoot.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
-        shadowRoot.getElementById('change').addEventListener('click', launchLocationPopup); 
+        shadowRoot.getElementById('change').addEventListener('click', changeButtonPressed); 
         shadowRoot.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
         updateCheckoutButton();
       } catch (error) {
@@ -78,7 +78,6 @@ function loadFromLocalStorage(key) {
 }
 
 async function insertEachIngredient(ingredientData){
-
   fetch(chrome.runtime.getURL('ingredientContainer.html'))
   .then(response => response.text())
   .then(ingredientHtml => {
@@ -96,11 +95,20 @@ async function insertEachIngredient(ingredientData){
       let nodeClone = document.createElement('div'); // Create a new div 
       nodeClone.innerHTML = ingredientHtml;  //Set the inner HTML of the div 
       nodeClone.querySelector('.ingrExpIngredientImage').src = productData[0].image; 
-      nodeClone.querySelector('.ingrExpIngredientBrand').textContent = productData[0].brand; 
-      nodeClone.querySelector('.ingredientDescription').textContent = productData[0].description;
+      if(productData[0].brand != undefined){
+        nodeClone.querySelector('.ingrExpIngredientBrand').textContent = productData[0].brand; 
+        nodeClone.querySelector('.ingredientDescription').style.display = '-webkit-box';
+      }else{
+        nodeClone.querySelector('.ingredientDescription').style.display = 'none';
+      }
+      if(productData[0].description != undefined){
+        nodeClone.querySelector('.ingredientDescription').textContent = productData[0].description;
+        nodeClone.querySelector('.ingredientDescription').style.display = '-webkit-box';
+      }else{
+        nodeClone.querySelector('.ingredientDescription').style.display = 'none'; 
+      }
       nodeClone.querySelector('.ingrExpSize').textContent = productData[0].size;
       nodeClone.querySelector('.ingrExpOuterContainer').id = 'ingrExpIngredient' + index;
-
       nodeClone.querySelector('.leftArrow').style.opacity = 0;
       nodeClone.querySelector('.leftArrow').style.visibility = 'hidden';
       nodeClone.querySelector('.leftArrow').style.pointerEvents = 'none';
@@ -208,8 +216,20 @@ async function insertLocations(){
     loadLocationsInPopup(backgroundResponse.locationData); 
     locationShadowRoot.getElementById('ingrExpNoLocationsFound').style.display = 'none'; 
   }else{
+    locationShadowRoot.getElementById('ingrExpZipCodeInPopup').style.display = '-webkit-box';
+    locationShadowRoot.getElementById('ingrExpZipCodeInPopup').addEventListener('keyup', zipCodeInPopupEdited);
     locationShadowRoot.getElementById('ingrExpNoLocationsFound').style.display = 'inline-block'; 
   }
+}
+
+function changeButtonPressed(){
+  var zipCode = shadowRoot.getElementById('ingrExpZipCode').value;
+  // Check if the Enter key is pressed and the zip code is not blank
+  if (/^\d{5}$/.test(zipCode.trim())) {
+    console.log('zip code used ', zipCode.trim());
+    chrome.storage.local.set({['zipCode']: zipCode.trim()}); 
+  }
+  launchLocationPopup();
 }
 
 async function launchLocationPopup() {
@@ -276,6 +296,9 @@ async function shopStore(event){ //a location has been selected from the locatio
 
   allProductData = [];
   updateCheckoutButton();  
+
+  //change appears
+  shadowRoot.getElementById('change').style.display = '-webkit-box'; 
   
   //remove ingredients from the main popup
   var elementsWithClass = shadowRoot.querySelectorAll('.ingrExpOuterContainer');
@@ -653,7 +676,6 @@ function zipCodeInPopupEdited(event) {
     elementsToRemove.forEach(element => {
       element.parentNode.removeChild(element);
     });
-
     chrome.storage.local.set({['zipCode']: zipCode.trim()}); 
     insertLocations();
   }
