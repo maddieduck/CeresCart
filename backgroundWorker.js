@@ -406,6 +406,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             console.log('error in backgroundWorker.js. when getting locations', error.message);
             sendResponse({locationsFound: false}); 
         })
+    }else{
+        console.log('unnhandled message in background listener ', message);
     }
     return true; // Indicates that the response will be sent asynchronously 
 });

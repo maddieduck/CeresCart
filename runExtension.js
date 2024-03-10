@@ -116,11 +116,13 @@ async function insertEachIngredient(ingredientData){
 
       var price = productData[0].price;
       if (price !== null){
+        nodeClone.querySelector('.ingrExpPriceContainer').style.display = '-webkit-box';
         const dollars = Math.floor(price);
         const cents = Math.round((price - dollars) * 100);
         nodeClone.querySelector('.ingrExpIngrExpPrice').innerHTML = "$" + dollars + ".";
         nodeClone.querySelector('.ingrExpCents').innerHTML = String(cents).padStart(2, '0'); 
       }else{
+        nodeClone.querySelector('.ingrExpPriceContainer').style.display = 'none';
         nodeClone.querySelector('.ingrExpIngrExpPrice').innerHTML = ''; 
         nodeClone.querySelector('.ingrExpCents').innerHTML = '';
       }
@@ -356,11 +358,13 @@ function displayNewIngredient(id, rightOrLeft, event){ //loads the image and pro
   quantityButtons.style.display = 'none';
 
   if(ingredientClickedData['productData'][newIngredientIndex]['price'] != null){
+    shadowRoot.getElementById(id).querySelector('.ingrExpPriceContainer').style.display = '-webkit-box';
     const dollars = Math.floor(ingredientClickedData['productData'][newIngredientIndex]['price']);
     const cents = Math.round((ingredientClickedData['productData'][newIngredientIndex]['price'] - dollars) * 100);
     shadowRoot.getElementById(id).querySelector('.ingrExpIngrExpPrice').innerHTML = "$" + dollars + ".";
     shadowRoot.getElementById(id).querySelector('.ingrExpCents').innerHTML = String(cents).padStart(2, '0'); 
   }else{
+    shadowRoot.getElementById(id).querySelector('.ingrExpPriceContainer').style.display = 'none';
     shadowRoot.getElementById(id).querySelector('.ingrExpIngrExpPrice').innerHTML = "";
     shadowRoot.getElementById(id).querySelector('.ingrExpCents').innerHTML = "";
   }
