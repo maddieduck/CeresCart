@@ -610,7 +610,7 @@ async function checkoutButtonClicked(){
       console.log('User has not paid, but has exports left. Exports left. ', response.exportsLeft);
       let checkoutResponse = await checkoutUser(quantityAndUPCArray); 
       if (checkoutResponse.success){
-        warningPopup((response.exportsLeft - 1) + " Exports Left");
+        warningPopup((response.exportsLeft - 1) + " Free Recipes Left");
       }
     }else{
       console.log('User has not paid. Launch Extension Pay.'); 

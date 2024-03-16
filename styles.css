@@ -285,6 +285,7 @@
   font-weight: 500;
   color: rgb(29, 28, 28); 
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+  margin-top: 5px;
 }
 .ingrExpSize{
   font-weight: 325; 
