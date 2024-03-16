@@ -54,13 +54,13 @@ async function getCartWriteAuth(){
                       interactive: true,
                     },
                     (redirectedTo) => {
+                        console.log('get code ', redirectedTo) 
                         if (chrome.runtime.lastError) {
                             console.log('OAuth 2 Failed', chrome.runtime.lastError);
                             resolve(null)
                         }
                         if (redirectedTo) {
                             // Extract the authorization code from the redirected URL 
-                            console.log('get code ', redirectedTo) 
                             const code = new URL(redirectedTo).searchParams.get('code'); 
                             console.log('CODE from AUTH ', code); 
                             getAuthToken(code).then(accessToken => {
@@ -339,6 +339,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         })
     }else if(message.to === 'checkout'){ //allows the user to checkout using API 
         console.log('checkout pressed'); 
+        console.log('redirect URL', chrome.identity.getRedirectURL()); 
         getCartWriteAuth()
         .then(authCode => {
             console.log('Add to cart auth code ', authCode);

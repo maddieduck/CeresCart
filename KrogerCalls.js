@@ -1,6 +1,6 @@
 var clientID = 'cerescart-f4187f9b0cfa74e1107fe736009f3e24587190955792211001'
 var clientSecret = '62Lrcggsmt2_tlRQLMkaDiP4CCS74QmerojFSJEt'
-var redirectURI = 'https://nckacfgoolkhaedphbknecabckccgffe.chromiumapp.org' 
+var redirectURI = 'https://nckacfgoolkhaedphbknecabckccgffe.chromiumapp.org'
 import {saveToLocalStorage} from './storageHelpers.js'
 
 async function clientCredentials(){ //gets a token for use When making API requests that do not require customer consent 
