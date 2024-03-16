@@ -34,7 +34,7 @@ if (ingredients != null) {
         insertEachIngredient(ingredientData);
         //set the location name if it exists in memory 
         
-        chrome.storage.local.get('locationName', (result) => {
+        chrome.storage.sync.get('locationName', (result) => {
           console.log('location Name ', result['locationName']);
           if (result['locationName'] != undefined){
             shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
@@ -72,7 +72,7 @@ function warningPopup(warningText){
 
 function loadFromLocalStorage(key) {
   return new Promise((resolve) => {
-    chrome.storage.local.get(key, (result) => {
+    chrome.storage.sync.get(key, (result) => {
       resolve(result[key]);
     });
   });
@@ -230,7 +230,7 @@ function changeButtonPressed(){
   // Check if the Enter key is pressed and the zip code is not blank
   if (/^\d{5}$/.test(zipCode.trim())) {
     console.log('zip code used ', zipCode.trim());
-    chrome.storage.local.set({['zipCode']: zipCode.trim()}); 
+    chrome.storage.sync.set({['zipCode']: zipCode.trim()}); 
   }
   launchLocationPopup();
 }
@@ -263,7 +263,7 @@ async function launchLocationPopup() {
         console.log('show zip code')
 
         locationShadowRoot.getElementById('ingrExpZipCodeInPopup').style.display = '-webkit-box';
-        chrome.storage.local.get('zipCode', (result) => {
+        chrome.storage.sync.get('zipCode', (result) => {
           if (result['zipCode'] != undefined){
             console.log('zip code being used in location popup ', result['zipCode']);
             locationShadowRoot.getElementById('ingrExpZipCodeInPopup').value = result['zipCode']
@@ -294,8 +294,8 @@ async function shopStore(event){ //a location has been selected from the locatio
   shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
   shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
   shadowRoot.getElementById('ingrExpPickupAt').textContent = locationName; 
-  chrome.storage.local.set({['locationId']: locationId});
-  chrome.storage.local.set({['locationName']: locationName});
+  chrome.storage.sync.set({['locationId']: locationId});
+  chrome.storage.sync.set({['locationName']: locationName});
 
   allProductData = [];
   updateCheckoutButton();  
@@ -679,7 +679,7 @@ function zipCodeEdited(event) {
   // Check if the Enter key is pressed and the zip code is not blank
   if (event.key === 'Enter' && zipCode.trim() !== '') {
     console.log('zip code used ', zipCode)
-    chrome.storage.local.set({['zipCode']: zipCode.trim()}); 
+    chrome.storage.sync.set({['zipCode']: zipCode.trim()}); 
     launchLocationPopup();
   }
 }
@@ -693,7 +693,7 @@ function zipCodeInPopupEdited(event) {
     elementsToRemove.forEach(element => {
       element.parentNode.removeChild(element);
     });
-    chrome.storage.local.set({['zipCode']: zipCode.trim()}); 
+    chrome.storage.sync.set({['zipCode']: zipCode.trim()}); 
     insertLocations();
   }
 }

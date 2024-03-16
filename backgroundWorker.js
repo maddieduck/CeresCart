@@ -6,7 +6,7 @@ import {ExtPay} from './ExtPay.js'
 
 chrome.runtime.onInstalled.addListener(function() {
     // Initialize the counter
-    chrome.storage.local.set({'buttonCounter': 3});
+    chrome.storage.sync.set({'buttonCounter': 3});
 
     // this line is required to use ExtPay in the rest of your extension
     const extpay = ExtPay('ceres-cart');
@@ -241,7 +241,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             if(user['paid']){
                 sendResponse({'userPaid': true, "exportsLeft": null}); 
             }else{
-                chrome.storage.local.get('buttonCounter', (result) => {
+                chrome.storage.sync.get('buttonCounter', (result) => {
                     var buttonCount = Number(result['buttonCounter']); 
                     if (buttonCount){
                         //free  uses are available 
@@ -349,11 +349,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 .then(success => {
                     console.log('add to cart successful? ', success);
                     if(success){//decrement free trial variable if relevant 
-                        chrome.storage.local.get('buttonCounter', (result) => {
+                        chrome.storage.sync.get('buttonCounter', (result) => {
                             var buttonCount = Number(result['buttonCounter']); 
                             if(buttonCount>0){ 
                                 buttonCount--; 
-                                chrome.storage.local.set({'buttonCounter': buttonCount});
+                                chrome.storage.sync.set({'buttonCounter': buttonCount});
                                 console.log('exports left ', buttonCount);
                             } 
                         }); 
@@ -373,7 +373,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         getProductAccessToken()
         .then(accessToken => { 
             return new Promise((resolve, reject) => {
-              chrome.storage.local.get('zipCode', (result) => {
+              chrome.storage.sync.get('zipCode', (result) => {
                 //console.log('zip code ', result['zipCode']);
                 resolve(locationSearchByZipcode(accessToken, result['zipCode']));
               });
