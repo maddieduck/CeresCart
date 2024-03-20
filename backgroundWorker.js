@@ -51,10 +51,10 @@ async function getCartWriteAuth(){
                 chrome.identity.launchWebAuthFlow(
                     {
                       url: returnedAuthURL,
-                      interactive: true,
+                      interactive: true
                     },
                     (redirectedTo) => {
-                        console.log('get code ', redirectedTo) 
+                        console.log('redirected TO ', redirectedTo) 
                         if (chrome.runtime.lastError) {
                             console.log('OAuth 2 Failed', chrome.runtime.lastError);
                             resolve(null)

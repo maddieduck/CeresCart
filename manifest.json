@@ -20,6 +20,18 @@
       "48": "/images/Ceres Cart Logo Large.png",
       "128": "/images/Ceres Cart Logo Large.png"
      },
+    "oauth2": {
+      "client_id": "cerescart-f4187f9b0cfa74e1107fe736009f3e24587190955792211001",
+      "scopes": ["cart.basic:write"],
+      "redirect_uris": [
+        "https://nckacfgoolkhaedphbknecabckccgffe.chromiumapp.org"
+      ]
+    },
+    "host_permissions": [
+      "https://www.kroger.com/",
+      "https://api.kroger.com/"
+    ]
+    ,
      "background":{
         "service_worker": "backgroundWorker.js",
         "type": "module"
