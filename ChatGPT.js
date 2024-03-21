@@ -1,5 +1,4 @@
 const apiKey = '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';
-//const apiKey = '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';
 const endpoint = 'https://api.openai.com/v1/chat/completions';
 
 async function getRefinedIngredients(userInput) {

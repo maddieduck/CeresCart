@@ -1,3 +1,6 @@
+*{
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
+}
 #ingrExpPickupDiv{
   display: flex;
   outline: 1px solid rgb(228, 230, 232);
@@ -11,7 +14,6 @@
 #ingrExpPickupAt{
   font-weight: 325;
   font-size: 12px;
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   color: rgb(0, 0, 0);
   width: 180px;
   display: none; 
@@ -26,7 +28,6 @@
   font-weight: 325;
   font-size: 12px;
   width: 180px;
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   border: none;
   border-radius: 25px;
   text-align: left;
@@ -67,7 +68,6 @@
   color: black;
   font-weight: 325;
   font-size: 17px;
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   outline: 1px solid rgb(191, 191, 191); ;
   border: none;
   border-radius: 25px;
@@ -84,7 +84,6 @@
 }
 #ingrExpZipCodeInPopup:placeholder{
   color: black;
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 }
 #location{
   height: 25px;
@@ -118,9 +117,9 @@
   border: 0px;
   background: none;
   margin: 0px;
-  background-color: white !important;
-  background: white !important;
-  color: rgb(255, 255, 255) !important;
+  background-color: white;
+  background: white ;
+  color: rgb(255, 255, 255) ;
   min-height: 0px ;
 }
 .leftArrow{
@@ -134,14 +133,9 @@
   border-color: rgb(228, 230, 232);
   cursor: pointer;
 }
-.leftArrow:focus {
-  border-color: rgb(228, 230, 232);
-}
 .leftArrow:hover {
   border-color: rgb(228, 230, 232);
-}
-.leftArrow:active {
-  border-color: rgb(228, 230, 232);
+  background-color: rgb(228, 230, 232);
 }
 .ingrExpLeftArrowImage{
   height: 20px;
@@ -159,14 +153,9 @@
   background-color: rgb(240, 240, 240);
   cursor: pointer;
 }
-.rightArrow:focus {
-  border-color: rgb(228, 230, 232);
-}
 .rightArrow:hover {
   border-color: rgb(228, 230, 232);
-}
-.rightArrow:active {
-  border-color: rgb(228, 230, 232);
+  background-color: rgb(228, 230, 232);
 }
 .ingrExpRightArrowImage{
   height: 20px;
@@ -188,6 +177,10 @@
   height: auto;
   padding-top: 3px;
 }
+#ingrExpClose:hover {
+  border-color: rgb(228, 230, 232);
+  background-color: rgb(228, 230, 232);
+}
 #ingrExpCloseInPopup{
   border: none;
   height: 24px;
@@ -201,6 +194,10 @@
 #ingrExpCloseImageInPopup {
   width: 90%;
   height: auto;
+}
+#ingrExpCloseInPopup:hover {
+  border-color: rgb(228, 230, 232);
+  background-color: rgb(228, 230, 232);
 }
 #headerContainer{
   display: flex;
@@ -222,6 +219,10 @@
   height: auto;
   padding-top: 3px;
 }
+#ingrExpPerson:hover {
+  border-color: rgb(228, 230, 232);
+  background-color: rgb(228, 230, 232);
+}
 .ingrExpCircleButton{
   height: 30px;
   width: 30px;
@@ -234,7 +235,6 @@
 .ingrExpIngredientBrand{
   font-weight: 345;
   font-size: 16px;
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   height: 20px;
   display: flex;
   color: #1D1C1C;
@@ -252,7 +252,6 @@
 .ingredientDescription{
   font-weight: 345;
   font-size: 14px;
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   height: auto;
   color: #1D1C1C;
   text-align: center;
@@ -272,7 +271,6 @@
   font-weight: 500;
   font-size: 20px;
   color: rgb(29, 28, 28); 
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 }
 .ingrExpPriceContainer {
   display: flex;
@@ -284,13 +282,11 @@
   font-size: 15px; 
   font-weight: 500;
   color: rgb(29, 28, 28); 
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   margin-top: 5px;
 }
 .ingrExpSize{
   font-weight: 325; 
   font-size: 14px;
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   color: #8E8D8D;
   width: 170px;
   text-align: center;
@@ -367,11 +363,10 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 #ingrExpCheckoutButtonPopup {
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   font-size: 20px; 
-  background-color: rgb(228, 230, 232); 
+  background-color: rgb(255, 205, 85); 
   font-weight: 450;
-  color: #6DAB9B;
+  color: #ffffff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -384,7 +379,6 @@
   display: none;
 }
 #ingrExpCheckoutButton {
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   font-size: 20px; 
   background-color: rgb(109, 171, 155);
   font-weight: 450;
@@ -411,12 +405,11 @@
   padding-left: 0px;
   font-weight: 600;
   font-size: 14px;
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   height: 20px;
   text-align: left;
   color: rgb(0, 0, 0);
 
-  display: -webkit-box; /* Limit the text to three lines */
+  display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1; 
   overflow: hidden;
@@ -426,14 +419,15 @@
   font-weight: 325; 
   padding-left: 8px;
   font-size: 14px;
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   color: rgb(29, 28, 28, 0.5);
 
-  width: 170px;
+  width: 300px;
   text-align: left;
   line-height: 1.2;
+  white-space: pre-line;
 
-  display: -webkit-box; /* Limit the text to three lines */
+
+  display: -webkit-box; 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2; 
   overflow: hidden;
@@ -444,7 +438,6 @@
   font-weight: 325; 
   font-size: 14px;
   margin-bottom: 0px;
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   color: rgb(29, 28, 28, 0.5);
   width: 216px;
   text-align: left;
@@ -480,14 +473,10 @@
   padding: 0px;
   font-weight: 325;
   font-size: 17px;
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   color: rgb(0, 0, 0);
   font-weight: 325;
   text-align: center;
   display: none;
-}
-.ingrExpDefaultPopup{
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 }
 .ingrExpBold{
   font-size: 17px; 
@@ -513,7 +502,6 @@
   align-items: center; 
   color: #fff;
   justify-content: center;
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   align-items: center; 
   position: absolute; 
   right: 16px; 
@@ -522,7 +510,6 @@
 .minusButton{
   width: 40px;
   height: 40px;
-  font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   background-color: #6DAB9B;
   cursor: pointer;
   font-size: 28px;

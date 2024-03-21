@@ -61,10 +61,11 @@ if (ingredients != null) {
   })();
 }
 
-function warningPopup(warningText){
+function warningPopup(warningText, color){
   var popup = shadowRoot.getElementById('ingrExpCheckoutButtonPopup');
   popup.style.display = 'block';
   popup.textContent = warningText; 
+  popup.style.backgroundColor = color;
   setTimeout(function () {
       popup.style.display = 'none';
   }, 3000); 
@@ -576,16 +577,16 @@ async function checkoutUser(quantityAndUPCArray){//lets the user attempt to chec
     //update checkout button
     shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Items Successfully Added`;
   }else{
-    warningPopup(response.errorMessage);
+    warningPopup(response.errorMessage,  'rgb(210, 40, 65)');
     console.log('error when trying to add to cart');
   }  
   return (response); 
 }
 
 async function checkoutButtonClicked(){
-   
+  
   //disable button until products are done being added
-  shadowRoot.getElementById("ingrExpCheckoutButton").disabled = true;
+  shadowRoot.getElementById("ingrExpCheckoutButton").disabled = true; 
 
   //get the quantity of items to add to cart 
   const quantityAndUPCArray = []; 
@@ -601,20 +602,20 @@ async function checkoutButtonClicked(){
   }
   
   if(quantityAndUPCArray.length != 0){
-    console.log('quantity and upc ', quantityAndUPCArray);
+    console.log('quantity and upc ', quantityAndUPCArray); 
     let response = await chrome.runtime.sendMessage({ to: 'userHasAccess'}); 
     if(response.userPaid){
       console.log('User has paid.');
       checkoutUser(quantityAndUPCArray);
-    }else if (response.exportsLeft > 0){
+    }else if (response.exportsLeft > 0){ 
       console.log('User has not paid, but has exports left. Exports left. ', response.exportsLeft);
       let checkoutResponse = await checkoutUser(quantityAndUPCArray); 
       if (checkoutResponse.success){
-        warningPopup((response.exportsLeft - 1) + " Free Recipes Left");
+        warningPopup((response.exportsLeft - 1) + " Free Recipes Left", 'rgb(125,120,185)'); 
       }
     }else{
       console.log('User has not paid. Launch Extension Pay.'); 
-      warningPopup("No Free Exports Left"); 
+      warningPopup("No Free Exports Left", 'rgb(210,40,65)'); 
       chrome.runtime.sendMessage({ to: 'launchPayWindow'}); 
     }
   }else{
@@ -677,7 +678,7 @@ function findIngredientsOnPage() {
 function zipCodeEdited(event) {
   var zipCode = shadowRoot.getElementById('ingrExpZipCode').value;
   // Check if the Enter key is pressed and the zip code is not blank
-  if (event.key === 'Enter' && zipCode.trim() !== '') {
+  if (event.key === 'Enter'){
     console.log('zip code used ', zipCode)
     chrome.storage.sync.set({['zipCode']: zipCode.trim()}); 
     launchLocationPopup();
@@ -687,7 +688,7 @@ function zipCodeEdited(event) {
 function zipCodeInPopupEdited(event) {
   console.log('zip code in popup edited ', event.key)
   var zipCode = locationShadowRoot.getElementById('ingrExpZipCodeInPopup').value;
-  if (event.key === 'Enter' && zipCode.trim() !== '') {
+  if (event.key === 'Enter') {
     //remove all existing locations before running again
     var elementsToRemove = locationShadowRoot.querySelectorAll('.ingrExpTopLocationDiv'); // Use a dot for class name
     elementsToRemove.forEach(element => {
