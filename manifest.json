@@ -1,8 +1,8 @@
 {
     "manifest_version":3,
     "name": "Ceres Cart",
-    "version": "1.0.0",
-    "description": "Extracts ingredients from recipes found on the page and allows user to export to grocery stores.",
+    "version": "0.0.0.1",
+    "description": "Streamline grocery shopping: Find ingredients on webpages & checkout with ease using our Chrome extension.",
     "author": "Maddie Drake",
     "action": {
         "default_popup": "defaultPopup.html",
