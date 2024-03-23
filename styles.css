@@ -339,14 +339,18 @@
   width: 424px;
   position: fixed;
   z-index: 2147483646;
-  display: block;
-  overflow: scroll;
   top: 10px; 
   right: 10px; 
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   border-radius: 10px; 
   text-align: center;
+  display: block;
+  overflow: auto; /* Use "auto" to only show scrollbars when needed */
 }
+#scrollingPart {
+  background-color: white; 
+}
+
 #ingrExpTopLevelLocationPopup{
   background-color: white;
   width: 392px;
@@ -528,8 +532,9 @@
   border-radius: 8px; 
 }
 .quantity{
-  width: 28px;
+  width: 18px;
   height: 40px;
   text-align: center;
   line-height: 40px;
+  font-size: 18px;
 }
