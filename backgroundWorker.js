@@ -339,7 +339,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         })
     }else if(message.to === 'checkout'){ //allows the user to checkout using API 
         console.log('checkout pressed'); 
-        console.log('redirect URL', chrome.identity.getRedirectURL()); 
         getCartWriteAuth()
         .then(authCode => {
             console.log('Add to cart auth code ', authCode);
