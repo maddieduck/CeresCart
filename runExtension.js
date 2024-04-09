@@ -59,6 +59,10 @@ if (ingredients != null) {
   })();
 }
 
+function launchPopup(){
+  
+}
+
 function warningPopup(warningText, color){
   var popup = shadowRoot.getElementById('ingrExpCheckoutButtonPopup');
   popup.style.display = 'block';
