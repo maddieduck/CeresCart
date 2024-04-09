@@ -162,7 +162,7 @@
   padding-left: 3px;
   padding-top: 4px;
 }
-#ingrExpClose{
+.topButtons{
   margin-right: 8px;
   margin-top: 8px;
   border: none;
@@ -172,12 +172,12 @@
   background-color: rgb(240, 240, 240);
   cursor: pointer;
 }
-#ingrExpCloseImage {
+.topButtonsImage {
   width: 90%;
   height: auto;
   padding-top: 3px;
 }
-#ingrExpClose:hover {
+.topButtons:hover {
   border-color: rgb(228, 230, 232);
   background-color: rgb(228, 230, 232);
 }
@@ -202,26 +202,6 @@
 #headerContainer{
   display: flex;
   justify-content: flex-end; 
-}
-#ingrExpPerson {
-  margin-right: 8px;
-  margin-top: 8px;
-  border: none;
-  height: 24px;
-  width: 24px;
-  border-radius: 50%; 
-  border-color: rgb(228, 230, 232);
-  background-color: rgb(240, 240, 240);
-  cursor: pointer;
-}
-#ingrExpPersonImage { 
-  width: 70%;
-  height: auto;
-  padding-top: 3px;
-}
-#ingrExpPerson:hover {
-  border-color: rgb(228, 230, 232);
-  background-color: rgb(228, 230, 232);
 }
 .ingrExpCircleButton{
   height: 30px;
