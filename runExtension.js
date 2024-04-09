@@ -59,10 +59,6 @@ if (ingredients != null) {
   })();
 }
 
-function launchPopup(){
-  
-}
-
 function warningPopup(warningText, color){
   var popup = shadowRoot.getElementById('ingrExpCheckoutButtonPopup');
   popup.style.display = 'block';
@@ -171,7 +167,13 @@ async function insertEachIngredient(ingredientData){
 }
 
 async function minimizeClicked(event){
-  closePopup(event);
+  //Hide the main poup. Close location popup if open. 
+  document.getElementById('ingrExpIngredientExporterPopup').style.display = 'none'; 
+  var locationPopup = document.getElementById('ingrExpLocationPopup');
+  if (locationPopup){
+    locationPopup.remove();
+  }
+
   try{  
     const htmlContents = await Promise.all([
       fetch(chrome.runtime.getURL('minimizePopup.html')).then(response => response.text()),
@@ -191,6 +193,7 @@ async function minimizeClicked(event){
     document.body.insertAdjacentElement('afterbegin', containerDiv); 
     minimizeShadowRoot.getElementById('ingredientsFound').addEventListener('click', showIngredientsFound); 
     minimizeShadowRoot.getElementById('closeInMinimizePopup').addEventListener('click', closeInMinimizePopup); 
+    minimizeShadowRoot.getElementById('ingredientsFound').textContent = allProductData.length + " Ingredients Found";
   }catch (error) { 
     console.error('ERROR in launch location popup: ', error); 
   }
@@ -198,6 +201,7 @@ async function minimizeClicked(event){
 
 function showIngredientsFound(event){
   closeInMinimizePopup(event);
+  document.getElementById('ingrExpIngredientExporterPopup').style.display = 'block'; 
 }
 
 function closeInMinimizePopup(event){
@@ -212,7 +216,7 @@ function closePopup(event) {//closes the main popup or the location popup
   //mainShadowRoot 
   console.log('close id ', event.target.id);
   var id = event.target.id;
-  if (id === 'ingrExpCloseImage' || id == 'minimizeImage'){
+  if (id === 'ingrExpCloseImage'){
     // Assuming containerDiv is already defined
     document.getElementById('ingrExpIngredientExporterPopup').remove(); 
 
@@ -351,14 +355,6 @@ async function shopStore(event){ //a location has been selected from the locatio
   let backgroundResponse = await chrome.runtime.sendMessage({ to: 'ingredients', data: ingredients, locationExists: true});
   const ingredientData = new Map(backgroundResponse.ingredientData);
   insertEachIngredient(ingredientData);
-}
-
-function minimizePopup() {//TODO: commented out for now, but need to add 
-  var popupContainer = shadowRoot.getElementById('ingrExpIngredientExporterPopup');
-  if (popupContainer) {
-    popupContainer.remove();
-  }
-  //TODO: make new screen to display
 }
 
 function displayNewIngredient(id, rightOrLeft, event){ //loads the image and product info when an arrow is clicked 

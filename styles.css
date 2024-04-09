@@ -515,7 +515,7 @@
 }
 #minimizeTopLevelDiv{
   background-color: white; 
-  width: 300px;
+  width: 280px;
   height: 75px;
   position: fixed;
   z-index: 2147483646;
@@ -546,6 +546,9 @@
   height: 44px;
   margin-right: 48px; 
   margin-left: auto; 
+}
+#ingredientsFound:hover{
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
 }
 #closeInMinimizePopup {
   position: absolute;
