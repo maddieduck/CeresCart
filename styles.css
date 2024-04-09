@@ -191,10 +191,6 @@
   margin-left: auto; 
   padding-top: 3px;
 }
-#ingrExpCloseImageInPopup {
-  width: 90%;
-  height: auto;
-}
 #ingrExpCloseInPopup:hover {
   border-color: rgb(228, 230, 232);
   background-color: rgb(228, 230, 232);
