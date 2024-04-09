@@ -55,7 +55,7 @@
     ],
       "web_accessible_resources": [
         {
-          "resources": ["index.html", "ingredientContainer.html", "locationPopup.html", "location.html", "images/*.png", "index.js", "styles.css"],
+          "resources": ["index.html", "ingredientContainer.html", "locationPopup.html", "location.html", "minimizePopup.html", "images/*.png", "index.js", "styles.css", "minimizeStyles.css"],
           "matches": ["<all_urls>"]
         }
       ],

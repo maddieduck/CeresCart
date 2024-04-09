@@ -2,6 +2,7 @@ var allProductData = []; //2D array of all data from grocery store
 var allLocationData = []; 
 var shadowRoot; 
 var locationShadowRoot; 
+var minimizeShadowRoot; 
 let ingredients = findIngredientsOnPage(); //array of ingredients? 
 console.log('ingredients ', ingredients);
 if (ingredients != null) {
@@ -44,12 +45,9 @@ if (ingredients != null) {
           }
         });
 
-        /*
-        shadowRoot.getElementById('minimize').addEventListener('click', minimizePopup); 
-        */
-
         shadowRoot.getElementById('ingrExpClose').addEventListener('click', closePopup); 
         shadowRoot.getElementById('ingrExpPerson').addEventListener('click', personClicked); 
+        shadowRoot.getElementById('minimize').addEventListener('click', minimizeClicked); 
         shadowRoot.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
         shadowRoot.getElementById('change').addEventListener('click', changeButtonPressed); 
         shadowRoot.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
@@ -168,6 +166,40 @@ async function insertEachIngredient(ingredientData){
   .catch(error => console.error('Error:', error));
 }
 
+async function minimizeClicked(event){
+  closePopup(event);
+  try{  
+    const htmlContents = await Promise.all([
+      fetch(chrome.runtime.getURL('minimizePopup.html')).then(response => response.text()),
+      fetch(chrome.runtime.getURL('styles.css')).then(response => response.text()),
+    ]);
+    const [minimizeHtml, minimizeStyles] = htmlContents;
+
+    //insert HTML with shadowroot and css. 
+    const containerDiv = document.createElement('div'); 
+    containerDiv.id = 'minimizePopup'; 
+    minimizeShadowRoot = containerDiv.attachShadow({ mode: 'open', name: 'minimizeShadowRoot'}); 
+    console.log(minimizeHtml);
+    minimizeShadowRoot.innerHTML = minimizeHtml; 
+    const style = document.createElement('style'); 
+    style.textContent = minimizeStyles; 
+    minimizeShadowRoot.appendChild(style); 
+    document.body.insertAdjacentElement('afterbegin', containerDiv); 
+    minimizeShadowRoot.getElementById('ingredientsFound').addEventListener('click', showIngredientsFound); 
+    minimizeShadowRoot.getElementById('closeInMinimizePopup').addEventListener('click', closeInMinimizePopup); 
+  }catch (error) { 
+    console.error('ERROR in launch location popup: ', error); 
+  }
+} 
+
+function showIngredientsFound(event){
+  closeInMinimizePopup(event);
+}
+
+function closeInMinimizePopup(event){
+  document.getElementById('minimizePopup').remove(); 
+}
+
 function personClicked(event){
   chrome.runtime.sendMessage({to: 'launchPayWindow'}); 
 }
@@ -176,7 +208,7 @@ function closePopup(event) {//closes the main popup or the location popup
   //mainShadowRoot 
   console.log('close id ', event.target.id);
   var id = event.target.id;
-  if (id === 'ingrExpCloseImage'){
+  if (id === 'ingrExpCloseImage' || id == 'minimizeImage'){
     // Assuming containerDiv is already defined
     document.getElementById('ingrExpIngredientExporterPopup').remove(); 
 
