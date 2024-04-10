@@ -505,6 +505,19 @@
   color: #fff;
   border: none;
   border-radius: 8px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.plusButtonImage{
+  height: 16px;
+  width: auto;
+  cursor: pointer;
+}
+.minusButtonImage{
+  height: 16px;
+  width: auto;
+  cursor: pointer;
 }
 .quantity{
   width: 18px;
