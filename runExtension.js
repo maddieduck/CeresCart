@@ -513,6 +513,7 @@ function updateStartingPlusButton(event){ //updates the original plus button wit
     var quantity = allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'];
     if(quantity == 0){
       startingPlusButton.classList.remove('startingPlusButtonNoImage');
+      startingPlusButton.innerText = '';
     }else{
       startingPlusButton.innerText = String(quantity);
       startingPlusButton.classList.add('startingPlusButtonNoImage');
@@ -602,9 +603,10 @@ async function checkoutUser(quantityAndUPCArray){//lets the user attempt to chec
     //make all quantities 0 in UI
     const elements = shadowRoot.querySelectorAll(`.${'startingPlusButton'}`);
     elements.forEach(element => {
-      element.innerText = '+';
-      element.style.fontSize = "28px"; 
+      element.classList.remove('startingPlusButtonNoImage');
+      element.innerText = '';
     });
+
     //update checkout button
     shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Items Successfully Added`;
   }else{
