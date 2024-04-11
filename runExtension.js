@@ -512,11 +512,10 @@ function updateStartingPlusButton(event){ //updates the original plus button wit
   if(startingPlusButton){
     var quantity = allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'];
     if(quantity == 0){
-      startingPlusButton.innerText = "+";
-      startingPlusButton.style.fontSize = '28px';
+      startingPlusButton.classList.remove('startingPlusButtonNoImage');
     }else{
       startingPlusButton.innerText = String(quantity);
-      startingPlusButton.style.fontSize = '18px';
+      startingPlusButton.classList.add('startingPlusButtonNoImage');
     }
   }
 }

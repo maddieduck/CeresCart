@@ -468,11 +468,19 @@
   background-color: #6DAB9B;
   color: #fff;
   cursor: pointer;
-  font-size: 28px;
+  font-size: 18px;
   border: none;
   position: absolute; 
   right: 16px; 
   top: 8px; 
+  padding: 0; 
+  background-image: url('chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/plus.png');
+  background-position: center center; 
+  background-size: 16px 16px ; 
+  background-repeat: no-repeat; 
+}
+.startingPlusButtonNoImage{
+  background-image: none !important; /* Hide the background image */
 }
 .quantityButtons{
   display: none;
