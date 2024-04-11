@@ -38,7 +38,8 @@
     },  
      "permissions": [
        "storage",
-       "identity"
+       "identity",
+       "tabs"
      ],
      "content_scripts": [ 
       {

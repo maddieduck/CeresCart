@@ -4,6 +4,10 @@ import {stripIngredients} from './stripIngredients.js'
 import {getRefinedIngredients, prioritizeProductsChatGPT} from './ChatGPT.js'
 import {ExtPay} from './ExtPay.js'
 
+var clientID = 'cerescart-f4187f9b0cfa74e1107fe736009f3e24587190955792211001'
+var redirectURI = 'https://nckacfgoolkhaedphbknecabckccgffe.chromiumapp.org'
+var scope = 'cart.basic:write' //'cart.basic:rw'
+
 chrome.runtime.onInstalled.addListener(function() {
     // Initialize the counter
     chrome.storage.sync.set({'buttonCounter': 3});
@@ -47,28 +51,38 @@ async function getCartWriteAuth(){
             console.log('Call cart auth credentials. There is no refresh token yet'); 
             cartWriteAuthorizationCode()
             .then(returnedAuthURL => {
+
                 console.log('AUTH URL', returnedAuthURL);
-                chrome.identity.launchWebAuthFlow(
-                    {
-                      url: returnedAuthURL,
-                      interactive: true
-                    },
-                    (redirectedTo) => {
-                        console.log('redirected TO ', redirectedTo) 
-                        if (chrome.runtime.lastError) {
-                            console.log('OAuth 2 Failed', chrome.runtime.lastError);
-                            resolve(null)
+                // Create a new window for OAuth 2 validation
+                chrome.windows.create({ url: returnedAuthURL, type: 'popup' }, (newWindow) => {
+                    const newWindowId = newWindow.id;
+                
+                    // Listen for URL changes in the new window
+                    chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+                        console.log('listener executed');
+                        console.log('window ID ', tab.windowId, 'id ', newWindowId, 'url ', changeInfo.url);
+                        if (tab.windowId === newWindowId && changeInfo.url) {
+                            // Check if the updated URL matches your expected redirect URL 
+                            if (!changeInfo.url.startsWith(returnedAuthURL)) {
+                                // Extract the code parameter after the url has changed
+                                const code = new URL(changeInfo.url).searchParams.get('code');
+                                console.log('Extracted code:', code);
+                
+                                //Check if the code indicates successful login
+                                if (code) {
+                                    //Close the window
+                                    getAuthToken(code).then(accessToken => {
+                                        resolve(accessToken)
+                                    })
+                                }else{
+                                    console.log('Error with OAuth 2. No code. ')
+                                    resolve(null);
+                                }
+                                chrome.windows.remove(newWindowId);
+                            }
                         }
-                        if (redirectedTo) {
-                            // Extract the authorization code from the redirected URL 
-                            const code = new URL(redirectedTo).searchParams.get('code'); 
-                            console.log('CODE from AUTH ', code); 
-                            getAuthToken(code).then(accessToken => {
-                                resolve(accessToken)
-                            })
-                        }
-                    }
-                ); 
+                    });
+                });
             })
             .catch(error => {
                 console.log('error in backgroundWorker.js. when getting Cart Write Auth', error.message);
