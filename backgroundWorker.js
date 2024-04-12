@@ -21,7 +21,7 @@ chrome.runtime.onInstalled.addListener(function() {
 //determines if the access token from the Kroger website needs to be returned 
 async function getProductAccessToken(){
     return new Promise(async function(resolve,reject) {
-        var timeOfExpiry = await loadFromLocalStorage("product_token_expiry_time");
+        var timeOfExpiry = await loadFromLocalStorage("kroger_product_token_expiry_time");
         //console.log('expiry time', timeOfExpiry);
         var currentTimeSeconds = new Date().getTime() / 1000;
         console.log('currentTimeSeconds', currentTimeSeconds);
@@ -33,7 +33,7 @@ async function getProductAccessToken(){
         }else{
             //the key exists and is not expired, use the access token
             console.log('The Client Cred key exists and is not expired, using it');
-            var accessToken = await loadFromLocalStorage("product_access_token");
+            var accessToken = await loadFromLocalStorage("kroger_product_access_token");
             resolve(accessToken);
         }
     });
@@ -41,7 +41,7 @@ async function getProductAccessToken(){
 
 async function getCartWriteAuth(){
     return new Promise(async function(resolve,reject) {
-        var timeOfExpiry = await loadFromLocalStorage("cart_token_expiry_time");
+        var timeOfExpiry = await loadFromLocalStorage("kroger_cart_token_expiry_time");
         //console.log('expiry time', timeOfExpiry);
         var currentTimeSeconds = new Date().getTime() / 1000;
         console.log('current cart Time Seconds', currentTimeSeconds);
@@ -90,7 +90,7 @@ async function getCartWriteAuth(){
             })
         }else if (currentTimeSeconds > (timeOfExpiry - 30)){ //subtract 30 seconds for buffer 
             console.log('Cart auth key is expired. Call the refresh token API.');
-            var refreshToken = await loadFromLocalStorage("refresh_token");
+            var refreshToken = await loadFromLocalStorage("kroger_refresh_token");
             getRefreshToken(refreshToken)
             .then(accessToken => {
                 resolve(accessToken)
@@ -99,7 +99,7 @@ async function getCartWriteAuth(){
         else{
             //the key exists and is not expired, use the access token
             console.log('The Client Cart Auth key exists and is not expired. Using it');
-            var accessToken = await loadFromLocalStorage("cart_access_token");
+            var accessToken = await loadFromLocalStorage("kroger_cart_access_token");
             resolve(accessToken);
         }
     });

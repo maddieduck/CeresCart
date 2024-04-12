@@ -27,18 +27,12 @@
         "https://nckacfgoolkhaedphbknecabckccgffe.chromiumapp.org"
       ]
     },
-    "host_permissions": [
-      "https://www.kroger.com/",
-      "https://api.kroger.com/"
-    ]
-    ,
      "background":{
         "service_worker": "backgroundWorker.js",
         "type": "module"
     },  
      "permissions": [
        "storage",
-       "identity",
        "tabs"
      ],
      "content_scripts": [ 

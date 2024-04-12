@@ -28,8 +28,8 @@ async function clientCredentials(){ //gets a token for use When making API reque
       var currentTimeSeconds = new Date().getTime() / 1000; 
       var expiryTime = currentTimeSeconds + data["expires_in"]; 
       console.log('expiry time', expiryTime); 
-      saveToLocalStorage('product_token_expiry_time', expiryTime); 
-      saveToLocalStorage('product_access_token', data["access_token"]); 
+      saveToLocalStorage('kroger_product_token_expiry_time', expiryTime); 
+      saveToLocalStorage('kroger_product_access_token', data["access_token"]); 
       resolve(data["access_token"]);  
     })
     .catch(error => {
@@ -65,9 +65,9 @@ async function getAuthToken(code){ //gets a token for use When making API reques
       var currentTimeSeconds = new Date().getTime() / 1000; 
       var expiryTime = currentTimeSeconds + data["expires_in"]; 
       console.log('expiry time', expiryTime); 
-      saveToLocalStorage('cart_token_expiry_time', expiryTime); 
-      saveToLocalStorage('cart_access_token', data["access_token"]); 
-      saveToLocalStorage('refresh_token', data["refresh_token"]);
+      saveToLocalStorage('kroger_cart_token_expiry_time', expiryTime); 
+      saveToLocalStorage('kroger_cart_access_token', data["access_token"]); 
+      saveToLocalStorage('kroger_refresh_token', data["refresh_token"]);
       resolve(data["access_token"]);
     })
     .catch(error => {
@@ -102,9 +102,9 @@ async function getRefreshToken(refreshToken){
       var currentTimeSeconds = new Date().getTime() / 1000; 
       var expiryTime = currentTimeSeconds + data["expires_in"]; 
       console.log('expiry time', expiryTime); 
-      saveToLocalStorage('cart_token_expiry_time', expiryTime); 
-      saveToLocalStorage('cart_access_token', data["access_token"]); 
-      saveToLocalStorage('refresh_token', data["refresh_token"]);
+      saveToLocalStorage('kroger_cart_token_expiry_time', expiryTime); 
+      saveToLocalStorage('kroger_cart_access_token', data["access_token"]); 
+      saveToLocalStorage('krgoer_refresh_token', data["refresh_token"]);
       resolve(data["access_token"]);
     })
     .catch(error => {
