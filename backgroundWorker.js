@@ -3,6 +3,7 @@ import {loadFromLocalStorage} from './storageHelpers.js'
 import {stripIngredients} from './stripIngredients.js'
 import {getRefinedIngredients, prioritizeProductsChatGPT} from './ChatGPT.js'
 import {ExtPay} from './ExtPay.js'
+import {walmartLocationSearchByZipCode} from './WalmartCalls.js'
 
 var clientID = 'cerescart-f4187f9b0cfa74e1107fe736009f3e24587190955792211001'
 var redirectURI = 'https://nckacfgoolkhaedphbknecabckccgffe.chromiumapp.org'
@@ -271,6 +272,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const extpay = ExtPay('ceres-cart')
         extpay.openPaymentPage();
     }else if (message.to === 'ingredients'){ //returns ingredients from kroger API
+
+        //TODO Remove later 
+        walmartLocationSearchByZipCode('77098');
+
         var ingredients = Object.values(message.data); 
         console.log('found ingredients ', ingredients); 
         getRefinedIngredients(ingredients)
