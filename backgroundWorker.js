@@ -1,13 +1,11 @@
-import {clientCredentials, cartWriteAuthorizationCode, productSearch,locationSearchByZipcode, locationSearchByLongLat, addToCart, getAuthToken, getRefreshToken} from './KrogerCalls.js'
+import {clientCredentials, cartWriteAuthorizationCode, productSearch,locationSearchByZipcode, addToCart, getAuthToken, getRefreshToken} from './KrogerAPICalls.js'
 import {loadFromLocalStorage} from './storageHelpers.js'
 import {stripIngredients} from './stripIngredients.js'
-import {getRefinedIngredients, prioritizeProductsChatGPT} from './ChatGPT.js'
+import {getRefinedIngredients} from './ChatGPT.js'
 import {ExtPay} from './ExtPay.js'
-import {walmartLocationSearchByZipCode} from './WalmartCalls.js'
-
-var clientID = 'cerescart-f4187f9b0cfa74e1107fe736009f3e24587190955792211001'
-var redirectURI = 'https://nckacfgoolkhaedphbknecabckccgffe.chromiumapp.org'
-var scope = 'cart.basic:write' //'cart.basic:rw'
+import {walmartClientCredentials} from './WalmartCalls.js'
+import {Kroger} from './Kroger.js'
+import { GroceryStore } from './GroceryStore.js'
 
 chrome.runtime.onInstalled.addListener(function() {
     // Initialize the counter
@@ -247,6 +245,11 @@ productsWithoutIngredient.forEach(product => {
 return [...productsWithIngredientProduce, ...productsWithIngredientOther, ...productsWithoutIngredient4, ...productsWithoutIngredient94, ...productsWithoutIngredientOther]; 
 }
 
+function returnGroceryClass(){
+    //TODO: Change to be with more options
+    return new Kroger(); 
+}
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
     if (message.to === 'userHasAccess'){ //returns ingredients from kroger API
         //check if the user has paid 
@@ -272,16 +275,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const extpay = ExtPay('ceres-cart')
         extpay.openPaymentPage();
     }else if (message.to === 'ingredients'){ //returns ingredients from kroger API
-
-        //TODO Remove later 
-        walmartLocationSearchByZipCode('77098');
-
+        const groceryStore = returnGroceryClass(); 
         var ingredients = Object.values(message.data); 
         console.log('found ingredients ', ingredients); 
         getRefinedIngredients(ingredients)
         .then(strippedIngredients =>{
             var finalIngredients = stripIngredients(strippedIngredients); 
             console.log('final product list ', finalIngredients); 
+
             if(strippedIngredients != null){
                 getProductAccessToken()
                 .then(accessToken => {
@@ -328,18 +329,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     }
                     console.log('all ingred products ', allProductsFound)
                     if (allProductsFound.size !== 0){ 
-                        //const mapArray = Array.from(allProductsFound); 
-                        /* //ChatGPT version of prioritiznig products 
-                        console.log('map array ', mapArray) 
-                        const promiseArray = mapArray.map(([key, value]) => prioritizeProductsChatGPT(key, value));
-                        Promise.all(promiseArray).then(allCompletedPromises => {
-                            //TODO: remove any null values 
-                            console.log('all completed promises ', allCompletedPromises);  
-                            sendResponse({launch: true, ingredientData: allCompletedPromises}); 
-                        })
-                        */ 
-                        // Iterate through the array and call the function 
-                        // Convert the Map to an array 
                         const prioritizedMap = Array.from(allProductsFound).map(([ingredients, products]) => {
                             const prioritizedProducts = prioritizeProducts(ingredients, products); 
                             return [ingredients, prioritizedProducts]; 
@@ -355,6 +344,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     sendResponse({launch: false}); 
                 }); 
             }
+
         })
     }else if(message.to === 'checkout'){ //allows the user to checkout using API 
         console.log('checkout pressed'); 

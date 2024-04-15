@@ -50,6 +50,7 @@ async function getRefinedIngredients(userInput) {
   }
 }
 
+//not currently in use. Consider deleting. 
 async function prioritizeProductsChatGPT(ingredient, arrayOfProducts) {
   //console.log('ingr ', ingredient, 'array of prod ', arrayOfProducts);
   return new Promise((resolve, reject) => {
