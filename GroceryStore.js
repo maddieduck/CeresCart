@@ -1,8 +1,12 @@
 // Parent class
 class GroceryStore {
 
-    getProducts(strippedIngredients){
-        return {};
+    constructor() {
+        // Constructor logic
+    }
+
+    async getProducts(strippedIngredients){
+        return({launch: false})
     }    
 
 }

@@ -9,9 +9,8 @@ if (ingredients != null) {
   (async () => { // Wrap the block in an async function 
     var locationExists = await loadFromLocalStorage('locationName');
     console.log('location exists ', locationExists);
-    let backgroundResponse = await chrome.runtime.sendMessage({ to: 'ingredients', data: ingredients, locationExists: locationExists}); 
-    console.log('background response ', backgroundResponse);
-
+    let backgroundResponse = await chrome.runtime.sendMessage({to: 'ingredients', data: ingredients, locationExists: locationExists}); 
+    
     if (backgroundResponse.launch) {
       try {
         const htmlContents = await Promise.all([
@@ -19,7 +18,7 @@ if (ingredients != null) {
           fetch(chrome.runtime.getURL('styles.css')).then(response => response.text()),
         ]);
         const [indexHtml, cssStyle] = htmlContents;
-        
+        console.log('index ', indexHtml); 
         //insert HTML with shadowroot and css. 
         const containerDiv = document.createElement('div');
         containerDiv.id = 'ingrExpIngredientExporterPopup';

@@ -104,20 +104,6 @@ async function getCartWriteAuth(){
     });
 }
 
-function checkCategories(categories) { //check if a product is part of a valid category. If not, return false.
-    var blackListedCategories = ['Beauty', 'Personal Care', 'Baby', 'Pet Care', 'Cleaning Products', 'Home Decor', 'Natural & Organic', "Garden & Patio"];
-    //TODO: may want to remove Natural & Organic. For 'lavender' was returning 'Cleaning Products' & 'N&O' for Mrs. Meyers Clean Day Soap
-    //may want to remove anything containing cleaning products 
-    if (!categories || categories.length === 0) {
-        return false; // Return false if the array is blank
-    }
-    // Check if all categories are blacklisted
-    var allBlacklisted = categories.every(function(category) {
-        return blackListedCategories.includes(category);
-    });
-    return !allBlacklisted;
-}
-
 function pickupDepartmentExists(departments){ //check if the department 'Pickup' exists in the list of departments
     // Iterate through the departments
     for (var i = 0; i < departments.length; i++) {
@@ -128,121 +114,6 @@ function pickupDepartmentExists(departments){ //check if the department 'Pickup'
         }
     }
     return false; 
-}
-
-function returnImage(images) { //return the correct image based on the priorities
-    const sizePriorities = ["xlarge", "large", "medium", "small", "thumbnail"];
-    const perspectivePriorities = ["front", "left", "top"];
-    const defaultURL = "chrome-extension://ndfnmkebkdcejlijnlgihonfeoepefbl/images/no image found.png"
-
-    // Find the object with the highest priority perspective
-    const highestPriorityPerspective = perspectivePriorities.find(perspective =>
-        images.some(image => image.perspective === perspective)
-    );
-
-    if (!highestPriorityPerspective) {
-        // Handle the case where no matching perspective is found
-        console.error("No matching perspective found");
-        return defaultURL;
-    }
-
-    // Find the size object with the highest priority size for the chosen perspective
-    const highestPrioritySize = sizePriorities.find(size =>
-        images.some(image =>
-            image.perspective === highestPriorityPerspective &&
-            image.sizes.some(imgSize => imgSize.size === size)
-        )
-    );
-
-    if (!highestPrioritySize) {
-        // Handle the case where no matching size is found for the chosen perspective
-        console.error("No matching size found for the chosen perspective");
-        return defaultURL;
-    }
-
-    // Return the URL of the highest priority size image for the chosen perspective
-    const imageUrl = images.find(image =>
-        image.perspective === highestPriorityPerspective &&
-        image.sizes.some(size => size.size === highestPrioritySize)
-    ).sizes.find(size => size.size === highestPrioritySize).url;
-
-    return imageUrl;
-}
-
-function sortByPercentInDescription(ingredient, productsForIngredient) {
-    // Ensure the ingredient is lowercase for case-insensitive comparison
-    ingredient = ingredient.toLowerCase();
-
-    // Sort the array by the largest percent in descending order
-    const sortedProducts = productsForIngredient.sort((a, b) => {
-        const descriptionA = a.description.toLowerCase();
-        const descriptionB = b.description.toLowerCase();
-
-        // Calculate the percentage of the ingredient in each description
-        const percentA = (descriptionA.split(ingredient).length - 1) / descriptionA.split(' ').length;
-        const percentB = (descriptionB.split(ingredient).length - 1) / descriptionB.split(' ').length;
-
-        // Sort by the largest percent in descending order
-        return percentB - percentA;
-    });
-
-    return sortedProducts;
-}
-
-function prioritizeProducts(ingredient, productsForIngredient) {
-//make sure ingredient is not plural
-if (ingredient.endsWith("s")){
-    ingredient = ingredient.slice(0, -1);
-}else if (ingredient.endsWith("es")){
-    ingredient = ingredient.slice(0, -2);
-}
-// Initialize variables for products with and without the ingredient
-let productsWithIngredient = [];
-let productsWithoutIngredient = [];
-
-// Iterate through the array and sort into respective variables
-productsForIngredient.forEach(product => {
-    if (product.description.toLowerCase().includes(ingredient.toLowerCase())) {
-        productsWithIngredient.push(product);
-    } else {
-        productsWithoutIngredient.push(product);
-    }
-});
-
-//sort UPC that have ingredient
-let productsWithIngredient94 = [];
-let productsWithIngredient4 = [];
-let productsWithIngredientOther = [];
-productsWithIngredient.forEach(product => {
-    let numberString = product.upc.toString();
-    if (numberString.length >= 10 && numberString[8] === '9' && numberString[9] === '4') {
-        productsWithIngredient94.push(product);
-    }else if (numberString.length >= 10 && numberString[9] === '4') {
-        productsWithIngredient4.push(product);
-    }else{
-        productsWithIngredientOther.push(product);
-    }
-});
-//products that are produce
-var productsWithIngredientProduce = sortByPercentInDescription(ingredient, [...productsWithIngredient4, ...productsWithIngredient94]);
-productsWithIngredientOther = sortByPercentInDescription(ingredient, productsWithIngredientOther);
-
-//sort UPC that have ingredient
-let productsWithoutIngredient94 = [];
-let productsWithoutIngredient4 = [];
-let productsWithoutIngredientOther = [];
-productsWithoutIngredient.forEach(product => {
-    let numberString = product.upc.toString();
-    if (numberString.length >= 10 && numberString[8] === '9' && numberString[9] === '4') {
-        productsWithoutIngredient94.push(product);
-    }else if (numberString.length >= 10 && numberString[9] === '4') {
-        productsWithoutIngredient4.push(product);
-    }else{
-        productsWithoutIngredientOther.push(product);
-    }
-});
-
-return [...productsWithIngredientProduce, ...productsWithIngredientOther, ...productsWithoutIngredient4, ...productsWithoutIngredient94, ...productsWithoutIngredientOther]; 
 }
 
 function returnGroceryClass(){
@@ -279,72 +150,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         var ingredients = Object.values(message.data); 
         console.log('found ingredients ', ingredients); 
         getRefinedIngredients(ingredients)
-        .then(strippedIngredients =>{
+        .then(async strippedIngredients =>{
             var finalIngredients = stripIngredients(strippedIngredients); 
             console.log('final product list ', finalIngredients); 
-
             if(strippedIngredients != null){
-                getProductAccessToken()
-                .then(accessToken => {
-                    const promises = finalIngredients.map(ingredient => productSearch(accessToken, ingredient));
-                    return Promise.all(promises);
-                })
-                .then(allIngredientProducts => {
-                    console.log('All Ingred ', allIngredientProducts); 
-                    var allProductsFound = new Map();
-                    for (const j in allIngredientProducts) {
-                        if (allIngredientProducts[j] && allIngredientProducts[j]['data'] != null) {
-                            let productData = allIngredientProducts[j]['data'];
-                            if (productData.length !== 0) {
-                                let singularProductsData = [];
-                                for (const index in productData) {
-                                    let product = productData[index];
-                                    var price = null;
-                                    if ('price' in product['items'][0] && product['items'][0]['price']['regular'] !== null) {
-                                        price = product['items'][0]['price']['regular'];
-                                    } else {
-                                        price = null;
-                                    }
-                                    if (checkCategories(product['categories'])) {
-                                        // Only append to singularProductsData if price exists and is not null
-                                        if ((message.locationExists && price !== null) || (!message.locationExists)) {
-                                            var newProduct = {
-                                                "description": product['description'],
-                                                "brand": product['brand'],
-                                                "image": returnImage(product['images']),
-                                                "price": price,
-                                                "upc": product['upc'],
-                                                "quantity": 0,
-                                                "size": product['items'][0]['size']
-                                            };
-                                            singularProductsData.push(newProduct);
-                                        }
-                                    }
-                                }
-                                if (singularProductsData.length !== 0) {
-                                    allProductsFound.set(finalIngredients[j], singularProductsData);
-                                }
-                            }
-                        }
-                    }
-                    console.log('all ingred products ', allProductsFound)
-                    if (allProductsFound.size !== 0){ 
-                        const prioritizedMap = Array.from(allProductsFound).map(([ingredients, products]) => {
-                            const prioritizedProducts = prioritizeProducts(ingredients, products); 
-                            return [ingredients, prioritizedProducts]; 
-                        });
-                        console.log("prioritized items ", prioritizedMap);
-                        sendResponse({launch: true, ingredientData: prioritizedMap}); 
-                    }else{
-                        sendResponse({launch: false}); 
-                    } 
-                })        
-                .catch(error => {
-                    console.log('error in backgroundWorker.js. when getting ingredients', error.message);
-                    sendResponse({launch: false}); 
-                }); 
+                groceryStore.getProducts(finalIngredients, message)
+                .then(products => {
+                    console.log('products ', products); 
+                    sendResponse(products); 
+                }) 
+            }else{
+                sendResponse({launch: false}); 
             }
-
         })
     }else if(message.to === 'checkout'){ //allows the user to checkout using API 
         console.log('checkout pressed'); 
