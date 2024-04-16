@@ -7,7 +7,7 @@ let ingredients = findIngredientsOnPage(); //array of ingredients?
 console.log('ingredients ', ingredients);
 if (ingredients != null) {
   (async () => { // Wrap the block in an async function 
-    var locationExists = await loadFromLocalStorage('locationName');
+    var locationExists = await loadFromLocalStorage('KrogerLocationName');
     console.log('location exists ', locationExists);
     let backgroundResponse = await chrome.runtime.sendMessage({to: 'ingredients', data: ingredients, locationExists: locationExists}); 
     
@@ -34,12 +34,12 @@ if (ingredients != null) {
         insertEachIngredient(ingredientData);
         //set the location name if it exists in memory 
         
-        chrome.storage.sync.get('locationName', (result) => {
-          console.log('location Name ', result['locationName']);
-          if (result['locationName'] != undefined){
+        chrome.storage.sync.get('KrogerLocationName', (result) => {
+          console.log('location Name ', result['KrogerLocationName']);
+          if (result['KrogerLocationName'] != undefined){
             shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
             shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
-            shadowRoot.getElementById('ingrExpPickupAt').textContent = result['locationName']
+            shadowRoot.getElementById('ingrExpPickupAt').textContent = result['KrogerLocationName']
             shadowRoot.getElementById('change').style.display = '-webkit-box'; 
           }
         });
@@ -334,8 +334,8 @@ async function shopStore(event){ //a location has been selected from the locatio
   shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
   shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
   shadowRoot.getElementById('ingrExpPickupAt').textContent = locationName; 
-  chrome.storage.sync.set({['locationId']: locationId});
-  chrome.storage.sync.set({['locationName']: locationName});
+  chrome.storage.sync.set({['KrogerLocationId']: locationId});
+  chrome.storage.sync.set({['KrogerLocationName']: locationName});
 
   allProductData = [];
   updateCheckoutButton();  
