@@ -2,12 +2,19 @@
 class GroceryStore {
 
     constructor() {
-        // Constructor logic
     }
 
-    async getProducts(strippedIngredients){
-        return({launch: false})
+    async getProducts(finalIngredients, locationExists){
+        throw new Error('Method getProducts() in GroceryStore must be implemented');
     }    
+
+    async checkout(itemsToCheckout){
+        throw new Error('Method checkout() in GroceryStore must be implemented');
+    }
+
+    async locations(zipCode){
+        throw new Error('Method locations() in GroceryStore must be implemented');
+    }
 
 }
 
