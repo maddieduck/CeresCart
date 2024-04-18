@@ -1,6 +1,6 @@
 import {clientCredentials, cartWriteAuthorizationCode, productSearch,locationSearchByZipcode, locationSearchByLongLat, addToCart, getAuthToken, getRefreshToken} from './KrogerAPICalls.js'
 import { GroceryStore } from './GroceryStore.js';
-import {loadFromLocalStorage} from './storageHelpers.js';
+import {loadFromLocalStorage} from '../storageHelpers.js';
 
 class Kroger extends GroceryStore { 
     constructor() {

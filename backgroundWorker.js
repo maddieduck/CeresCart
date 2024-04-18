@@ -1,9 +1,7 @@
 import { stripIngredients } from './stripIngredients.js'
 import { getRefinedIngredients } from './ChatGPT.js'
 import { ExtPay } from './ExtPay.js'
-import { walmartClientCredentials } from './WalmartCalls.js'
-import { Kroger } from './Kroger.js'
-import { HEB } from './HEB.js'
+import { Kroger } from './GroceryStores/Kroger.js'
 
 chrome.runtime.onInstalled.addListener(function() {
     // Initialize the counter
