@@ -545,7 +545,8 @@
   border-radius: 10px; 
   text-align: center;
   display: block;
-  overflow: auto; /* Use "auto" to only show scrollbars when needed */
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
   display: flex;
   align-items: center; /* Center vertically */
   justify-content: space-between; /* Align items with space between */

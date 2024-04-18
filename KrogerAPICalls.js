@@ -159,14 +159,11 @@ async function addToCart(accessToken, items) { //returns true if added successfu
     }).then(res => {
       if (res.ok) {
         console.log('Kroger APIs. Add to cart successful', res)
-        return true
+        resolve(true);
       } else {
         console.log('Kroger APIs. Add to Cart was unsuccessful. ', res);
         resolve(null);
       }
-    })
-    .then(data => {
-      resolve(data);
     })
     .catch(error => {
       console.log('ERROR in Kroger Calls Add to Cart Function', error);
