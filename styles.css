@@ -349,34 +349,26 @@
 #buttonContainer {
   position: relative; /* Set position to relative */
   width: 100%; /* Set width to match button width */
-  height: 62px; /* Set height to match button height */
   margin-top: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
+  display: inline-block;
 }
-
 #ingrExpCheckoutButtonPopup {
-  position: absolute; /* Set position to absolute */
-  top: 0; /* Position at the top of the container */
-  left: 16px; /* Position at the left of the container */
-  font-size: 20px; 
   background-color: rgb(255, 205, 85); 
-  font-weight: 450;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  width: calc(100% - 32px); /* Set width using calc() function */
-  height: 48px;
   display: none;
+  position: absolute; 
+  top: 0;
+  left: 50%; 
+  transform: translateX(-50%); 
 }
 #ingrExpCheckoutButton {
-  position: absolute; /* Set position to absolute */
-  top: 0; /* Position at the top of the container */
-  left: 16px; /* Position at the left of the container */
-  font-size: 20px; 
   background-color: rgb(109, 171, 155);
+}
+.bottomButton{
+  position: relative; 
+  font-size: 20px; 
   font-weight: 450;
-  color: #fff;
+  color: #ffffff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
