@@ -310,7 +310,7 @@
   width: 68px;
   object-fit: contain;
 }
-#ingrExpTopLevelDiv{
+#ingrExpTopLevelDiv {
   background-color: white; 
   max-height: 98%;
   width: 424px;
@@ -321,11 +321,15 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   border-radius: 10px; 
   text-align: center;
-  display: block;
-  overflow: auto; /* Use "auto" to only show scrollbars when needed */
+  display: flex; 
+  flex-direction: column; 
 }
 #scrollingPart {
   background-color: white; 
+  overflow: auto;
+  flex-grow: 1; 
+  border-radius: 10px; 
+
 }
 #ingrExpTopLevelLocationPopup{
   background-color: white;
@@ -342,7 +346,18 @@
   height: 492px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
+#buttonContainer {
+  position: relative; /* Set position to relative */
+  width: 100%; /* Set width to match button width */
+  height: 62px; /* Set height to match button height */
+  margin-top: 12px;
+  margin-bottom: 16px;
+}
+
 #ingrExpCheckoutButtonPopup {
+  position: absolute; /* Set position to absolute */
+  top: 0; /* Position at the top of the container */
+  left: 16px; /* Position at the left of the container */
   font-size: 20px; 
   background-color: rgb(255, 205, 85); 
   font-weight: 450;
@@ -350,15 +365,14 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  width: 392px;
+  width: calc(100% - 32px); /* Set width using calc() function */
   height: 48px;
-  margin-bottom: 10px;
-  position: absolute;
-  left: 50%; 
-  transform: translateX(-50%); 
   display: none;
 }
 #ingrExpCheckoutButton {
+  position: absolute; /* Set position to absolute */
+  top: 0; /* Position at the top of the container */
+  left: 16px; /* Position at the left of the container */
   font-size: 20px; 
   background-color: rgb(109, 171, 155);
   font-weight: 450;
@@ -366,9 +380,8 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  width: 392px;
+  width: calc(100% - 32px); /* Set width using calc() function */
   height: 48px;
-  margin-bottom: 10px;
 }
 .ingrExpTopLocationDiv{
   align-items: center;
@@ -376,8 +389,8 @@
   border-radius: 8px;
   display: block;
   height: 144px;
-  width: calc(100% - 16px); /* Set the width of the child div */
-  margin: 0 8px; /* Set the margin on both sides */
+  width: calc(100% - 16px); 
+  margin: 0 8px;
   margin-bottom: 8px;
 }
 .ingrExpLocationName{
