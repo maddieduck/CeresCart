@@ -5,7 +5,7 @@ var locationShadowRoot;
 var minimizeShadowRoot; 
 let ingredients = findIngredientsOnPage(); //array of ingredients? 
 console.log('ingredients ', ingredients);
-if (ingredients != null) {
+if (ingredients != null && ingredients.length > 0) {
   (async () => { // Wrap the block in an async function 
     var locationExists = await loadFromLocalStorage('KrogerLocationName');
     console.log('location exists ', locationExists);
@@ -673,38 +673,58 @@ function stringIngredientsFromRecipe(i){
 }
 
 function findIngredientsOnPage() {
-  const scripts = document.querySelectorAll('script[type="application/ld+json"]');
-  //console.log('find ingr ', scripts);
-  for (const script of scripts) {
-    const schema = JSON.parse(script.textContent);
-    console.log('ingred script ', schema)
-    let graph = schema['@graph'];
-    if (graph != undefined){
-      for (const key in graph) {
-        var value = graph[key];
-        var ingredients = stringIngredientsFromRecipe(value) 
+  var currentUrl = window.location.href;
+  console.log("Current URL: " + currentUrl);
+
+  if (currentUrl.includes("pinterest.com")) {
+    // The user is on Pinterest
+    console.log("You are on Pinterest!");
+    var ingredientsArray = [];
+    var elementsWithItemprop = document.querySelectorAll('[itemprop]');
+    
+    // Loop through each element
+    elementsWithItemprop.forEach(function(element) {
+        if (element.getAttribute('itemprop') === 'recipeIngredient') {
+            // If the itemprop is 'recipeIngredient', extract the ingredient and add it to the array
+            var ingredient = element.textContent.trim();
+            ingredientsArray.push(ingredient);
+        }
+    });
+    return ingredientsArray;
+  } else {
+    //Use the function to strip ingredients from a webpage 
+    const scripts = document.querySelectorAll('script[type="application/ld+json"]');
+    for (const script of scripts) {
+      const schema = JSON.parse(script.textContent);
+      console.log('ingred script ', schema)
+      let graph = schema['@graph'];
+      if (graph != undefined){
+        for (const key in graph) {
+          var value = graph[key];
+          var ingredients = stringIngredientsFromRecipe(value) 
+          if(ingredients!= null){
+            return ingredients
+          }
+        }
+      }else{
+        var ingredients = stringIngredientsFromRecipe(schema);
         if(ingredients!= null){
           return ingredients
         }
-      }
-    }else{
-      var ingredients = stringIngredientsFromRecipe(schema);
-      if(ingredients!= null){
-        return ingredients
-      }
-      for (const key in schema) {
-        var value = schema[key]; 
-        if (key == 'recipeIngredient'){
-          return schema[key]
-        }
-        var ingredients = stringIngredientsFromRecipe(value) 
-        if(ingredients!= null){
-          return ingredients
+        for (const key in schema) {
+          var value = schema[key]; 
+          if (key == 'recipeIngredient'){
+            return schema[key]
+          }
+          var ingredients = stringIngredientsFromRecipe(value) 
+          if(ingredients!= null){
+            return ingredients
+          }
         }
       }
     }
+    return null; 
   }
-  return null; 
 }
 
 function zipCodeEdited(event) {

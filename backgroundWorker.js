@@ -82,3 +82,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
     return true; // Indicates that the response will be sent asynchronously 
 });
+
+// Listen for tab updates
+chrome.tabs.onUpdated.addListener(pinterestPageUpdated);
+
+// Define a function to handle tab updates
+function pinterestPageUpdated(tabId, changeInfo, tab) {
+    // Check if the URL has changed
+    if (changeInfo.url && changeInfo.url.includes("pinterest.com")) {
+        console.log("Pinterest pin change detected. Reloading extension.");
+        
+    }
+}
+
+
