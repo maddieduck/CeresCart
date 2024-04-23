@@ -3,60 +3,76 @@ var allLocationData = [];
 var shadowRoot; 
 var locationShadowRoot; 
 var minimizeShadowRoot; 
-let ingredients = findIngredientsOnPage(); //array of ingredients? 
+var ingredients = findIngredientsOnPage(); //array of ingredients on page 
 console.log('ingredients ', ingredients);
-if (ingredients != null && ingredients.length > 0) {
-  (async () => { // Wrap the block in an async function 
-    var locationExists = await loadFromLocalStorage('KrogerLocationName');
-    console.log('location exists ', locationExists);
-    let backgroundResponse = await chrome.runtime.sendMessage({to: 'ingredients', data: ingredients, locationExists: locationExists}); 
-    
-    if (backgroundResponse.launch) {
-      try {
-        const htmlContents = await Promise.all([
-          fetch(chrome.runtime.getURL('index.html')).then(response => response.text()),
-          fetch(chrome.runtime.getURL('styles.css')).then(response => response.text()),
-        ]);
-        const [indexHtml, cssStyle] = htmlContents;
-        console.log('index ', indexHtml); 
-        //insert HTML with shadowroot and css. 
-        const containerDiv = document.createElement('div');
-        containerDiv.id = 'ingrExpIngredientExporterPopup';
-        shadowRoot = containerDiv.attachShadow({ mode: 'open', name: 'mainShadowRoot'});
-        shadowRoot.innerHTML = indexHtml;
-        const style = document.createElement('style'); 
-        style.textContent = cssStyle; 
-        shadowRoot.appendChild(style);
-        document.body.insertAdjacentElement('afterbegin', containerDiv);
+deployExtension(); 
 
-        //insert each ingredient into the popup
-        const ingredientData = new Map(backgroundResponse.ingredientData);
-        insertEachIngredient(ingredientData);
-        //set the location name if it exists in memory 
-        
-        chrome.storage.sync.get('KrogerLocationName', (result) => {
-          console.log('location Name ', result['KrogerLocationName']);
-          if (result['KrogerLocationName'] != undefined){
-            shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
-            shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
-            shadowRoot.getElementById('ingrExpPickupAt').textContent = result['KrogerLocationName']
-            shadowRoot.getElementById('change').style.display = '-webkit-box'; 
-          }
-        });
-
-        shadowRoot.getElementById('ingrExpClose').addEventListener('click', closePopup); 
-        shadowRoot.getElementById('ingrExpPerson').addEventListener('click', personClicked); 
-        shadowRoot.getElementById('minimize').addEventListener('click', minimizeClicked); 
-        shadowRoot.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
-        shadowRoot.getElementById('change').addEventListener('click', changeButtonPressed); 
-        shadowRoot.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
-        updateCheckoutButton();
-      } catch (error) {
-        console.error('ERROR in runExtension.js: ', error);
+function deployExtension(){
+  if (ingredients != null && ingredients.length > 0) {
+    (async () => { // Wrap the block in an async function 
+      var locationExists = await loadFromLocalStorage('KrogerLocationName');
+      console.log('location exists ', locationExists);
+      let backgroundResponse = await chrome.runtime.sendMessage({to: 'ingredients', data: ingredients, locationExists: locationExists}); 
+      
+      if (backgroundResponse.launch) {
+        try {
+          const htmlContents = await Promise.all([
+            fetch(chrome.runtime.getURL('index.html')).then(response => response.text()),
+            fetch(chrome.runtime.getURL('styles.css')).then(response => response.text()),
+          ]);
+          const [indexHtml, cssStyle] = htmlContents;
+          console.log('index ', indexHtml); 
+          //insert HTML with shadowroot and css. 
+          const containerDiv = document.createElement('div');
+          containerDiv.id = 'ingrExpIngredientExporterPopup';
+          shadowRoot = containerDiv.attachShadow({ mode: 'open', name: 'mainShadowRoot'});
+          shadowRoot.innerHTML = indexHtml;
+          const style = document.createElement('style'); 
+          style.textContent = cssStyle; 
+          shadowRoot.appendChild(style);
+          document.body.insertAdjacentElement('afterbegin', containerDiv);
+  
+          //insert each ingredient into the popup
+          const ingredientData = new Map(backgroundResponse.ingredientData);
+          insertEachIngredient(ingredientData);
+          //set the location name if it exists in memory 
+          
+          chrome.storage.sync.get('KrogerLocationName', (result) => {
+            console.log('location Name ', result['KrogerLocationName']);
+            if (result['KrogerLocationName'] != undefined){
+              shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
+              shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
+              shadowRoot.getElementById('ingrExpPickupAt').textContent = result['KrogerLocationName']
+              shadowRoot.getElementById('change').style.display = '-webkit-box'; 
+            }
+          });
+  
+          shadowRoot.getElementById('ingrExpClose').addEventListener('click', closePopup); 
+          shadowRoot.getElementById('ingrExpPerson').addEventListener('click', personClicked); 
+          shadowRoot.getElementById('minimize').addEventListener('click', minimizeClicked); 
+          shadowRoot.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
+          shadowRoot.getElementById('change').addEventListener('click', changeButtonPressed); 
+          shadowRoot.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
+          updateCheckoutButton();
+        } catch (error) {
+          console.error('ERROR in runExtension.js: ', error);
+        }
       }
-    }
-  })();
+    })();
+  }
 }
+ 
+// Listening for messages from the background script
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  console.log("Message received from background:", message);
+  if (message.to == 'pinterestPageChanged') {
+    console.log('Pinterest page changed');
+    closePopup();
+    ingredients = findIngredientsOnPage();
+    console.log('ingredients ', ingredients)
+    deployExtension();
+  }
+});
 
 function warningPopup(warningText, color){
   var popup = shadowRoot.getElementById('ingrExpCheckoutButtonPopup');
@@ -213,17 +229,18 @@ function personClicked(event){
 
 function closePopup(event) {//closes the main popup or the location popup 
   //mainShadowRoot 
-  console.log('close id ', event.target.id);
-  var id = event.target.id;
-  if (id === 'ingrExpCloseImage'){
+  console.log('close'); 
+  if (event == undefined || event.target.id === 'ingrExpCloseImage'){
     // Assuming containerDiv is already defined
-    document.getElementById('ingrExpIngredientExporterPopup').remove(); 
+    var mainPopup = document.getElementById('ingrExpIngredientExporterPopup');
+    if(mainPopup){
+      mainPopup.remove(); 
+    }    
 
     var locationPopup = document.getElementById('ingrExpLocationPopup');
     if (locationPopup){
       locationPopup.remove();
     }
-    
   }else if (id === "ingrExpCloseImageInPopup"){
     document.getElementById('ingrExpLocationPopup').remove();
   }
@@ -679,15 +696,16 @@ function findIngredientsOnPage() {
   if (currentUrl.includes("pinterest.com")) {
     // The user is on Pinterest
     console.log("You are on Pinterest!");
+
     var ingredientsArray = [];
     var elementsWithItemprop = document.querySelectorAll('[itemprop]');
     
     // Loop through each element
     elementsWithItemprop.forEach(function(element) {
         if (element.getAttribute('itemprop') === 'recipeIngredient') {
-            // If the itemprop is 'recipeIngredient', extract the ingredient and add it to the array
-            var ingredient = element.textContent.trim();
-            ingredientsArray.push(ingredient);
+          // If the itemprop is 'recipeIngredient', extract the ingredient and add it to the array
+          var ingredient = element.textContent.trim();
+          ingredientsArray.push(ingredient);
         }
     });
     return ingredientsArray;

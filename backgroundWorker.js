@@ -86,13 +86,22 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // Listen for tab updates
 chrome.tabs.onUpdated.addListener(pinterestPageUpdated);
 
-// Define a function to handle tab updates
+var loadingPinterestURL = null; 
 function pinterestPageUpdated(tabId, changeInfo, tab) {
-    // Check if the URL has changed
-    if (changeInfo.url && changeInfo.url.includes("pinterest.com")) {
-        console.log("Pinterest pin change detected. Reloading extension.");
-        
-    }
+    // Retrieve the current URL using chrome.tabs.get
+    chrome.tabs.get(tabId, function(updatedTab) {
+        // Check if updatedTab and updatedTab.url are defined 
+        console.log("Pinterest page updated.", changeInfo.url, changeInfo.status, updatedTab.url);
+
+        if (changeInfo.status === "loading"){
+            loadingPinterestURL = changeInfo.url; 
+        }else if(changeInfo.status === "complete"){
+            if(loadingPinterestURL == updatedTab.url && updatedTab.url.includes("pinterest.com")){
+                console.log("Pinterest page change detected.");
+                // Sending a message to the content script of the updated tab
+                chrome.tabs.sendMessage(tabId, { to: 'pinterestPageChanged' });
+            }
+            loadingPinterestURL = null;
+        }
+    });
 }
-
-
