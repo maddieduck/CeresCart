@@ -91,9 +91,9 @@ function pinterestPageUpdated(tabId, changeInfo, tab) {
     // Retrieve the current URL using chrome.tabs.get
     chrome.tabs.get(tabId, function(updatedTab) {
         // Check if updatedTab and updatedTab.url are defined 
-        console.log("Pinterest page updated.", changeInfo.url, changeInfo.status, updatedTab.url);
+        console.log("URL page updated.", changeInfo.url, changeInfo.status, updatedTab.url);
 
-        if (changeInfo.status === "loading"){
+        if (changeInfo.status === "loading" && changeInfo.url.includes("pinterest.com")){
             loadingPinterestURL = changeInfo.url; 
         }else if(changeInfo.status === "complete"){
             if(loadingPinterestURL == updatedTab.url && updatedTab.url.includes("pinterest.com")){

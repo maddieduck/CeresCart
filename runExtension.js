@@ -68,6 +68,10 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   if (message.to == 'pinterestPageChanged') {
     console.log('Pinterest page changed');
     closePopup();
+
+    const htmlContent = document.documentElement.outerHTML;
+    console.log('html content ', htmlContent);
+
     ingredients = findIngredientsOnPage();
     console.log('ingredients ', ingredients)
     deployExtension();
@@ -699,7 +703,7 @@ function findIngredientsOnPage() {
 
     var ingredientsArray = [];
     var elementsWithItemprop = document.querySelectorAll('[itemprop]');
-    
+
     // Loop through each element
     elementsWithItemprop.forEach(function(element) {
         if (element.getAttribute('itemprop') === 'recipeIngredient') {
