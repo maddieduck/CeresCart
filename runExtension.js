@@ -21,7 +21,7 @@ function deployExtension(){
             fetch(chrome.runtime.getURL('styles.css')).then(response => response.text()),
           ]);
           const [indexHtml, cssStyle] = htmlContents;
-          console.log('index ', indexHtml); 
+          //console.log('index ', indexHtml); 
           //insert HTML with shadowroot and css. 
           const containerDiv = document.createElement('div');
           containerDiv.id = 'ingrExpIngredientExporterPopup';
@@ -68,14 +68,37 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   if (message.to == 'pinterestPageChanged') {
     console.log('Pinterest page changed');
     closePopup();
-//document.querySelectorAll('[itemprop]') 
-    var timer = setTimeout(() => {
-      ingredients = findIngredientsOnPage();
-      console.log('ingredients ', ingredients)
-      deployExtension();
-    }, 10000); 
+    lookForPinterestIngredient();
   }
 });
+
+function lookForPinterestIngredient() {
+  let timer;
+  const timeout = 8000; // 8 seconds timeout
+
+  // Set a timeout to stop waiting after the specified time
+  timer = setTimeout(() => {
+    console.log("Timeout: 'itemprop' attribute not found.");
+  }, timeout);
+
+  function checkForItemprop() {
+    const elements = document.querySelectorAll('[itemprop]');
+    if (elements.length > 0) {
+      // 'itemprop' attribute found 
+      clearTimeout(timer); // Clear the timeout 
+      console.log("item prop found");
+      ingredients = findIngredientsOnPage();
+      //console.log('ingredients ', ingredients)
+      deployExtension();
+    } else {
+      // 'itemprop' attribute not found, continue checking
+      setTimeout(checkForItemprop, 1000); // Check again after 1 second
+    }
+  }
+
+  // Start checking for 'itemprop' attribute
+  checkForItemprop();
+}
 
 function warningPopup(warningText, color){
   var popup = shadowRoot.getElementById('ingrExpCheckoutButtonPopup');
