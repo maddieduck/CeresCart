@@ -93,13 +93,13 @@ function pinterestPageUpdated(tabId, changeInfo, tab) {
         // Check if updatedTab and updatedTab.url are defined 
         console.log("URL page updated.", changeInfo.url, changeInfo.status, updatedTab.url);
 
-        if (changeInfo.status === "loading" && changeInfo.url.includes("pinterest.com")){
+        if (changeInfo.url && changeInfo.status === "loading" && changeInfo.url.includes("pinterest.com")){
             loadingPinterestURL = changeInfo.url; 
         }else if(changeInfo.status === "complete"){
             if(loadingPinterestURL == updatedTab.url && updatedTab.url.includes("pinterest.com")){
                 console.log("Pinterest page change detected.");
                 // Sending a message to the content script of the updated tab
-                chrome.tabs.sendMessage(tabId, { to: 'pinterestPageChanged' });
+                chrome.tabs.sendMessage(tabId, { to: 'pinterestPageChanged' });                
             }
             loadingPinterestURL = null;
         }
