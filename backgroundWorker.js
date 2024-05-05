@@ -2,6 +2,8 @@ import { stripIngredients } from './stripIngredients.js'
 import { getRefinedIngredients } from './ChatGPT.js'
 import { ExtPay } from './ExtPay.js'
 import { Kroger } from './GroceryStores/Kroger.js'
+//import { search } from './GroceryStores/WalmartAPICalls.js'
+
 
 chrome.runtime.onInstalled.addListener(function() {
     // Initialize the counter
@@ -43,7 +45,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const extpay = ExtPay('ceres-cart')
         extpay.openPaymentPage();
     }else if (message.to === 'ingredients'){ //returns ingredients from kroger API
-
+        //search(); 
         const groceryStore = returnGroceryClass(); 
         var ingredients = Object.values(message.data); 
         console.log('found ingredients ', ingredients); 
