@@ -4,7 +4,6 @@ import { ExtPay } from './ExtPay.js'
 import { Kroger } from './GroceryStores/Kroger.js'
 //import { search } from './GroceryStores/WalmartAPICalls.js'
 
-
 chrome.runtime.onInstalled.addListener(function() {
     // Initialize the counter
     chrome.storage.sync.set({'buttonCounter': 3});

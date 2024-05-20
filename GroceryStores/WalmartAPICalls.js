@@ -1,9 +1,4 @@
-var privateKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwB+mUHuZ2EGIPteYYv7maJh8L9AwICHfm9/y5VkeuMbCpMaOu+9nRQulpqbLjNgkPR+lNB9ZkWe//0YuJ2rTaw/R+H95nIp86mIDoj8ZAsMV3QzejnsQZYMCkelCXpAPaPPCJiyN7w3opCh7PId+Vd+RTOXMiBHfQjhR6kr26/nuGDHlr5l0jTJNtPZgweDEztEWzo0jUXfbuF87cFkrHdWEQBKEEysrviTxEUSTeFuzpJocGYQ/VLZgAktK3aTdLE/bsWA1GKde+0KezjvjveX14WE0733Q6NkmELKg7HaIenFxCvhyS2rFNeh0R8ndZeeI/IX+czH6Wli2oqsOuwIDAQAB"
-var consumerId = "13c8234e-f5dc-4952-9b26-a938bf98b3be"
-var publicKeyVersion = '1'
-import RSAKey from './libs/jsrsasign/jsrsasign';
-//import { sign } from 'crypto';
-//import {saveToLocalStorage} from './storageHelpers.js'
+//import './jsrsasign-all-min.js'; 
 
 async function walmartClientCredentials(){ //gets a token for use When making API requests that do not require customer consent 
   return new Promise((resolve, rejects)=>{
@@ -47,10 +42,10 @@ async function walmartClientCredentials(){ //gets a token for use When making AP
 async function search() {
   console.log('walmart search running');
   try {
-    const headers = await generateWalmartHeaders();
+    const headers = generateWalmartHeaders();
     const response = await fetch('https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search?query=eggs', {
       method: 'GET',
-      headers: headers
+      headers: headers 
     });
     if (!response.ok) {
       throw new Error('Client Walmart Auth was unsuccessful.');
@@ -64,28 +59,37 @@ async function search() {
   }
 }
 
-function generateWalmartHeaders() {
-  // the order here is important ... they are sorted according to the header names
-  let timestamp = Date.now();
-  var rsa = new RSAKey();
-
+const generateWalmartHeaders = () => {
+  // The order here is important, sorted according to the header names
+  const timestamp = Date.now(); 
+  var privateKey = `-----BEGIN PRIVATE KEY-----
+  MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwB+mUHuZ2EGIPteYYv7maJh8L9AwICHfm9/y5VkeuMbCpMaOu+9nRQulpqbLjNgkPR+lNB9ZkWe//0YuJ2rTaw/R+H95nIp86mIDoj8ZAsMV3QzejnsQZYMCkelCXpAPaPPCJiyN7w3opCh7PId+Vd+RTOXMiBHfQjhR6kr26/nuGDHlr5l0jTJNtPZgweDEztEWzo0jUXfbuF87cFkrHdWEQBKEEysrviTxEUSTeFuzpJocGYQ/VLZgAktK3aTdLE/bsWA1GKde+0KezjvjveX14WE0733Q6NkmELKg7HaIenFxCvhyS2rFNeh0R8ndZeeI/IX+czH6Wli2oqsOuwIDAQAB
+  -----END PRIVATE KEY-----`; 
+  var consumerId = "13c8234e-f5dc-4952-9b26-a938bf98b3be";
+  var publicKeyVersion = '1'
   const stringToSignComponents = [
-    consumerId,
-    timestamp,
-    publicKeyVersion
+      consumerId,
+      timestamp,
+      publicKeyVersion
   ];
-  // join the components into one string, and add the trailing newline
+  
+  // Join the components into one string and add the trailing newline
   const stringToSign = `${stringToSignComponents.join('\n')}\n`;
 
-  const signatureBuffer = rsa.sign(stringToSign, privateKey, 'sha256');
-  const signature = hextob64(signatureBuffer);
+  // Initialize the RSA key
+  const rsa = new KJUR.crypto.Signature({"alg": "SHA256withRSA"});
+  rsa.init(privateKey);
+  rsa.updateString(stringToSign);
+
+  // Sign the string and encode in base64
+  const signature = hextob64(rsa.sign());
 
   return {
-    'WM_SEC.AUTH_SIGNATURE': signature,
-    'WM_CONSUMER.INTIMESTAMP': timestamp.toString(),
-    'WM_CONSUMER.ID': consumerId,
-    'WM_SEC.KEY_VERSION': publicKeyVersion.toString(),
+      'WM_SEC.AUTH_SIGNATURE': signature,
+      'WM_CONSUMER.INTIMESTAMP': timestamp.toString(),
+      'WM_CONSUMER.ID': consumerId,
+      'WM_SEC.KEY_VERSION': publicKeyVersion.toString(),
   };
-}
+};
 
 export{search}
