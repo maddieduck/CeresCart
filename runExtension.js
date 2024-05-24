@@ -4,7 +4,7 @@ var shadowRoot;
 var locationShadowRoot; 
 var minimizeShadowRoot; 
 var ingredients = findIngredientsOnPage(); //array of ingredients on page 
-console.log('ingredients ', ingredients);
+console.log('ingredients ', ingredients); 
 deployExtension(); 
 
 function deployExtension(){
