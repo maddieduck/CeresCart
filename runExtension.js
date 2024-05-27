@@ -75,14 +75,12 @@ function deployExtension(){
 }
 
 // Listening for messages from the background script
-let exDeployedFromPinterestMessage = false; // Flag to track if extension has been deployed
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   console.log("Message received from background:", message);
   if (message.to == 'pinterestPageChanged') {
     console.log('Pinterest page changed');
     closePopup();
-    exDeployedFromPinterestMessage = false;
     lookForPinterestIngredient(Date.now(), 6000);
   }
 });
@@ -92,10 +90,7 @@ function checkForItemprop() { //returns true if pinterest ingredients found
   if (elements.length > 0) {
     console.log("itemprop found");
     ingredients = findIngredientsOnPage();
-    if (!exDeployedFromPinterestMessage) { // Check if extension has not been deployed yet
-      deployExtension();
-      exDeployedFromPinterestMessage = true; // Set flag to true after deploying extension
-    }
+    deployExtension();
     return true;
   }
   return false;
