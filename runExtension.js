@@ -8,10 +8,15 @@ console.log('ingredients ', ingredients);
 var currentUrl = window.location.href;
 //currentUrl.includes("pinterest.com");
 console.log("run extension " + currentUrl);
-deployExtension(); 
+var currentUrl = window.location.href;
+console.log("Current URL: " + currentUrl);
+
+if (!currentUrl.includes("pinterest.com")) {
+  deployExtension(); 
+  console.log('deploy ext');
+}
 
 function deployExtension(){
-  console.log('deploy ext');
   const mainPopup = document.getElementById('ingrExpIngredientExporterPopup');
   const minimizedPopup = document.getElementById('minimizePopup');
 
@@ -69,55 +74,39 @@ function deployExtension(){
   }
 }
 
-let timerToLookForPinterestIngr;
-
 // Listening for messages from the background script
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   console.log("Message received from background:", message);
   if (message.to == 'pinterestPageChanged') {
     console.log('Pinterest page changed');
-    if (timerToLookForPinterestIngr) {
-      clearTimeout(timerToLookForPinterestIngr);
-    }
     closePopup();
-    lookForPinterestIngredient();
+    lookForPinterestIngredient(Date.now(), 6000);
   }
 });
 
-function lookForPinterestIngredient() {
-  const timeout = 6000; // 8 seconds timeout
-  let extensionDeployed = false; // Track if the extension has been deployed
-
-  // Clear any existing timer before setting a new one
-  if (timerToLookForPinterestIngr) {
-    clearTimeout(timerToLookForPinterestIngr);
+function checkForItemprop() { //returns true if pinterest ingredients found
+  const elements = document.querySelectorAll('[itemprop]');
+  if (elements.length > 0) {
+    console.log("itemprop found");
+    ingredients = findIngredientsOnPage();
+    deployExtension();
+    return true;
   }
-
-  // Set a new timeout to stop waiting after the specified time
-  timerToLookForPinterestIngr = setTimeout(() => {
-    console.log("Timeout: 'itemprop' attribute not found.");
-  }, timeout);
-
-  function checkForItemprop() {
-    if (extensionDeployed) return; // Stop checking if extension has already been deployed
-    const elements = document.querySelectorAll('[itemprop]');
-    if (elements.length > 0) {
-      // 'itemprop' attribute found
-      clearTimeout(timerToLookForPinterestIngr); // Clear the timeout
-      console.log("itemprop found");
-      ingredients = findIngredientsOnPage();
-      // console.log('ingredients ', ingredients)
-      deployExtension();
-      extensionDeployed = true; // Set the flag to true
-    } else {
-      // 'itemprop' attribute not found, continue checking
-      setTimeout(checkForItemprop, 1000); // Check again after 1 second
-    }
-  }
-
-  // Start checking for 'itemprop' attribute
-  checkForItemprop();
+  return false; 
 }
+
+function lookForPinterestIngredient(startTime, maxDuration) {
+
+  if (Date.now() - startTime < maxDuration) {
+    if(checkForItemprop()){
+      return; 
+    }
+    setTimeout(checkForItemprop, 10); // Adjust the timeout value as needed
+  } else {
+    console.log("Max duration reached when looking for pinterest ingredients.");
+  }
+}
+
 
 function warningPopup(warningText, color){
   var popup = shadowRoot.getElementById('ingrExpCheckoutButtonPopup');

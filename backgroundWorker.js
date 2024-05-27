@@ -107,14 +107,15 @@ chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
 function pinterestPageUpdated(tabId, changeInfo, tab) { 
     // Retrieve the current URL using chrome.tabs.get
     chrome.tabs.get(tabId, function(updatedTab) {
-        console.log('tab ', tab); 
-        // Check if updatedTab and updatedTab.url are defined 
-        //console.log("URL page updated.", changeInfo.url, changeInfo.status, updatedTab.url, lastURL[tabId]);
+        //console.log('tab ', tab); 
+        //Check if updatedTab and updatedTab.url are defined 
+        console.log("URL page updated.", changeInfo.url, changeInfo.status, updatedTab.url, lastURL[tabId]); 
         //URL needs to go from loading to complete in order to work 
-        if (changeInfo.url && changeInfo.status === "loading" && changeInfo.url.includes("pinterest.com") && lastURL[tabId] && lastURL[tabId].includes("pinterest.com/pin")){
+        if (changeInfo.url && changeInfo.status === "loading" && updatedTab.url.includes("pinterest.com")){
+            //lastURL[tabId] && lastURL[tabId].includes("pinterest.com/pin")
             /*check the last website because if this is the first time going to pinterest 
             you do not need to trigger this message. The popup will try to run the first time anyways*/
-            //console.log('loading pinterest website '); 
+            console.log('loading pinterest website '); 
             loadingPinterestURL = changeInfo.url; 
         }else if(changeInfo.status === "complete"){
             if(loadingPinterestURL == updatedTab.url && updatedTab.url.includes("pinterest.com")){
