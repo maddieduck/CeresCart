@@ -89,13 +89,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 chrome.tabs.onUpdated.addListener(pinterestPageUpdated);
 
 var loadingPinterestURL = null; 
-function pinterestPageUpdated(tabId, changeInfo, tab) {
+var lastWebsite = null; 
+function pinterestPageUpdated(tabId, changeInfo, tab) { 
     // Retrieve the current URL using chrome.tabs.get
     chrome.tabs.get(tabId, function(updatedTab) {
         // Check if updatedTab and updatedTab.url are defined 
-        console.log("URL page updated.", changeInfo.url, changeInfo.status, updatedTab.url);
-
-        if (changeInfo.url && changeInfo.status === "loading" && changeInfo.url.includes("pinterest.com")){
+        //console.log("URL page updated.", changeInfo.url, changeInfo.status, updatedTab.url, lastWebsite);
+        //URL needs to go from loading to complete in order to work 
+        if (changeInfo.url && changeInfo.status === "loading" && changeInfo.url.includes("pinterest.com") && lastWebsite.includes("pinterest.com")){
+            /*check the last website because if this is the first time going to pinterest 
+            you do not need to trigger this message. The popup will try to run the first time anyways*/
+            //console.log('loading pinterest website ');
             loadingPinterestURL = changeInfo.url; 
         }else if(changeInfo.status === "complete"){
             if(loadingPinterestURL == updatedTab.url && updatedTab.url.includes("pinterest.com")){
@@ -105,5 +109,6 @@ function pinterestPageUpdated(tabId, changeInfo, tab) {
             }
             loadingPinterestURL = null;
         }
+        lastWebsite = updatedTab.url;
     });
 }

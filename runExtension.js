@@ -5,9 +5,23 @@ var locationShadowRoot;
 var minimizeShadowRoot; 
 var ingredients = findIngredientsOnPage(); //array of ingredients on page 
 console.log('ingredients ', ingredients); 
+var currentUrl = window.location.href;
+//currentUrl.includes("pinterest.com");
+console.log("run extension " + currentUrl);
 deployExtension(); 
 
 function deployExtension(){
+  console.log('deploy ext');
+  const mainPopup = document.getElementById('ingrExpIngredientExporterPopup');
+  const minimizedPopup = document.getElementById('minimizePopup');
+  /*
+  if(mainPopup || minimizedPopup){ //possibly delete 
+    console.log('Popup already appeared. Do not deploy extension. ')
+    return;
+  }else{
+    console.log('main popup, minimized popup ', mainPopup, minimizedPopup);
+  }*/ 
+
   if (ingredients != null && ingredients.length > 0) {
     (async () => { // Wrap the block in an async function 
       var locationExists = await loadFromLocalStorage('KrogerLocationName');
@@ -61,35 +75,47 @@ function deployExtension(){
     })();
   }
 }
- 
+
+let timerToLookForPinterestIngr;
+
 // Listening for messages from the background script
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   console.log("Message received from background:", message);
   if (message.to == 'pinterestPageChanged') {
     console.log('Pinterest page changed');
+    if (timerToLookForPinterestIngr) {
+      clearTimeout(timerToLookForPinterestIngr);
+    }
     closePopup();
     lookForPinterestIngredient();
   }
 });
 
 function lookForPinterestIngredient() {
-  let timer;
-  const timeout = 8000; // 8 seconds timeout
+  const timeout = 6000; // 8 seconds timeout
+  let extensionDeployed = false; // Track if the extension has been deployed
 
-  // Set a timeout to stop waiting after the specified time
-  timer = setTimeout(() => {
+  // Clear any existing timer before setting a new one
+  if (timerToLookForPinterestIngr) {
+    clearTimeout(timerToLookForPinterestIngr);
+  }
+
+  // Set a new timeout to stop waiting after the specified time
+  timerToLookForPinterestIngr = setTimeout(() => {
     console.log("Timeout: 'itemprop' attribute not found.");
   }, timeout);
 
   function checkForItemprop() {
+    if (extensionDeployed) return; // Stop checking if extension has already been deployed
     const elements = document.querySelectorAll('[itemprop]');
     if (elements.length > 0) {
-      // 'itemprop' attribute found 
-      clearTimeout(timer); // Clear the timeout 
-      console.log("item prop found");
+      // 'itemprop' attribute found
+      clearTimeout(timerToLookForPinterestIngr); // Clear the timeout
+      console.log("itemprop found");
       ingredients = findIngredientsOnPage();
-      //console.log('ingredients ', ingredients)
+      // console.log('ingredients ', ingredients)
       deployExtension();
+      extensionDeployed = true; // Set the flag to true
     } else {
       // 'itemprop' attribute not found, continue checking
       setTimeout(checkForItemprop, 1000); // Check again after 1 second
@@ -209,6 +235,7 @@ async function insertEachIngredient(ingredientData){
 
 async function minimizeClicked(event){
   //Hide the main poup. Close location popup if open. 
+  console.log('minimize pressed ');
   document.getElementById('ingrExpIngredientExporterPopup').style.display = 'none'; 
   var locationPopup = document.getElementById('ingrExpLocationPopup');
   if (locationPopup){
@@ -226,7 +253,7 @@ async function minimizeClicked(event){
     const containerDiv = document.createElement('div'); 
     containerDiv.id = 'minimizePopup'; 
     minimizeShadowRoot = containerDiv.attachShadow({ mode: 'open', name: 'minimizeShadowRoot'}); 
-    console.log(minimizeHtml);
+    //console.log(minimizeHtml);
     minimizeShadowRoot.innerHTML = minimizeHtml; 
     const style = document.createElement('style'); 
     style.textContent = minimizeStyles; 
@@ -255,20 +282,25 @@ function personClicked(event){
 
 function closePopup(event) {//closes the main popup or the location popup 
   //mainShadowRoot 
-  console.log('close'); 
+  console.log('close ', event); 
   if (event == undefined || event.target.id === 'ingrExpCloseImage'){
     // Assuming containerDiv is already defined
     var mainPopup = document.getElementById('ingrExpIngredientExporterPopup');
+    console.log('main popup ', mainPopup);
     if(mainPopup){
+      console.log('remove main popup');
       mainPopup.remove(); 
     }    
 
     var locationPopup = document.getElementById('ingrExpLocationPopup');
     if (locationPopup){
       locationPopup.remove();
+      console.log('remove location popup');
     }
-  }else if (id === "ingrExpCloseImageInPopup"){
+  }else if (event.target.id === "ingrExpCloseImageInPopup"){
     document.getElementById('ingrExpLocationPopup').remove();
+    console.log('remove location popup');
+
   }
 }
 
