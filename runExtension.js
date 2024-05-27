@@ -14,13 +14,6 @@ function deployExtension(){
   console.log('deploy ext');
   const mainPopup = document.getElementById('ingrExpIngredientExporterPopup');
   const minimizedPopup = document.getElementById('minimizePopup');
-  /*
-  if(mainPopup || minimizedPopup){ //possibly delete 
-    console.log('Popup already appeared. Do not deploy extension. ')
-    return;
-  }else{
-    console.log('main popup, minimized popup ', mainPopup, minimizedPopup);
-  }*/ 
 
   if (ingredients != null && ingredients.length > 0) {
     (async () => { // Wrap the block in an async function 
@@ -263,7 +256,7 @@ async function minimizeClicked(event){
     minimizeShadowRoot.getElementById('closeInMinimizePopup').addEventListener('click', closeInMinimizePopup); 
     minimizeShadowRoot.getElementById('ingredientsFound').textContent = allProductData.length + " Ingredients Found";
   }catch (error) { 
-    console.error('ERROR in launch location popup: ', error); 
+    console.error('ERROR in minimized clicked ', error); 
   }
 } 
 
