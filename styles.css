@@ -329,7 +329,8 @@
   overflow: auto;
   flex-grow: 1; 
   border-radius: 10px; 
-
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 #ingrExpTopLevelLocationPopup{
   background-color: white;
