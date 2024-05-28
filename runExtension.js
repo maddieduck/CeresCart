@@ -718,20 +718,23 @@ async function checkoutButtonClicked(){
   shadowRoot.getElementById("ingrExpCheckoutButton").disabled = false;
 }
 
-function stringIngredientsFromRecipe(i){
-  scriptType = i['@type'] ?? false; 
-  if (scriptType == 'Recipe'){ 
+function stringIngredientsFromRecipe(i) {
+  if (i == null) { // Check if i is null or undefined
+    return null;
+  }
+  const scriptType = i['@type'] ?? false; 
+  if (scriptType === 'Recipe') { 
     return i['recipeIngredient'];
-  }else if (Array.isArray(scriptType)) {
-    if (scriptType.includes('Recipe')){
-      if (i['recipeIngredient'] != null){
+  } else if (Array.isArray(scriptType)) {
+    if (scriptType.includes('Recipe')) {
+      if (i['recipeIngredient'] != null) {
         return i['recipeIngredient'];
       }
     }
-  }else{
-    return null;
   }
+  return null;
 }
+
 
 function findIngredientsOnPage() {
   var currentUrl = window.location.href;

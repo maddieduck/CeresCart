@@ -7,12 +7,14 @@ import { Kroger } from './GroceryStores/Kroger.js'
 
 chrome.runtime.onInstalled.addListener(function() {
     // Initialize the counter
-    chrome.storage.sync.set({'buttonCounter': 3});
+    chrome.storage.sync.set({'buttonCounter': 3}); 
 
     // this line is required to use ExtPay in the rest of your extension
     const extpay = ExtPay('ceres-cart');
     extpay.startBackground(); 
     console.log('ext pay started');
+
+    registerOpenTabs();
 });
 
 function returnGroceryClass(){
@@ -88,24 +90,42 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // Listen for tab updates & Deletes 
 chrome.tabs.onUpdated.addListener(pinterestPageUpdated); 
 
-var loadingPinterestURL = null; 
+var loadingPinterestURLs = {};
 function pinterestPageUpdated(tabId, changeInfo, tab) { 
     // Retrieve the current URL using chrome.tabs.get
     chrome.tabs.get(tabId, function(updatedTab) {
         //console.log('tab ', tab); 
         //Check if updatedTab and updatedTab.url are defined 
-        console.log("URL page updated.", changeInfo.url, changeInfo.status, updatedTab.url, loadingPinterestURL); 
+        //console.log("URL page updated.", changeInfo.url, changeInfo.status, updatedTab.url, loadingPinterestURLs); 
         //URL needs to go from loading to complete in order to work 
         if (updatedTab.url && changeInfo.status === "loading" && updatedTab.url.includes("pinterest.com")){
             console.log('loading pinterest website '); 
-            loadingPinterestURL = changeInfo.url; 
+            loadingPinterestURLs[tabId] = changeInfo.url;
         }else if(changeInfo.status === "complete"){
-            if(loadingPinterestURL == updatedTab.url && updatedTab.url.includes("pinterest.com")){
+            if(loadingPinterestURLs[tabId] == updatedTab.url && updatedTab.url.includes("pinterest.com")){
                 console.log("Pinterest page change detected.");
                 // Sending a message to the content script of the updated tab
                 chrome.tabs.sendMessage(tabId, {to: 'pinterestPageChanged'});                
             }
-            loadingPinterestURL = null;
+            delete loadingPinterestURLs[tabId];
         }
+    });
+}
+
+// Listener for tab removal
+chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
+    if (loadingPinterestURLs.hasOwnProperty(tabId)) {
+        delete loadingPinterestURLs[tabId];
+    }
+});
+
+// Function to register open tabs when the app is installed
+function registerOpenTabs() {
+    chrome.tabs.query({}, function(tabs) {
+        tabs.forEach(function(tab) {
+            if (tab.url && tab.url.includes("pinterest.com")) {
+                loadingPinterestURLs[tab.id] = tab.url;
+            }
+        });
     });
 }
