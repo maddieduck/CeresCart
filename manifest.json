@@ -2,7 +2,7 @@
     "manifest_version":3,
     "name": "Ceres Cart",
     "version": "0.0.0.2",
-    "description": "Streamline grocery shopping: Find ingredients on webpages & checkout with ease using our Chrome extension.",
+    "description": "Streamline grocery shopping",
     "author": "Maddie Drake",
     "action": {
         "default_popup": "defaultPopup.html",
