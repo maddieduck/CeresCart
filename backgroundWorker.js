@@ -88,6 +88,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 // Listen for tab updates & Deletes 
+/*
 chrome.tabs.onUpdated.addListener(pinterestPageUpdated); 
 
 var loadingPinterestURLs = {};
@@ -118,7 +119,7 @@ chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
         delete loadingPinterestURLs[tabId];
     }
 });
-
+*/ 
 // Function to register open tabs when the app is installed
 function registerOpenTabs() {
     chrome.tabs.query({}, function(tabs) {
@@ -129,3 +130,4 @@ function registerOpenTabs() {
         });
     });
 }
+ 
