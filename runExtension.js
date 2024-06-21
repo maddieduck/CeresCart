@@ -651,7 +651,7 @@ function resetTimeoutOnQuantityButtons(event){
 
 async function checkoutUser(quantityAndUPCArray){//lets the user attempt to checkout if they have paid
   let response = await chrome.runtime.sendMessage({ to: 'checkout', data: quantityAndUPCArray}); 
-  console.log('Was cart successful? ', response.success); 
+  console.log('Was cart successful? ', response.success, quantityAndUPCArray); 
   if(response.success){ 
     //make all quantities 0 in array 
     allProductData.forEach(outerArray => {
@@ -696,6 +696,7 @@ async function checkoutButtonClicked(){
   if(quantityAndUPCArray.length != 0){
     console.log('quantity and upc ', quantityAndUPCArray); 
     let response = await chrome.runtime.sendMessage({ to: 'userHasAccess'}); 
+    console.log('checkout response ', response);
     if(response.userPaid){
       console.log('User has paid.');
       checkoutUser(quantityAndUPCArray);

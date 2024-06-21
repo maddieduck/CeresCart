@@ -21,85 +21,85 @@ class Kroger extends GroceryStore {
     }
 
     async #getCartWriteAuth() {
-        return new Promise(async function(resolve, reject) {
-            var newWindowId; // Declare newWindowId variable outside the chrome.windows.create()
-            var timeOfExpiry = await loadFromLocalStorage("kroger_cart_token_expiry_time");
-            //console.log('expiry time', timeOfExpiry);
-            var currentTimeSeconds = new Date().getTime() / 1000;
+        return new Promise(async (resolve, reject) => {
+            let newWindowId; // Declare newWindowId variable outside the chrome.windows.create()
+            const timeOfExpiry = await loadFromLocalStorage("kroger_cart_token_expiry_time");
+            const currentTimeSeconds = new Date().getTime() / 1000;
             console.log('current cart Time Seconds', currentTimeSeconds);
     
-            if (timeOfExpiry === undefined) { 
-                //the key has never been received, call cart Auth
-                console.log('Call cart auth credentials. There is no refresh token yet'); 
-                cartWriteAuthorizationCode()
-                .then(returnedAuthURL => {
+            if (timeOfExpiry === undefined) {
+                console.log('Call cart auth credentials. There is no refresh token yet');
+                try {
+                    const returnedAuthURL = await cartWriteAuthorizationCode();
                     console.log('AUTH URL', returnedAuthURL);
-                    // Create a new window for OAuth 2 validation
-                    chrome.windows.create({ 
-                        url: returnedAuthURL, 
-                        type: 'popup', 
-                        width: 550, 
+    
+                    chrome.windows.create({
+                        url: returnedAuthURL,
+                        type: 'popup',
+                        width: 550,
                         height: 750
                     }, (newWindow) => {
                         newWindowId = newWindow.id; // Assign newWindowId here
     
-                        // Listen for URL changes in the new window
-                        chrome.tabs.onUpdated.addListener(function tabUpdateListener(tabId, changeInfo, tab) {
-                            console.log('listener executed');
-                            console.log('window ID ', tab.windowId, 'id ', newWindowId, 'url ', changeInfo.url);
+                        const tabUpdateListener = async (tabId, changeInfo, tab) => {
                             if (tab.windowId === newWindowId && changeInfo.url) {
-                                // Check if the updated URL matches your expected redirect URL 
                                 if (!changeInfo.url.startsWith(returnedAuthURL)) {
-                                    // Extract the code parameter after the url has changed
                                     const code = new URL(changeInfo.url).searchParams.get('code');
                                     console.log('Extracted code:', code);
     
-                                    //Check if the code indicates successful login
                                     if (code) {
-                                        //Close the window
-                                        getAuthToken(code).then(accessToken => {
-                                            resolve(accessToken)
-                                        })
+                                        try {
+                                            const accessToken = await getAuthToken(code);
+                                            console.log('access token', accessToken);
+                                            resolve(accessToken);
+                                        } catch (error) {
+                                            console.log('Error retrieving access token', error);
+                                            resolve(null);
+                                        }
                                         chrome.windows.remove(newWindowId);
-                                        // Remove the event listener
                                         chrome.tabs.onUpdated.removeListener(tabUpdateListener);
                                     } else {
-                                        console.log('Error with OAuth 2. No code. ')
+                                        console.log('Error with OAuth 2. No code.');
                                         resolve(null);
                                     }
                                 }
                             }
+                        };
+    
+                        chrome.tabs.onUpdated.addListener(tabUpdateListener);
+    
+                        chrome.windows.onRemoved.addListener(function windowRemovedListener(windowId) {
+                            if (windowId === newWindowId) {
+                                console.log('OAuth window closed');
+                                chrome.windows.onRemoved.removeListener(windowRemovedListener);
+                                resolve(null);
+                            }
                         });
                     });
-                })
-                .catch(error => {
+                } catch (error) {
                     console.log('error in backgroundWorker.js. when getting Cart Write Auth', error.message);
                     reject(error);
-                })
-            } else if (currentTimeSeconds > (timeOfExpiry - 30)) { //subtract 30 seconds for buffer 
-                console.log('Cart auth key is expired. Call the refresh token API.');
-                var refreshToken = await loadFromLocalStorage("kroger_refresh_token");
-                getRefreshToken(refreshToken)
-                .then(accessToken => {
-                    resolve(accessToken)
-                })
-            }
-            else {
-                //the key exists and is not expired, use the access token
-                console.log('The Client Cart Auth key exists and is not expired. Using it');
-                var accessToken = await loadFromLocalStorage("kroger_cart_access_token");
-                resolve(accessToken);
-            }
-    
-            // Add event listener to detect when the OAuth window is closed
-            chrome.windows.onRemoved.addListener(function windowRemovedListener(windowId) {
-                if (windowId === newWindowId) {
-                    console.log('OAuth window closed');
-                    // Remove the event listener
-                    chrome.windows.onRemoved.removeListener(windowRemovedListener);
-                    resolve(null);
                 }
-            });
+            } else if (currentTimeSeconds > (timeOfExpiry - 30)) {
+                console.log('Cart auth key is expired. Call the refresh token API.');
+                try {
+                    const refreshToken = await loadFromLocalStorage("kroger_refresh_token");
+                    const accessToken = await getRefreshToken(refreshToken);
+                    resolve(accessToken);
+                } catch (error) {
+                    console.log('Error refreshing token', error);
+                    reject(error);
+                }
+            } else {
+                console.log('The Client Cart Auth key exists and is not expired. Using it');
+                try {
+                    const accessToken = await loadFromLocalStorage("kroger_cart_access_token");
+                    resolve(accessToken);
+                } catch (error) {
+                    console.log('Error loading access token', error);
+                    reject(error);
+                }
+            }
         });
     }
 

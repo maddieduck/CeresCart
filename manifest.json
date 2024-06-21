@@ -1,8 +1,8 @@
 {
     "manifest_version":3,
     "name": "Ceres Cart",
-    "version": "0.0.0.2",
-    "description": "Streamline grocery shopping",
+    "version": "0.0.0.3",
+    "description": "Streamline grocery shopping with the help of Ceres Cart.",
     "author": "Maddie Drake",
     "action": {
         "default_popup": "defaultPopup.html",
