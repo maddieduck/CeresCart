@@ -49,7 +49,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }else if (message.to === 'ingredients'){ //returns ingredients from kroger API
         //search('eggs'); 
         var wal = new Walmart(); 
-        wal.locations('78759');
+        //wal.locations('78759');
+        consolidatedAddToCart(); 
         const groceryStore = returnGroceryClass(); 
         var ingredients = Object.values(message.data); 
         console.log('found ingredients ', ingredients); 

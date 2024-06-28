@@ -1,4 +1,4 @@
-import {stores} from './WalmartAPICalls.js'
+import {stores, consolidatedAddToCart, search} from './WalmartAPICalls.js'
 import { GroceryStore } from './GroceryStore.js';
 import {loadFromLocalStorage} from '../storageHelpers.js';
 
@@ -9,11 +9,12 @@ class Walmart extends GroceryStore {
     }
 
     async getProducts(finalIngredients, locationExists){  
-
+        console.log('get products Walmart.js')
+        search()
     }
 
     async checkout(itemsToCheckout){
-  
+        console.log('checkout Walmart.js')
     }    
 
     async locations(zipCode){ //returns store locations for Walmart 

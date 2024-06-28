@@ -65,7 +65,7 @@ async function stores(zipcode){ //gets a token for use When making API requests 
       throw new Error(errorMessage);
     }
     const data = await response.json();
-    console.log('data from walmart auth', data);
+    console.log('data from walmart stores', data);
     return data;
 
   } catch (error) {
@@ -114,16 +114,15 @@ async function walmartClientCredentials(){ //gets a token for use When making AP
   })
 } 
 */ 
-async function consolidatedAddToCart(items, storeID, accessPointId){
+async function consolidatedAddToCart(){
   console.log('walmart consolidated add to cart running');
   try {
     const generatedHeaders = await generateWalmartHeaders();
     console.log('headers in consolidatedAddToCart ', generatedHeaders.headers);
     //TODO: 
-    const url = `https://goto.walmart.com/m/${impactRadiusID}/${walmartcampaignID}?veh=aff&sourceid=${sourceID}`;
+    const url = `https://affil.walmart.com/cart/addToCart?items=945193065,660768274_2 `;
     const response = await fetch(url, {
-      method: 'GET',
-      headers: generatedHeaders.headers
+      method: 'PUT'
     });
 
     if (!response.ok) {
