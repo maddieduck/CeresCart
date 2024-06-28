@@ -1,5 +1,80 @@
-//import './jsrsasign-all-min.js'; 
+const impactRadiusID = "2263813"
+export{search, stores, consolidatedAddToCart}
 
+async function generateWalmartHeaders(){ //gets a token for use When making API requests that do not require customer consent 
+  return new Promise((resolve, rejects)=>{
+    fetch('http://localhost:3000/')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      resolve(response.json()); // Assuming response is JSON; use .text() for text, etc.
+    })
+    .then(data => {
+      console.log('headers in generateWalmartHeaders ', data)
+      resolve(data); // Process the JSON response data here
+    })
+    .catch(error => {
+      rejects('Fetch error:', error);
+    });
+  })
+}
+
+async function search(term) {
+  console.log('walmart product catalog snapshot running');
+  try {
+    const generatedHeaders = await generateWalmartHeaders();
+    console.log('headers in search ', generatedHeaders.headers);
+
+    const url = `https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search?publisherId=${impactRadiusID}&query=${term}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: generatedHeaders.headers
+    });
+
+    if (!response.ok) {
+      const errorMessage = `Client Walmart Auth was unsuccessful. Status: ${response.status} ${response.statusText}`;
+      console.error('Error response:', response.status, response.statusText);
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json();
+    console.log('data from walmart auth', data);
+    //TODO: Return correct data 
+    return data;
+  } catch (error) {
+    console.error('ERROR in client credentials in Walmart API Calls', error);
+    throw error;
+  }
+}
+
+async function stores(zipcode){ //gets a token for use When making API requests that do not require customer consent 
+  console.log('Walmart stores running');
+  try {
+    const generatedHeaders = await generateWalmartHeaders();
+    //console.log('headers in Walmart search ', generatedHeaders.headers);
+    const url = `https://developer.api.walmart.com/api-proxy/service/affil/product/v2/stores?lon=-95.511747&lat=29.735577`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: generatedHeaders.headers
+    });
+
+    if (!response.ok) {
+      const errorMessage = `stores in WalmartAPICalls was unsuccessful. Status: ${response.status} ${response.statusText}`;
+      console.error('Error response:', response.status, response.statusText);
+      throw new Error(errorMessage);
+    }
+    const data = await response.json();
+    console.log('data from walmart auth', data);
+    return data;
+
+  } catch (error) {
+    console.error('ERROR in stores in Walmart API Calls', error);
+    throw error;
+  }
+}
+
+/*
 async function walmartClientCredentials(){ //gets a token for use When making API requests that do not require customer consent 
   return new Promise((resolve, rejects)=>{
     fetch('https://developer.api.stg.walmart.com/api-proxy/service/identity/oauth/v1/token', {
@@ -37,19 +112,26 @@ async function walmartClientCredentials(){ //gets a token for use When making AP
       rejects(error);
     })
   })
-}
-
-async function search() {
-  console.log('walmart search running');
+} 
+*/ 
+async function consolidatedAddToCart(items, storeID, accessPointId){
+  console.log('walmart consolidated add to cart running');
   try {
-    const headers = generateWalmartHeaders();
-    const response = await fetch('https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search?query=eggs', {
+    const generatedHeaders = await generateWalmartHeaders();
+    console.log('headers in consolidatedAddToCart ', generatedHeaders.headers);
+    //TODO: 
+    const url = `https://goto.walmart.com/m/${impactRadiusID}/${walmartcampaignID}?veh=aff&sourceid=${sourceID}`;
+    const response = await fetch(url, {
       method: 'GET',
-      headers: headers 
+      headers: generatedHeaders.headers
     });
+
     if (!response.ok) {
-      throw new Error('Client Walmart Auth was unsuccessful.');
+      const errorMessage = `Client Walmart Auth was unsuccessful. Status: ${response.status} ${response.statusText}`;
+      console.error('Error response:', response.status, response.statusText);
+      throw new Error(errorMessage);
     }
+
     const data = await response.json();
     console.log('data from walmart auth', data);
     return data.access_token;
@@ -58,38 +140,3 @@ async function search() {
     throw error;
   }
 }
-
-const generateWalmartHeaders = () => {
-  // The order here is important, sorted according to the header names
-  const timestamp = Date.now(); 
-  var privateKey = `-----BEGIN PRIVATE KEY-----
-  MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwB+mUHuZ2EGIPteYYv7maJh8L9AwICHfm9/y5VkeuMbCpMaOu+9nRQulpqbLjNgkPR+lNB9ZkWe//0YuJ2rTaw/R+H95nIp86mIDoj8ZAsMV3QzejnsQZYMCkelCXpAPaPPCJiyN7w3opCh7PId+Vd+RTOXMiBHfQjhR6kr26/nuGDHlr5l0jTJNtPZgweDEztEWzo0jUXfbuF87cFkrHdWEQBKEEysrviTxEUSTeFuzpJocGYQ/VLZgAktK3aTdLE/bsWA1GKde+0KezjvjveX14WE0733Q6NkmELKg7HaIenFxCvhyS2rFNeh0R8ndZeeI/IX+czH6Wli2oqsOuwIDAQAB
-  -----END PRIVATE KEY-----`; 
-  var consumerId = "13c8234e-f5dc-4952-9b26-a938bf98b3be";
-  var publicKeyVersion = '1'
-  const stringToSignComponents = [
-      consumerId,
-      timestamp,
-      publicKeyVersion
-  ];
-  
-  // Join the components into one string and add the trailing newline
-  const stringToSign = `${stringToSignComponents.join('\n')}\n`;
-
-  // Initialize the RSA key
-  const rsa = new KJUR.crypto.Signature({"alg": "SHA256withRSA"});
-  rsa.init(privateKey);
-  rsa.updateString(stringToSign);
-
-  // Sign the string and encode in base64
-  const signature = hextob64(rsa.sign());
-
-  return {
-      'WM_SEC.AUTH_SIGNATURE': signature,
-      'WM_CONSUMER.INTIMESTAMP': timestamp.toString(),
-      'WM_CONSUMER.ID': consumerId,
-      'WM_SEC.KEY_VERSION': publicKeyVersion.toString(),
-  };
-};
-
-export{search}
