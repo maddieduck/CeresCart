@@ -49,8 +49,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }else if (message.to === 'ingredients'){ //returns ingredients from kroger API
         //search('eggs'); 
         var wal = new Walmart(); 
-        //wal.locations('78759');
-        consolidatedAddToCart(); 
+        //wal.locations('78759'); 
+        //consolidatedAddToCart(); 
         const groceryStore = returnGroceryClass(); 
         var ingredients = Object.values(message.data); 
         console.log('found ingredients ', ingredients); 
@@ -58,8 +58,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         .then(async strippedIngredients =>{
             var finalIngredients = stripIngredients(strippedIngredients); 
             console.log('final product list ', finalIngredients); 
+            //console.log('prods ', prods); 
             if(strippedIngredients != null){
-                groceryStore.getProducts(finalIngredients, message.locationExists)
+                wal.getProducts(finalIngredients, message.locationExists)
                 .then(products => {
                     console.log('products ', products); 
                     sendResponse(products); 

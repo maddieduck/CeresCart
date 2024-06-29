@@ -11,7 +11,6 @@ async function generateWalmartHeaders(){ //gets a token for use When making API 
       resolve(response.json()); // Assuming response is JSON; use .text() for text, etc.
     })
     .then(data => {
-      console.log('headers in generateWalmartHeaders ', data)
       resolve(data); // Process the JSON response data here
     })
     .catch(error => {
@@ -24,9 +23,9 @@ async function search(term) {
   console.log('walmart product catalog snapshot running');
   try {
     const generatedHeaders = await generateWalmartHeaders();
-    console.log('headers in search ', generatedHeaders.headers);
+    //console.log('headers in search ', generatedHeaders.headers);
 
-    const url = `https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search?publisherId=${impactRadiusID}&query=${term}`;
+    const url = `https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search?publisherId=${impactRadiusID}&query=${term}&numItems=25`;
     const response = await fetch(url, {
       method: 'GET',
       headers: generatedHeaders.headers
@@ -39,8 +38,7 @@ async function search(term) {
     }
 
     const data = await response.json();
-    console.log('data from walmart auth', data);
-    //TODO: Return correct data 
+    //console.log('data from walmart search', data);
     return data;
   } catch (error) {
     console.error('ERROR in client credentials in Walmart API Calls', error);
@@ -65,7 +63,7 @@ async function stores(zipcode){ //gets a token for use When making API requests 
       throw new Error(errorMessage);
     }
     const data = await response.json();
-    console.log('data from walmart stores', data);
+    console.log('data from walmart stores', data, response);
     return data;
 
   } catch (error) {
