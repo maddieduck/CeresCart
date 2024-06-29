@@ -681,28 +681,28 @@ async function checkoutButtonClicked(){
   shadowRoot.getElementById("ingrExpCheckoutButton").disabled = true; 
 
   //get the quantity of items to add to cart 
-  const quantityAndUPCArray = []; 
+  const productAndQuantityArray = []; 
   for (const productData of allProductData) {
     for (const product of productData.productData) {
       const quantity = product.quantity;
       const upc = product.upc; // Assuming there's a property named 'upc' in your data structure
       if (quantity > 0){
-        const quantityAndUPC = {'quantity': quantity, 'upc': upc};
-        quantityAndUPCArray.push(quantityAndUPC);
+        const singleProductAndQuantity = {'quantity': quantity, 'upc': upc};
+        productAndQuantityArray.push(singleProductAndQuantity);
       }
     }
   }
   
-  if(quantityAndUPCArray.length != 0){
-    console.log('quantity and upc ', quantityAndUPCArray); 
+  if(productAndQuantityArray.length != 0){
+    console.log('quantity and produc ', productAndQuantityArray); 
     let response = await chrome.runtime.sendMessage({ to: 'userHasAccess'}); 
     console.log('checkout response ', response);
     if(response.userPaid){
       console.log('User has paid.');
-      checkoutUser(quantityAndUPCArray);
+      checkoutUser(productAndQuantityArray);
     }else if (response.exportsLeft > 0){ 
       console.log('User has not paid, but has exports left. Exports left. ', response.exportsLeft);
-      let checkoutResponse = await checkoutUser(quantityAndUPCArray); 
+      let checkoutResponse = await checkoutUser(productAndQuantityArray); 
       if (checkoutResponse.success){
         warningPopup((response.exportsLeft - 1) + " Free Recipes Left", 'rgb(125,120,185)'); 
       }

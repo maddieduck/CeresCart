@@ -1,4 +1,4 @@
-import {stores, consolidatedAddToCart, search} from './WalmartAPICalls.js'
+import {stores, search} from './WalmartAPICalls.js'
 import { GroceryStore } from './GroceryStore.js';
 import {loadFromLocalStorage} from '../storageHelpers.js';
 
@@ -6,7 +6,7 @@ class Walmart extends GroceryStore {
     constructor() {
         super(); // Must call the constructor of the parent class
     }
-    async getProducts(finalIngredients, locationExists) {  //TODO: is locationExists needed? //TODO: Finish this 
+    async getProducts(finalIngredients) { 
         console.log('get products Walmart.js', finalIngredients);
         const promises = finalIngredients.map(ingredient => search(ingredient));
     
@@ -21,10 +21,12 @@ class Walmart extends GroceryStore {
                     brand: item.brandName || '',
                     image: item.largeImage || '',
                     price: item.salePrice || '',
-                    upc: item.upc || '',
+                    upc: item.affiliateAddToCartUrl || '', //This is correct. This url is used to checkout, not upc
                     quantity: 0,
                     size: item.size || ''
                 }));
+                console.log('ingred data ', allIngredientProducts);
+
                 return [ingredient, productsArray];
             });
     
@@ -36,11 +38,26 @@ class Walmart extends GroceryStore {
         }
     }
     
+    async checkout(itemsToCheckout) {
+        console.log('checkout Walmart.js ', itemsToCheckout);
+        // Base URL for the API endpoint
+        const baseURL = 'https://affil.walmart.com/cart/addToCart?items=';
+        // Format itemsToCheckout into the desired string
+        const formattedItems = itemsToCheckout.map(item => `${item.upc}_${item.quantity}`).join(',');
+        // Construct the final URL
+        const finalURL = baseURL + formattedItems;
+        //console.log('Final URL:', finalURL);
     
-    async checkout(itemsToCheckout){
-        console.log('checkout Walmart.js')
-    }    
-
+        // Open the new window with the final URL
+        chrome.windows.create({
+            url: itemsToCheckout[0].upc,
+            type: 'normal',  // or 'normal' to open in a new window
+            width: 800,     // Optional: Specify width
+            height: 600     // Optional: Specify height
+        });
+        return({success: true, errorMessage: "Successfully Added To Cart"}); 
+    }
+    
     async locations(zipCode){ //returns store locations for Walmart 
         //console.log('locations Walmart.js')
         return new Promise((resolve, rejects)=>{

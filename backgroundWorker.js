@@ -2,7 +2,7 @@ import { stripIngredients } from './stripIngredients.js'
 import { getRefinedIngredients } from './ChatGPT.js'
 import { ExtPay } from './ExtPay.js'
 import { Kroger } from './GroceryStores/Kroger.js'
-import { search, stores, consolidatedAddToCart } from './GroceryStores/WalmartAPICalls.js'
+import { search, stores} from './GroceryStores/WalmartAPICalls.js'
 import {Walmart} from './GroceryStores/Walmart.js'
 
 chrome.runtime.onInstalled.addListener(function() {
@@ -19,7 +19,7 @@ chrome.runtime.onInstalled.addListener(function() {
 
 function returnGroceryClass(){ //returns the class for the grocery store the user selected
     //TODO: Change to be with more options
-    return new Kroger(); 
+    return new Walmart(); 
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
@@ -27,7 +27,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         //check if the user has paid 
         const extpay = ExtPay('ceres-cart');
         extpay.getUser().then(user => { 
-            console.log('ext pay user ', user, 'paid ', user['paid']); 
+            //console.log('ext pay user ', user, 'paid ', user['paid']); 
             if(user['paid']){
                 sendResponse({'userPaid': true, "exportsLeft": null}); 
             }else{
@@ -47,10 +47,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const extpay = ExtPay('ceres-cart')
         extpay.openPaymentPage();
     }else if (message.to === 'ingredients'){ //returns ingredients from kroger API
-        //search('eggs'); 
-        var wal = new Walmart(); 
-        //wal.locations('78759'); 
-        //consolidatedAddToCart(); 
         const groceryStore = returnGroceryClass(); 
         var ingredients = Object.values(message.data); 
         console.log('found ingredients ', ingredients); 
@@ -58,9 +54,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         .then(async strippedIngredients =>{
             var finalIngredients = stripIngredients(strippedIngredients); 
             console.log('final product list ', finalIngredients); 
-            //console.log('prods ', prods); 
             if(strippedIngredients != null){
-                wal.getProducts(finalIngredients, message.locationExists)
+                groceryStore.getProducts(finalIngredients, message.locationExists)
                 .then(products => {
                     console.log('products ', products); 
                     sendResponse(products); 
