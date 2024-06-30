@@ -37,25 +37,38 @@ class Walmart extends GroceryStore {
             return {launch: false};  
         }
     }
-    
+
     async checkout(itemsToCheckout) {
         console.log('checkout Walmart.js ', itemsToCheckout);
-        // Base URL for the API endpoint
-        const baseURL = 'https://affil.walmart.com/cart/addToCart?items=';
-        // Format itemsToCheckout into the desired string
-        const formattedItems = itemsToCheckout.map(item => `${item.upc}_${item.quantity}`).join(',');
-        // Construct the final URL
-        const finalURL = baseURL + formattedItems;
-        //console.log('Final URL:', finalURL);
     
-        // Open the new window with the final URL
-        chrome.windows.create({
-            url: itemsToCheckout[0].upc,
-            type: 'normal',  // or 'normal' to open in a new window
-            width: 800,     // Optional: Specify width
-            height: 600     // Optional: Specify height
-        });
-        return({success: true, errorMessage: "Successfully Added To Cart"}); 
+        // Function to wrap chrome.windows.create in a promise
+        function createWindow(url) {
+            return new Promise((resolve, reject) => {
+                chrome.windows.create({
+                    url: url,
+                    type: 'popup',
+                    width: 1,
+                    height: 1,
+                    left: 0,
+                    top: 0
+                }, (window) => {
+                    if (chrome.runtime.lastError) {
+                        reject(chrome.runtime.lastError);
+                    } else {
+                        resolve(window);
+                    }
+                });
+            });
+        }
+    
+        try {
+            // Map over itemsToCheckout and create windows for each URL
+            await Promise.all(itemsToCheckout.map(item => createWindow(item.upc + '_' + item.quantity)));
+            return { success: true, errorMessage: "Successfully Added To Cart" };
+        } catch (error) {
+            console.error('Error creating windows:', error);
+            return { success: false, errorMessage: "Error When Adding To Cart" }; 
+        }
     }
     
     async locations(zipCode){ //returns store locations for Walmart 
