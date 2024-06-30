@@ -61,13 +61,44 @@ class Walmart extends GroceryStore {
             });
         }
     
+        // Function to monitor when the tab has finished loading
+        function waitForPageLoad(tabId) {
+            return new Promise((resolve) => {
+                function listener(tabIdUpdated, changeInfo) {
+                    if (tabId === tabIdUpdated && changeInfo.status === 'complete') {
+                        chrome.tabs.onUpdated.removeListener(listener);
+                        resolve();
+                    }
+                }
+                chrome.tabs.onUpdated.addListener(listener);
+            });
+        }
+    
+        // Function to close the window after a delay
+        function closeWindowAfterDelay(window) {
+            setTimeout(() => {
+                chrome.windows.remove(window.id);
+            }, 3000); // Wait for 3 seconds
+        }
+    
         try {
-            // Map over itemsToCheckout and create windows for each URL
-            await Promise.all(itemsToCheckout.map(item => createWindow(item.upc + '_' + item.quantity)));
+            // Create windows for each item with the updated URL
+            const promises = itemsToCheckout.map(async item => {
+                const url = `${item.upc}_${item.quantity}`;
+                const window = await createWindow(url);
+                const [tab] = window.tabs;
+                await waitForPageLoad(tab.id);
+                closeWindowAfterDelay(window);
+                return window;
+            });
+    
+            // Wait for all pages to load
+            await Promise.all(promises);
+    
             return { success: true, errorMessage: "Successfully Added To Cart" };
         } catch (error) {
-            console.error('Error creating windows:', error);
-            return { success: false, errorMessage: "Error When Adding To Cart" }; 
+            console.error('Error creating or closing windows:', error);
+            return { success: false, errorMessage: "Error When Adding To Cart" };
         }
     }
     
