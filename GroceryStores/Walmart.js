@@ -6,6 +6,15 @@ class Walmart extends GroceryStore {
     constructor() {
         super(); // Must call the constructor of the parent class
     }
+    #capitalizeFirstLetter(string) {
+        if (!string) return ''; // Handle falsy values like undefined or null
+        return string
+            .trim() // Remove leading and trailing whitespace
+            .replace(/\s+/g, ' ') // Replace multiple spaces with a single space
+            .split(' ') // Split the string into an array of words
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize the first letter of each word
+            .join(' '); // Join the array back into a single string
+    }
     async getProducts(finalIngredients) { 
         console.log('get products Walmart.js', finalIngredients);
         const promises = finalIngredients.map(ingredient => search(ingredient));
@@ -25,7 +34,7 @@ class Walmart extends GroceryStore {
                     quantity: 0,
                     size: item.size || ''
                 }));
-                console.log('ingred data ', allIngredientProducts);
+                //console.log('ingred data ', allIngredientProducts);
 
                 return [ingredient, productsArray];
             });
@@ -112,15 +121,20 @@ class Walmart extends GroceryStore {
                     var locationPopupData = []
                     for (const index in locationData){
                         var singleLocation = locationData[index];
+                        var addressObj = {
+                            'addressLine1': this.#capitalizeFirstLetter(singleLocation['streetAddress'] || ''),
+                            'city': this.#capitalizeFirstLetter(singleLocation['city'] || ''),
+                            'state': this.#capitalizeFirstLetter(singleLocation['stateProvCode'] || ''),
+                            'zipCode': singleLocation['zip'] || '' // Zip codes are typically not capitalized
+                        };
                         var newLocation = {
                             "name": singleLocation['name'],
-                            "address": singleLocation['streetAddress'], //todo; format address better 
-                            "phone": singleLocation['phoneNumber'],
+                            "address": addressObj, 
+                            "phone": singleLocation['phoneNumber'].replace(/-/g, ""),
                             "id": singleLocation['no']
                         }
                         locationPopupData.push(newLocation);
                     } 
-                    //console.log('locationPopupData ', locationPopupData);
                     resolve({locationData: locationPopupData, locationsFound: locationPopupData.length > 0}); 
                 }else{
                     console.log('no locations found in Walmart.js')

@@ -301,6 +301,7 @@ async function loadLocationsInPopup(newLocationData){
     nodeClone.querySelector('.ingrExpTopLocationDiv').id = 'ingrExpTopLocationDiv' + index;
     nodeClone.querySelector('.ingrExpLocationName').textContent = locationData["name"]
     var addressObject = locationData["address"];
+    //console.log('addr obj ', addressObject);
     var formattedAddress = `${addressObject.addressLine1}\n${addressObject.city}, ${addressObject.state} ${addressObject.zipCode}`;
     nodeClone.querySelector('.ingrExpLocationAddress').textContent = formattedAddress
     if (locationData["phone"] != undefined){
