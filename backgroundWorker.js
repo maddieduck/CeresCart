@@ -14,7 +14,7 @@ chrome.runtime.onInstalled.addListener(function() {
     extpay.startBackground(); 
     console.log('ext pay started');
 
-    registerOpenTabs();
+    //registerOpenTabs();
 });
 
 function returnGroceryClass(){ //returns the class for the grocery store the user selected
@@ -120,6 +120,7 @@ chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
 });
 */ 
 // Function to register open tabs when the app is installed
+/*
 function registerOpenTabs() {
     chrome.tabs.query({}, function(tabs) {
         tabs.forEach(function(tab) {
@@ -129,4 +130,5 @@ function registerOpenTabs() {
         });
     });
 }
+*/ 
  

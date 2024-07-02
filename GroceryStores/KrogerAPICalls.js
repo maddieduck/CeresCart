@@ -174,7 +174,7 @@ async function addToCart(accessToken, items) { //returns true if added successfu
 
 async function productSearch(accessToken, term) {
   return new Promise((resolve, reject) => {
-    chrome.storage.sync.get('KrogerLocationId', (result) => {
+    chrome.storage.sync.get('locationId', (result) => {
       var locationId = result['KrogerLocationId'];
       let fetchString = "https://api.kroger.com/v1/products?filter.term=" + term + "&filter.fulfillment=csp" + "&filter.limit=20"; //ais
       if (locationId) {

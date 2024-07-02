@@ -128,7 +128,7 @@ class Walmart extends GroceryStore {
                             'zipCode': singleLocation['zip'] || '' // Zip codes are typically not capitalized
                         };
                         var newLocation = {
-                            "name": singleLocation['name'],
+                            "name": 'Walmart ' + singleLocation['name'],
                             "address": addressObj, 
                             "phone": singleLocation['phoneNumber'].replace(/-/g, ""),
                             "id": singleLocation['no']

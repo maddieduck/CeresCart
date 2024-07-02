@@ -285,7 +285,6 @@ function closePopup(event) {//closes the main popup or the location popup
   }else if (event.target.id === "ingrExpCloseImageInPopup"){
     document.getElementById('ingrExpLocationPopup').remove();
     console.log('remove location popup');
-
   }
 }
 
@@ -395,8 +394,8 @@ async function shopStore(event){ //a location has been selected from the locatio
   shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
   shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
   shadowRoot.getElementById('ingrExpPickupAt').textContent = locationName; 
-  chrome.storage.sync.set({['KrogerLocationId']: locationId});
-  chrome.storage.sync.set({['KrogerLocationName']: locationName});
+  chrome.storage.sync.set({['locationId']: locationId});
+  chrome.storage.sync.set({['locationName']: locationName});
 
   allProductData = [];
   updateCheckoutButton();  
