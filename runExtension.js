@@ -22,7 +22,7 @@ function deployExtension(){
 
   if (ingredients != null && ingredients.length > 0) {
     (async () => { // Wrap the block in an async function 
-      var locationExists = await loadFromLocalStorage('KrogerLocationName');
+      var locationExists = await loadFromLocalStorage('locationName');
       console.log('location exists ', locationExists);
       let backgroundResponse = await chrome.runtime.sendMessage({to: 'ingredients', data: ingredients, locationExists: locationExists}); 
       
@@ -49,12 +49,12 @@ function deployExtension(){
           insertEachIngredient(ingredientData);
           //set the location name if it exists in memory 
           
-          chrome.storage.sync.get('KrogerLocationName', (result) => {
-            console.log('location Name ', result['KrogerLocationName']);
-            if (result['KrogerLocationName'] != undefined){
+          chrome.storage.sync.get('locationName', (result) => {
+            console.log('location Name ', result['locationName']);
+            if (result['locationName'] != undefined){
               shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
               shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
-              shadowRoot.getElementById('ingrExpPickupAt').textContent = result['KrogerLocationName']
+              shadowRoot.getElementById('ingrExpPickupAt').textContent = result['locationName']
               shadowRoot.getElementById('change').style.display = '-webkit-box'; 
             }
           });

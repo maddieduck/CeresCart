@@ -21,11 +21,18 @@ async function generateWalmartHeaders(){ //gets a token for use When making API 
 
 async function search(term) {
   console.log('walmart product catalog snapshot running');
+  var locationId; 
+  chrome.storage.sync.get('locationId', (result) => {
+    locationId = result['locationId'];
+  }); 
   try {
     const generatedHeaders = await generateWalmartHeaders();
     //console.log('headers in search ', generatedHeaders.headers);
 
     const url = `https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search?publisherId=${impactRadiusID}&query=${term}&numItems=25`;
+    if(locationId){
+      url = url + "&storeId=" + locationId;
+    }
     const response = await fetch(url, {
       method: 'GET',
       headers: generatedHeaders.headers
@@ -63,7 +70,7 @@ async function stores(zipcode){ //gets a token for use When making API requests 
       throw new Error(errorMessage);
     }
     const data = await response.json();
-    console.log('data from walmart stores', data, response);
+    //console.log('data from walmart stores', data, response);
     return data;
 
   } catch (error) {
