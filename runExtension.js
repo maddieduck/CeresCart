@@ -391,11 +391,13 @@ async function shopStore(event){ //a location has been selected from the locatio
   console.log('shop store pressed ', locationIndex); 
   var locationId = allLocationData[locationIndex]['id'];
   var locationName = allLocationData[locationIndex]['name'];
+
   shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
   shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
   shadowRoot.getElementById('ingrExpPickupAt').textContent = locationName; 
   chrome.storage.sync.set({['locationId']: locationId});
   chrome.storage.sync.set({['locationName']: locationName});
+  chrome.storage.sync.set({['storeType']: allLocationData[locationIndex]['storeType']});
 
   allProductData = [];
   updateCheckoutButton();  

@@ -132,7 +132,8 @@ class Walmart extends GroceryStore {
                             "address": addressObj, 
                             "phone": singleLocation['phoneNumber'].replace(/-/g, ""),
                             "id": singleLocation['no'],
-                            "logo": "/images/logos/walmart.png"
+                            "logo": "/images/logos/walmart.png",
+                            "storeType": "Walmart"
                         }
                         locationPopupData.push(newLocation);
                     } 

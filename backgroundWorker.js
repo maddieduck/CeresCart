@@ -17,9 +17,15 @@ chrome.runtime.onInstalled.addListener(function() {
     //registerOpenTabs();
 });
 
-function returnGroceryClass(){ //returns the class for the grocery store the user selected
-    //TODO: Change to be with more options
-    return new Walmart(); 
+function returnGroceryClass(storeType){ //returns the class for the grocery store the user selected
+    switch (storeType) {
+        case 'Walmart':
+            return new Walmart(); 
+        case 'Kroger':
+            return new Kroger(); 
+        default:
+            return new Walmart(); 
+    }
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
@@ -47,7 +53,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const extpay = ExtPay('ceres-cart')
         extpay.openPaymentPage();
     }else if (message.to === 'ingredients'){ //returns ingredients from kroger API
-        const groceryStore = returnGroceryClass(); 
         var ingredients = Object.values(message.data); 
         console.log('found ingredients ', ingredients); 
         getRefinedIngredients(ingredients)
@@ -55,27 +60,32 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             var finalIngredients = stripIngredients(strippedIngredients); 
             console.log('final product list ', finalIngredients); 
             if(strippedIngredients != null){
-                groceryStore.getProducts(finalIngredients, message.locationExists)
-                .then(products => {
-                    console.log('products ', products); 
-                    sendResponse(products); 
-                }) 
+                chrome.storage.sync.get('buttonCounter', (result) => {
+                    const groceryStore = returnGroceryClass(result['storeType']); 
+                    groceryStore.getProducts(finalIngredients, message.locationExists)
+                    .then(products => {
+                        console.log('products ', products); 
+                        sendResponse(products); 
+                    }) 
+                });
             }else{
                 sendResponse({launch: false}); 
             }
         })
     }else if(message.to === 'checkout'){ //allows the user to checkout using API 
-        const groceryStore = returnGroceryClass(); 
         console.log('checkout pressed'); 
-        groceryStore.checkout(message.data)
-        .then(checkoutResponse => {
-            sendResponse(checkoutResponse);
-        })
+        chrome.storage.sync.get('buttonCounter', (result) => {
+            const groceryStore = returnGroceryClass(result['storeType']); 
+            groceryStore.checkout(message.data)
+            .then(checkoutResponse => {
+                sendResponse(checkoutResponse);
+            })
+        }); 
     }else if(message.to === 'locations'){
-        chrome.storage.sync.get('zipCode', (result) => {
+        chrome.storage.sync.get(['storeType', 'zipCode'], (result) => {
             //console.log('zip code ', result['zipCode']);
             var zipCode = result['zipCode']; 
-            const groceryStore = returnGroceryClass(); 
+            const groceryStore = returnGroceryClass(result['storeType']); 
             groceryStore.locations(zipCode).then(locationsResponse => {
                 sendResponse(locationsResponse); 
             })
