@@ -38,6 +38,7 @@ async function search(term) {
     });
 
     if (locationId) {
+      console.log('location id appended Walmart')
       params.append('storeId', locationId);
     }
     const url = `${baseURL}?${params.toString()}`;
@@ -53,7 +54,7 @@ async function search(term) {
     }
 
     const data = await response.json();
-    //console.log('data from walmart search', data);
+    console.log('data from walmart search', data);
     return data;
   } catch (error) {
     console.error('ERROR in client credentials in Walmart API Calls', error);
@@ -66,7 +67,7 @@ async function stores(zipcode){ //gets a token for use When making API requests 
   try {
     const generatedHeaders = await generateWalmartHeaders();
     //console.log('headers in Walmart search ', generatedHeaders.headers);
-    const url = `https://developer.api.walmart.com/api-proxy/service/affil/product/v2/stores?lon=-95.511747&lat=29.735577`;
+    const url = `https://developer.api.walmart.com/api-proxy/service/affil/product/v2/stores?lon=-97.511747&lat=30.735577`;
     const response = await fetch(url, {
       method: 'GET',
       headers: generatedHeaders.headers

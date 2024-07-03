@@ -137,15 +137,15 @@ class Walmart extends GroceryStore {
                         }
                         locationPopupData.push(newLocation);
                     } 
-                    resolve({locationData: locationPopupData, locationsFound: locationPopupData.length > 0}); 
+                    resolve(locationPopupData); 
                 }else{
                     console.log('no locations found in Walmart.js')
-                    resolve({locationsFound: false}); 
+                    resolve([]); 
                 }
             })
             .catch(error => {
                 console.log('error in backgroundWorker.js. when getting locations', error.message);
-                resolve({locationsFound: false}); 
+                resolve([]); 
             })
         }); 
     }

@@ -361,7 +361,7 @@ class Kroger extends GroceryStore {
                 return locationData; 
             })
             .then(locationData =>{
-                console.log('location data ', locationData)
+                //console.log('location data ', locationData)
                 if (locationData != null && locationData['data'].length != 0){
                     var locationPopupData = []
                     for (const index in locationData['data']){
@@ -380,15 +380,15 @@ class Kroger extends GroceryStore {
                         }
                     } 
                     console.log('locationPopupData ', locationPopupData);
-                    resolve({locationData: locationPopupData, locationsFound: locationPopupData.length > 0}); 
+                    resolve(locationPopupData); 
                 }else{
                     console.log('no locations found')
-                    resolve({locationsFound: false}); 
+                    resolve([]); 
                 }
             })
             .catch(error => {
                 console.log('error in backgroundWorker.js. when getting locations', error.message);
-                resolve({locationsFound: false}); 
+                resolve([]); 
             })
         }); 
     }

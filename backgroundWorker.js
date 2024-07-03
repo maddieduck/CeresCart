@@ -28,6 +28,23 @@ function returnGroceryClass(storeType){ //returns the class for the grocery stor
     }
 }
 
+// Function to interleave or alternate between two arrays
+function interleaveLocations(array1, array2) {
+    const interleavedArray = [];
+    const maxLength = Math.max(array1.length, array2.length);
+    
+    for (let i = 0; i < maxLength; i++) {
+        if (i < array1.length) {
+            interleavedArray.push(array1[i]);
+        }
+        if (i < array2.length) {
+            interleavedArray.push(array2[i]);
+        }
+    }
+    
+    return interleavedArray;
+}
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
     if (message.to === 'userHasAccess'){ //returns ingredients from kroger API
         //check if the user has paid 
@@ -60,7 +77,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             var finalIngredients = stripIngredients(strippedIngredients); 
             console.log('final product list ', finalIngredients); 
             if(strippedIngredients != null){
-                chrome.storage.sync.get('buttonCounter', (result) => {
+                chrome.storage.sync.get(['storeType'], (result) => {
+                    console.log('store type ingredient', result['storeType']);
                     const groceryStore = returnGroceryClass(result['storeType']); 
                     groceryStore.getProducts(finalIngredients, message.locationExists)
                     .then(products => {
@@ -74,7 +92,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         })
     }else if(message.to === 'checkout'){ //allows the user to checkout using API 
         console.log('checkout pressed'); 
-        chrome.storage.sync.get('buttonCounter', (result) => {
+        chrome.storage.sync.get('storeType', (result) => {
             const groceryStore = returnGroceryClass(result['storeType']); 
             groceryStore.checkout(message.data)
             .then(checkoutResponse => {
@@ -82,13 +100,25 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             })
         }); 
     }else if(message.to === 'locations'){
-        chrome.storage.sync.get(['storeType', 'zipCode'], (result) => {
-            //console.log('zip code ', result['zipCode']);
-            var zipCode = result['zipCode']; 
-            const groceryStore = returnGroceryClass(result['storeType']); 
-            groceryStore.locations(zipCode).then(locationsResponse => {
-                sendResponse(locationsResponse); 
-            })
+        chrome.storage.sync.get('zipCode', async (result) => {
+            const walGroceryStore = new Walmart();
+            const krogGroceryStore = new Kroger();
+        
+            try {
+                // Call the locations method for both stores and await their results
+                const walmartLocations = await walGroceryStore.locations(result['zipCode']);
+                const krogerLocations = await krogGroceryStore.locations(result['zipCode']);
+        
+                // Interleave or alternate between Walmart and Kroger locations
+                const interleavedLocations = interleaveLocations(walmartLocations, krogerLocations);
+        
+                // Handle or return interleavedLocations as needed
+                //console.log('interleave ', interleavedLocations, walmartLocations, krogerLocations);
+                sendResponse({locationData: interleavedLocations, locationsFound: interleavedLocations.length > 0});
+            } catch (error) {
+                console.error('Error fetching locations:', error);
+                // Handle errors here
+            }
         });
     }else{
         console.log('unnhandled message in background listener ', message);
