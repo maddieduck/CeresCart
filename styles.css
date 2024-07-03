@@ -189,7 +189,6 @@
   background-color: rgb(240, 240, 240);
   cursor: pointer;
   margin-left: auto; 
-  padding-top: 3px;
 }
 #ingrExpCloseInPopup:hover {
   border-color: rgb(228, 230, 232);
@@ -386,7 +385,7 @@
   margin: 0 8px;
   margin-bottom: 8px;
 }
-.logo{
+.groceryLogo{
   height: 32px;
   margin-left: 8px;
 }
