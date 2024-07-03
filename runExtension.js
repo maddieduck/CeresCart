@@ -298,7 +298,8 @@ async function loadLocationsInPopup(newLocationData){
     let nodeClone = document.createElement('div');  // Create a new div 
     nodeClone.innerHTML = locationHtml;  // Set the inner HTML of the div 
     nodeClone.querySelector('.ingrExpTopLocationDiv').id = 'ingrExpTopLocationDiv' + index;
-    nodeClone.querySelector('.ingrExpLocationName').textContent = locationData["name"]
+    nodeClone.querySelector('.ingrExpLocationName').textContent = locationData["name"];
+    nodeClone.querySelector('.logo').src = "chrome-extension://nckacfgoolkhaedphbknecabckccgffe" + locationData["logo"];
     var addressObject = locationData["address"];
     //console.log('addr obj ', addressObject);
     var formattedAddress = `${addressObject.addressLine1}\n${addressObject.city}, ${addressObject.state} ${addressObject.zipCode}`;

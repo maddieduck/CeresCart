@@ -370,7 +370,8 @@ class Kroger extends GroceryStore {
                             "name": singleLocation['name'],
                             "address": singleLocation['address'],
                             "phone": singleLocation['phone'],
-                            "id": singleLocation['locationId']
+                            "id": singleLocation['locationId'],
+                            "logo": "/images/logos/kroger.png"
                         }
                         var pickupExists = true //TODO: pickupDepartmentExists(singleLocation['departments']);
                         if((singleLocation['phone'] != '9999999999') && pickupExists){ //filter locations 

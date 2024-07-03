@@ -24,15 +24,23 @@ async function search(term) {
   var locationId; 
   chrome.storage.sync.get('locationId', (result) => {
     locationId = result['locationId'];
+    console.log('location id ', locationId);
   }); 
   try {
     const generatedHeaders = await generateWalmartHeaders();
     //console.log('headers in search ', generatedHeaders.headers);
 
-    const url = `https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search?publisherId=${impactRadiusID}&query=${term}&numItems=25`;
-    if(locationId){
-      url = url + "&storeId=" + locationId;
+    const baseURL = 'https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search';
+    const params = new URLSearchParams({
+      publisherId: impactRadiusID,
+      query: term,
+      numItems: 25
+    });
+
+    if (locationId) {
+      params.append('storeId', locationId);
     }
+    const url = `${baseURL}?${params.toString()}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: generatedHeaders.headers
