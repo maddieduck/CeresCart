@@ -91,27 +91,25 @@ class Walmart extends GroceryStore {
         }
     
         try {
-            // Create windows for each item with the updated URL
-
-            const promises = itemsToCheckout.map(async item => {
-                const baseUrl = `https://goto.walmart.com/c/2263813/568844/9383?veh=aff&sourceid=imp_000011112222333344&u=http%3A%2F%2Faffil.walmart.com%2Fcart%2FaddToCart%3Foffers%3D`;
-                const url = baseUrl + `${item.upc}_${item.quantity}`;
-                const window = await createWindow(url);
-                const [tab] = window.tabs;
-                await waitForPageLoad(tab.id);
-                closeWindowAfterDelay(window);
-                return window;
-            });
+            const baseUrl = `https://affil.walmart.com/cart/addToCart?offers=`
+            // Concatenate all items into a single URL
+            const concatenatedUrl = itemsToCheckout.reduce((url, item, index) => {
+                return url + `${item.upc}_${item.quantity}` + (index < itemsToCheckout.length - 1 ? '%2C' : '');
+            }, baseUrl);
     
-            // Wait for all pages to load
-            await Promise.all(promises);
-    
+            // Create a single window with the concatenated URL
+            const window = await createWindow(concatenatedUrl);
+            const [tab] = window.tabs;
+            await waitForPageLoad(tab.id);
+            closeWindowAfterDelay(window);
+            
             return { success: true, errorMessage: "Successfully Added To Cart" };
         } catch (error) {
             console.error('Error creating or closing windows:', error);
             return { success: false, errorMessage: "Error When Adding To Cart" };
         }
     }
+    
     
     async locations(zipCode){ //returns store locations for Walmart 
         //console.log('locations Walmart.js')
