@@ -30,7 +30,7 @@ class Walmart extends GroceryStore {
                     brand: item.brandName || '',
                     image: item.largeImage || '',
                     price: item.salePrice || '',
-                    upc: item.affiliateAddToCartUrl || '', //This is correct. This url is used to checkout, not upc
+                    upc: item.offerId || '', //This is correct. This url is used to checkout, not upc
                     quantity: 0,
                     size: item.size || ''
                 }));
@@ -49,7 +49,7 @@ class Walmart extends GroceryStore {
 
     async checkout(itemsToCheckout) {
         console.log('checkout Walmart.js ', itemsToCheckout);
-    
+        
         // Function to wrap chrome.windows.create in a promise
         function createWindow(url) {
             return new Promise((resolve, reject) => {
@@ -92,8 +92,10 @@ class Walmart extends GroceryStore {
     
         try {
             // Create windows for each item with the updated URL
+
             const promises = itemsToCheckout.map(async item => {
-                const url = `${item.upc}_${item.quantity}`;
+                const baseUrl = `https://goto.walmart.com/c/2263813/568844/9383?veh=aff&sourceid=imp_000011112222333344&u=http%3A%2F%2Faffil.walmart.com%2Fcart%2FaddToCart%3Foffers%3D`;
+                const url = baseUrl + `${item.upc}_${item.quantity}`;
                 const window = await createWindow(url);
                 const [tab] = window.tabs;
                 await waitForPageLoad(tab.id);
