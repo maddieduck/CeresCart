@@ -1,4 +1,4 @@
-import {stores, search} from './WalmartAPICalls.js'
+import {stores, search, productLookup} from './WalmartAPICalls.js'
 import { GroceryStore } from './GroceryStore.js';
 import {loadFromLocalStorage} from '../storageHelpers.js';
 
@@ -15,29 +15,49 @@ class Walmart extends GroceryStore {
             .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize the first letter of each word
             .join(' '); // Join the array back into a single string
     }
+    
     async getProducts(finalIngredients) { 
         console.log('get products Walmart.js', finalIngredients);
-        const promises = finalIngredients.map(ingredient => search(ingredient));
     
         try {
-            const allIngredientProducts = await Promise.all(promises); 
+            const ingredientDataPromises = finalIngredients.map(async ingredient => {
+                // Call search for each ingredient
+                const searchResult = await search(ingredient);
+                
+                // Extract item IDs from search results
+                const itemIds = searchResult.items.map(item => item.itemId);
+                console.log(`Item IDs for ingredient ${ingredient}:`, itemIds);
+                
+                // Call productLookup with the array of item IDs
+                const productDetails = await productLookup(itemIds, ingredient);
+                console.log(`Product details for ingredient ${ingredient}:`, productDetails);
+                
+                // Check if productDetails is valid
+                if (!productDetails || !productDetails.items) {
+                    console.warn(`No product details found for ingredient ${ingredient}`);
+                    return null; // Return null to filter out later
+                }
     
-            // Process the results into a 2D array where each element is [ingredient, productsArray]
-            const ingredientData = allIngredientProducts.map((singularProductsData, index) => {
-                const ingredient = finalIngredients[index];
-                const productsArray = singularProductsData.items.map(item => ({
-                    description: item.name || '',
-                    brand: item.brandName || '',
-                    image: item.largeImage || '',
-                    price: item.salePrice || '',
-                    upc: item.offerId || '', //This is correct. This url is used to checkout, not upc
-                    quantity: 0,
-                    size: item.size || ''
-                }));
-                //console.log('ingred data ', allIngredientProducts);
-
+                // Filter items where stock is "Available"
+                const productsArray = productDetails.items.filter(item => item.stock === "Available")
+                    .map(item => ({
+                        description: item.name || '',
+                        brand: item.brandName || '',
+                        image: item.largeImage || '',
+                        price: item.salePrice || '',
+                        upc: item.offerId || '', // This URL is used to checkout, not UPC
+                        quantity: 0,
+                        size: item.size || ''
+                    }));
+                
                 return [ingredient, productsArray];
             });
+    
+            // Wait for all ingredient data to be processed
+            const allIngredientData = await Promise.all(ingredientDataPromises);
+    
+            // Filter out null values
+            const ingredientData = allIngredientData.filter(data => data !== null);
     
             console.log('get products results', ingredientData); 
             return {launch: true, ingredientData};  
@@ -46,10 +66,14 @@ class Walmart extends GroceryStore {
             return {launch: false};  
         }
     }
-
+    
     async checkout(itemsToCheckout) {
         console.log('checkout Walmart.js ', itemsToCheckout);
-        
+        var locationId; 
+        chrome.storage.sync.get('locationId', (result) => {
+            locationId = result['locationId'];
+            console.log('location id ', locationId);
+          }); 
         // Function to wrap chrome.windows.create in a promise
         function createWindow(url) {
             return new Promise((resolve, reject) => {
@@ -91,13 +115,17 @@ class Walmart extends GroceryStore {
         }
     
         try {
-            const baseUrl = `https://affil.walmart.com/cart/addToCart?offers=`
+            const baseUrl = `https://affil.walmart.com/cart/buynow?offers=`
             // Concatenate all items into a single URL
             const concatenatedUrl = itemsToCheckout.reduce((url, item, index) => {
                 return url + `${item.upc}_${item.quantity}` + (index < itemsToCheckout.length - 1 ? '%2C' : '');
             }, baseUrl);
     
             // Create a single window with the concatenated URL
+            if(locationId){
+                console.log('store Id added in walmart.js checkout')
+                concatenatedUrl = concatenatedUrl + `&storeId=` + locationId + `&ap=` + locationId; 
+            }
             const window = await createWindow(concatenatedUrl);
             const [tab] = window.tabs;
             await waitForPageLoad(tab.id);
@@ -109,7 +137,6 @@ class Walmart extends GroceryStore {
             return { success: false, errorMessage: "Error When Adding To Cart" };
         }
     }
-    
     
     async locations(zipCode){ //returns store locations for Walmart 
         //console.log('locations Walmart.js')

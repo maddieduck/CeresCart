@@ -1,5 +1,5 @@
 const impactRadiusID = "2263813"
-export{search, stores}
+export{search, stores, productLookup}
 
 async function generateWalmartHeaders(){ //gets a token for use When making API requests that do not require customer consent 
   return new Promise((resolve, rejects)=>{
@@ -22,10 +22,18 @@ async function generateWalmartHeaders(){ //gets a token for use When making API 
 async function search(term) {
   console.log('walmart product catalog snapshot running');
   var locationId; 
-  chrome.storage.sync.get('locationId', (result) => {
-    locationId = result['locationId'];
-    console.log('location id ', locationId);
-  }); 
+
+  locationId = await new Promise((resolve, reject) => {
+    chrome.storage.sync.get('locationId', (result) => {
+      if (chrome.runtime.lastError) {
+        return reject(chrome.runtime.lastError);
+      }
+      resolve(result['locationId']);
+    });
+  });
+
+  console.log('location id ', locationId);
+
   try {
     const generatedHeaders = await generateWalmartHeaders();
     //console.log('headers in search ', generatedHeaders.headers);
@@ -34,14 +42,14 @@ async function search(term) {
     const params = new URLSearchParams({
       publisherId: impactRadiusID,
       query: term,
-      numItems: 25
+      numItems: 20 //can be up to 25 
     });
 
     if (locationId) {
-      console.log('location id appended Walmart')
+      console.log('location id appended Walmart');
       params.append('storeId', locationId);
     }
-    const url = `${baseURL}?${params.toString()}`;
+    const url = `${baseURL}?${params.toString()}`; //+ `&facet=on&facet.filter=stock:Available`
     const response = await fetch(url, {
       method: 'GET',
       headers: generatedHeaders.headers
@@ -61,6 +69,59 @@ async function search(term) {
     throw error;
   }
 }
+
+async function productLookup(ids, ingredient) {
+  console.log('walmart product catalog snapshot running', ingredient);
+  var locationId; 
+
+  locationId = await new Promise((resolve, reject) => {
+    chrome.storage.sync.get('locationId', (result) => {
+      if (chrome.runtime.lastError) {
+        return reject(chrome.runtime.lastError);
+      }
+      resolve(result['locationId']);
+    });
+  });
+
+  //console.log('location id ', locationId);
+
+  try {
+    const generatedHeaders = await generateWalmartHeaders();
+    const baseURL = 'https://developer.api.walmart.com/api-proxy/service/affil/product/v2/items';
+
+    // Join the ids array into a comma-separated string
+    const idsString = ids.join(',');
+    console.log('id strings ', idsString); 
+
+    const params = new URLSearchParams({
+      publisherId: impactRadiusID,
+      ids: ids
+    });
+    
+    if (locationId) {
+      console.log('location id appended Walmart');
+      params.append('storeId', locationId);
+    }
+    const url = `${baseURL}?${params.toString()}`; 
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: generatedHeaders.headers
+    });
+
+    if (!response.ok) {
+      const errorMessage = `Client Walmart product lookup was unsuccessful. Status: ${response.status} ${response.statusText}`;
+      console.error('Error response in Product Lookup :', ingredient, response.status, response.statusText);
+      return(null);
+    }
+    const data = await response.json();
+    //console.log('data from walmart product lookup', data);
+    return data;
+  } catch (error) {
+    console.error('ERROR in product lookup in Walmart API Calls ',ingredient, error);
+    return(null);
+  }
+}
+
 
 async function stores(zipcode){ //gets a token for use When making API requests that do not require customer consent 
   console.log('Walmart stores running');
