@@ -102,7 +102,6 @@
   outline: 1px solid rgb(228, 230, 232);
   border-radius: 8px;
   width: 280px;
-  max-height: 192px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -227,7 +226,6 @@
 .ingredientDescription{
   font-weight: 345;
   font-size: 14px;
-  height: auto;
   color: #1D1C1C;
   text-align: center;
   margin: auto;
@@ -236,10 +234,6 @@
   padding-left: 16px;
   padding-bottom: 4px;
 
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2; 
-  overflow: hidden;
 }
 .ingrExpIngrExpPrice{
   margin-top: 5px; 

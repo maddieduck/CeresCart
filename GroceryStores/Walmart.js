@@ -50,6 +50,12 @@ class Walmart extends GroceryStore {
                         size: item.size || ''
                     }));
                 
+                // Check if productsArray is empty
+                if (productsArray.length === 0) {
+                    console.warn(`No available products found for ingredient ${ingredient}`);
+                    return null; // Return null to filter out later
+                }
+    
                 return [ingredient, productsArray];
             });
     

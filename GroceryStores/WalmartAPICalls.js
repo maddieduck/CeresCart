@@ -42,7 +42,8 @@ async function search(term) {
     const params = new URLSearchParams({
       publisherId: impactRadiusID,
       query: term,
-      numItems: 20 //can be up to 25 
+      numItems: 20, //should be max 20 because product lookup can take a max of 20 item ids
+      categoryId: "976759" //this appears to be for the food 
     });
 
     if (locationId) {
@@ -91,7 +92,7 @@ async function productLookup(ids, ingredient) {
 
     // Join the ids array into a comma-separated string
     const idsString = ids.join(',');
-    console.log('id strings ', idsString); 
+    //console.log('id strings ', idsString); 
 
     const params = new URLSearchParams({
       publisherId: impactRadiusID,
@@ -121,7 +122,6 @@ async function productLookup(ids, ingredient) {
     return(null);
   }
 }
-
 
 async function stores(zipcode){ //gets a token for use When making API requests that do not require customer consent 
   console.log('Walmart stores running');
