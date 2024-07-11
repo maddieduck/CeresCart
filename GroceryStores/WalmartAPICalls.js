@@ -1,6 +1,26 @@
 const impactRadiusID = "2263813"
 export{search, stores, productLookup}
 
+async function getGeolocation(zipcode) { //returns geolocation as an array of [latitude, longitude]
+  const url = `https://api.zippopotam.us/us/${zipcode}`;
+  
+  try {
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      if (data.places && data.places.length > 0) {
+          const location = data.places[0];
+          return [location.latitude, location.longitude];
+      } else {
+          console.error('Geocoding failed: No results found');
+          return null;
+      }
+  } catch (error) {
+      console.error('Error:', error);
+      return null;
+  }
+}
+
 async function generateWalmartHeaders(){ //gets a token for use When making API requests that do not require customer consent 
   return new Promise((resolve, rejects)=>{
     fetch('http://localhost:3000/')
@@ -20,7 +40,7 @@ async function generateWalmartHeaders(){ //gets a token for use When making API 
 }
 
 async function search(term) {
-  console.log('walmart product catalog snapshot running');
+  console.log('walmart saerch API running ', term);
   var locationId; 
 
   locationId = await new Promise((resolve, reject) => {
@@ -47,7 +67,7 @@ async function search(term) {
     });
 
     if (locationId) {
-      console.log('location id appended Walmart');
+      console.log('location id appended Walmart ', locationId);
       params.append('storeId', locationId);
     }
     const url = `${baseURL}?${params.toString()}`; //+ `&facet=on&facet.filter=stock:Available`
@@ -57,7 +77,7 @@ async function search(term) {
     });
 
     if (!response.ok) {
-      const errorMessage = `Client Walmart Auth was unsuccessful. Status: ${response.status} ${response.statusText}`;
+      const errorMessage = `Client Walmart Search was unsuccessful. Status: ${response.status} ${response.statusText}`;
       console.error('Error response:', response.status, response.statusText);
       throw new Error(errorMessage);
     }
@@ -66,7 +86,7 @@ async function search(term) {
     console.log('data from walmart search', data);
     return data;
   } catch (error) {
-    console.error('ERROR in client credentials in Walmart API Calls', error);
+    console.error('ERROR in Search in Walmart API Calls', error);
     throw error;
   }
 }
@@ -127,8 +147,10 @@ async function stores(zipcode){ //gets a token for use When making API requests 
   console.log('Walmart stores running');
   try {
     const generatedHeaders = await generateWalmartHeaders();
+    const geolocation = await getGeolocation(zipcode);
     //console.log('headers in Walmart search ', generatedHeaders.headers);
-    const url = `https://developer.api.walmart.com/api-proxy/service/affil/product/v2/stores?lon=-97.511747&lat=30.735577`;
+    console.log('geolocation ', geolocation);
+    const url = `https://developer.api.walmart.com/api-proxy/service/affil/product/v2/stores?lon=${geolocation[1]}&lat=${geolocation[0]}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: generatedHeaders.headers
