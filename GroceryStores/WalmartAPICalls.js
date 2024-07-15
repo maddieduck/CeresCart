@@ -21,26 +21,7 @@ async function getGeolocation(zipcode) { //returns geolocation as an array of [l
   }
 }
 
-async function generateWalmartHeaders(){ //gets a token for use When making API requests that do not require customer consent 
-  return new Promise((resolve, rejects)=>{
-    fetch('https://cerescartapis.onrender.com/generateWalmartHeaders')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      resolve(response.json()); // Assuming response is JSON; use .text() for text, etc.
-    })
-    .then(data => {
-      //console.log('walmart headers ', data);
-      resolve(data); // Process the JSON response data here
-    })
-    .catch(error => {
-      rejects('Fetch error:', error);
-    });
-  })
-}
-
-async function search(term) {
+async function search(term, generatedHeaders) {
   console.log('walmart search API running ', term);
   var locationId; 
   
@@ -57,7 +38,6 @@ async function search(term) {
 
   const attemptSearch = async (retries) => {
     try {
-      const generatedHeaders = await generateWalmartHeaders();
       console.log('headers in Walmart search, Search API', generatedHeaders.headers);
 
       const baseURL = 'https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search';
@@ -100,7 +80,7 @@ async function search(term) {
   return attemptSearch(2); // Attempt up to 3 times (initial call + 2 retries)
 }
 
-async function productLookup(ids, ingredient) {
+async function productLookup(ids, ingredient, generatedHeaders) {
   console.log('walmart product catalog snapshot running', ids, ingredient);
   var locationId; 
 
@@ -115,7 +95,7 @@ async function productLookup(ids, ingredient) {
 
   const attemptProductLookup = async (retries) => {
     try {
-      const generatedHeaders = await generateWalmartHeaders();
+      //const generatedHeaders = await generateWalmartHeaders();
       console.log('headers in Walmart search, product lookup API', generatedHeaders.headers);
       const baseURL = 'https://developer.api.walmart.com/api-proxy/service/affil/product/v2/items';
 
