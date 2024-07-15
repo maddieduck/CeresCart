@@ -23,7 +23,7 @@ async function getGeolocation(zipcode) { //returns geolocation as an array of [l
 
 async function generateWalmartHeaders(){ //gets a token for use When making API requests that do not require customer consent 
   return new Promise((resolve, rejects)=>{
-    fetch('http://localhost:3000/')
+    fetch('https://cerescartapis.onrender.com/generateWalmartHeader')
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
