@@ -66,7 +66,11 @@ class Walmart extends GroceryStore {
             const ingredientData = allIngredientData.filter(data => data !== null);
     
             console.log('get products results', ingredientData); 
-            return {launch: true, ingredientData};  
+            if(ingredientData.length == 0){
+                return {launch: false};  
+            }else{
+                return {launch: true, ingredientData};  
+            }
         } catch (error) {
             console.error('Error fetching products:', error);
             return {launch: false};  

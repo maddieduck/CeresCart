@@ -58,6 +58,7 @@ async function search(term) {
   const attemptSearch = async (retries) => {
     try {
       const generatedHeaders = await generateWalmartHeaders();
+      console.log('headers in Walmart search, Search API', generatedHeaders.headers);
 
       const baseURL = 'https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search';
       const params = new URLSearchParams({
@@ -115,6 +116,7 @@ async function productLookup(ids, ingredient) {
   const attemptProductLookup = async (retries) => {
     try {
       const generatedHeaders = await generateWalmartHeaders();
+      console.log('headers in Walmart search, product lookup API', generatedHeaders.headers);
       const baseURL = 'https://developer.api.walmart.com/api-proxy/service/affil/product/v2/items';
 
       // Join the ids array into a comma-separated string
@@ -164,7 +166,7 @@ async function stores(zipcode){ //gets a token for use When making API requests 
   try {
     const generatedHeaders = await generateWalmartHeaders();
     const geolocation = await getGeolocation(zipcode);
-    //console.log('headers in Walmart search ', generatedHeaders.headers);
+    console.log('headers in Walmart search ', generatedHeaders.headers);
     console.log('geolocation ', geolocation);
     const url = `https://developer.api.walmart.com/api-proxy/service/affil/product/v2/stores?lon=${geolocation[1]}&lat=${geolocation[0]}`;
     const response = await fetch(url, {
