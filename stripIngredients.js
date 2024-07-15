@@ -1,11 +1,16 @@
 function stripIngredients(products) {
   products = replaceWords(products);
   products = removeWords(products);
+  
   // Remove null, undefined, blank strings, and duplicates
   const uniqueProducts = [...new Set(products.filter(item => item !== null && item !== undefined && item.trim() !== ''))];
 
-  return uniqueProducts;
+  // Remove special characters from each product in case they slip through ChatGPT
+  const cleanProducts = uniqueProducts.map(product => product.replace(/[^a-zA-Z0-9 ]/g, ''));
+
+  return cleanProducts;
 }
+
 
 function replaceWords(products) {
   const newWordPairs = [
@@ -60,7 +65,7 @@ function removeWords(products) {
     return product.trim(); // Trim any leading or trailing spaces
   });
 }
-  
+
 export{stripIngredients}
 
 

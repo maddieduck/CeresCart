@@ -53,7 +53,7 @@ async function search(term) {
     });
   });
 
-  console.log('location id ', locationId);
+  //console.log('location id ', locationId);
 
   const attemptSearch = async (retries) => {
     try {
@@ -69,7 +69,7 @@ async function search(term) {
       });
 
       if (locationId) {
-        console.log('location id appended Walmart ', locationId);
+        console.log('location id appended Walmart search ', locationId);
         params.append('storeId', locationId);
       }
       const url = `${baseURL}?${params.toString()}`;
@@ -101,7 +101,7 @@ async function search(term) {
 }
 
 async function productLookup(ids, ingredient) {
-  console.log('walmart product catalog snapshot running', ingredient);
+  console.log('walmart product catalog snapshot running', ids, ingredient);
   var locationId; 
 
   locationId = await new Promise((resolve, reject) => {
@@ -129,7 +129,7 @@ async function productLookup(ids, ingredient) {
       });
       
       if (locationId) {
-        console.log('location id appended Walmart ', locationId);
+        console.log('location id appended Walmart productLookup', locationId);
         params.append('storeId', locationId);
       }
       const url = `${baseURL}?${params.toString()}`; 
