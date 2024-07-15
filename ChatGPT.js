@@ -50,5 +50,5 @@ async function getRefinedIngredients(userInput) {
   }
 }
 
-export {getRefinedIngredients,prioritizeProductsChatGPT};
+export {getRefinedIngredients};
 
