@@ -51,4 +51,3 @@ async function getRefinedIngredients(userInput) {
 }
 
 export {getRefinedIngredients};
-
