@@ -64,7 +64,7 @@ class Walmart extends GroceryStore {
                         brand: item.brandName || '',
                         image: item.largeImage || '',
                         price: item.salePrice || '',
-                        upc: item.offerId || '', // This URL is used to checkout, not UPC
+                        upc: item.offerId || '', 
                         quantity: 0,
                         size: item.size || ''
                     }));

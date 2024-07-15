@@ -44,7 +44,7 @@ async function search(term, generatedHeaders) {
       const params = new URLSearchParams({
         publisherId: impactRadiusID,
         query: term,
-        numItems: 20,
+        numItems: 15, //when this is 20, product lookup gets messed up 
         categoryId: "976759"
       });
 
@@ -120,7 +120,7 @@ async function productLookup(ids, ingredient, generatedHeaders) {
 
       if (!response.ok) {
         const errorMessage = `Client Walmart product lookup was unsuccessful. Status: ${response.status} ${response.statusText}`;
-        console.error('Error response in Product Lookup :', ingredient, response.status, response.statusText);
+        console.error('Error response in Product Lookup :', ingredient, ' ids length ', ids.length, response.status, response.statusText);
         throw new Error(errorMessage);
       }
 
@@ -128,7 +128,7 @@ async function productLookup(ids, ingredient, generatedHeaders) {
       //console.log('data from walmart product lookup', data);
       return data;
     } catch (error) {
-      console.error('ERROR in product lookup in Walmart API Calls ', ingredient, error);
+      console.error('ERROR in product lookup in Walmart API Calls ', ingredient, ' ids length ', ids.length, error);
       if (retries > 0) {
         console.log(`Retrying product lookup... ${retries} attempts left`);
         return attemptProductLookup(retries - 1);
