@@ -47,9 +47,12 @@ class Walmart extends GroceryStore {
                         brand: item.brandName || '',
                         image: item.largeImage || '',
                         price: item.salePrice || '',
-                        upc: item.offerId || '', 
+                        upc: item.upc || '', 
                         quantity: 0,
-                        size: item.size || ''
+                        size: item.size || '',
+                        offerId: item.offerId || '',
+                        addToCartUrl: item.affiliateAddToCartUrl || '',
+                        itemId: item.itemId || ''
                     }));
                 
                 // Check if productsArray is empty
@@ -127,10 +130,10 @@ class Walmart extends GroceryStore {
         }
     
         try {
-            const baseUrl = `https://affil.walmart.com/cart/buynow?offers=`
+            const baseUrl = `https://affil.walmart.com/cart/addToCart?items=`
             // Concatenate all items into a single URL
             const concatenatedUrl = itemsToCheckout.reduce((url, item, index) => {
-                return url + `${item.upc}_${item.quantity}` + (index < itemsToCheckout.length - 1 ? '%2C' : '');
+                return url + `${item.itemId}_${item.quantity}` + (index < itemsToCheckout.length - 1 ? '%2C' : '');
             }, baseUrl);
     
             // Create a single window with the concatenated URL
