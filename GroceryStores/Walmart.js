@@ -130,13 +130,13 @@ class Walmart extends GroceryStore {
         }
     
         try {
-            const baseUrl = `https://affil.walmart.com/cart/addToCart?items=`
-            // Concatenate all items into a single URL
+            const baseUrl = `https://goto.walmart.com/c/2263813/568844/9383?veh=aff&sourceid=imp_000011112222333344&u=http%3A%2F%2Faffil.walmart.com%2Fcart%2FaddToCart%3Fitems%3D`
             const concatenatedUrl = itemsToCheckout.reduce((url, item, index) => {
                 return url + `${item.itemId}_${item.quantity}` + (index < itemsToCheckout.length - 1 ? '%2C' : '');
             }, baseUrl);
     
             // Create a single window with the concatenated URL
+            
             if(locationId){
                 console.log('store Id added in walmart.js checkout')
                 concatenatedUrl = concatenatedUrl + `&storeId=` + locationId + `&ap=` + locationId; 

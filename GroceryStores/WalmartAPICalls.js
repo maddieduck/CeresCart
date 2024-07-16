@@ -63,8 +63,8 @@ async function search(term, generatedHeaders) {
       const params = new URLSearchParams({
         publisherId: impactRadiusID,
         query: term,
-        numItems: 20, 
-        categoryId: "976759"
+        numItems: 20
+        //categoryId: "976759" //removed because maybe not working 
       });
 
       if (locationId) {
