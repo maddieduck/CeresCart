@@ -687,10 +687,10 @@ async function checkoutButtonClicked(){
   for (const productData of allProductData) {
     for (const product of productData.productData) {
       const quantity = product.quantity;
-      const upc = product.upc; // Assuming there's a property named 'upc' in your data structure
+      //const upc = product.upc; // Assuming there's a property named 'upc' in your data structure
       if (quantity > 0){
-        const singleProductAndQuantity = {'quantity': quantity, 'upc': upc};
-        productAndQuantityArray.push(singleProductAndQuantity);
+        //const singleProductAndQuantity = //{'quantity': quantity, 'upc': upc};
+        productAndQuantityArray.push(product);
       }
     }
   }

@@ -319,6 +319,13 @@ class Kroger extends GroceryStore {
     }
 
     async checkout(itemsToCheckout){
+        //const singleProductAndQuantity = //{'quantity': quantity, 'upc': upc};
+        const krogerCheckoutArray = itemsToCheckout.map(item => {
+            return {
+              upc: item.upc,
+              quantity: item.quantity
+            };
+          });
         return new Promise((resolve, rejects)=>{
             this.#getCartWriteAuth()
             .then(authCode => {
@@ -326,7 +333,7 @@ class Kroger extends GroceryStore {
                 if(authCode == null){
                     resolve({success: false, "errorMessage": "Cannot Authorize User"}); 
                 }else{
-                    addToCart(authCode, itemsToCheckout)
+                    addToCart(authCode, krogerCheckoutArray)
                     .then(success => {
                         console.log('add to cart successful? ', success);
                         if(success){//decrement free trial variable if relevant 
