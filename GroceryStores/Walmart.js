@@ -43,14 +43,15 @@ class Walmart extends GroceryStore {
                 const generatedHeaders = await this.generateWalmartHeaders();
                 const searchResult = await search(ingredient, generatedHeaders);
                 
+                //NEED TO FIX PRODUCT LOOKUP
                 // Extract item IDs from search results
-                const itemIds = searchResult.items.map(item => item.itemId);
-                console.log(`Item IDs for ingredient ${ingredient}:`, itemIds);
+                //const itemIds = searchResult.items.map(item => item.itemId);
+                //console.log(`Item IDs for ingredient ${ingredient}:`, itemIds);
                 
                 // Call productLookup with the array of item IDs
-                const productDetails = await productLookup(itemIds, ingredient, generatedHeaders);
-                console.log(`Product details for ingredient ${ingredient}:`, productDetails);
-                
+                //const productDetails = await productLookup(itemIds, ingredient, generatedHeaders);
+                //console.log(`Product details for ingredient ${ingredient}:`, productDetails);
+                const productDetails = searchResult; //This is only here until product lookup is fixed
                 // Check if productDetails is valid
                 if (!productDetails || !productDetails.items) {
                     console.warn(`No product details found for ingredient ${ingredient}`);

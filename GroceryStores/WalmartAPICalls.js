@@ -44,7 +44,7 @@ async function search(term, generatedHeaders) {
       const params = new URLSearchParams({
         publisherId: impactRadiusID,
         query: term,
-        numItems: 15, //when this is 20, product lookup gets messed up 
+        numItems: 20, 
         categoryId: "976759"
       });
 
