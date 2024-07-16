@@ -1,4 +1,4 @@
-import {stores, search, productLookup} from './WalmartAPICalls.js'
+import {stores, search, productLookup, generateWalmartHeaders} from './WalmartAPICalls.js'
 import { GroceryStore } from './GroceryStore.js';
 import {loadFromLocalStorage} from '../storageHelpers.js';
 
@@ -15,24 +15,6 @@ class Walmart extends GroceryStore {
             .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize the first letter of each word
             .join(' '); // Join the array back into a single string
     }
-    async generateWalmartHeaders(){ //gets a token for use When making API requests that do not require customer consent 
-        return new Promise((resolve, rejects)=>{
-          fetch('https://cerescartapis.onrender.com/generateWalmartHeaders')
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
-            resolve(response.json()); // Assuming response is JSON; use .text() for text, etc.
-          })
-          .then(data => {
-            //console.log('walmart headers ', data);
-            resolve(data); // Process the JSON response data here
-          })
-          .catch(error => {
-            rejects('Fetch error:', error);
-          });
-        })
-      }
 
     async getProducts(finalIngredients) { 
         console.log('get products Walmart.js', finalIngredients);
@@ -40,7 +22,7 @@ class Walmart extends GroceryStore {
         try {
             const ingredientDataPromises = finalIngredients.map(async ingredient => {
                 // Call search for each ingredient
-                const generatedHeaders = await this.generateWalmartHeaders();
+                const generatedHeaders = await generateWalmartHeaders();
                 const searchResult = await search(ingredient, generatedHeaders);
                 
                 //NEED TO FIX PRODUCT LOOKUP
