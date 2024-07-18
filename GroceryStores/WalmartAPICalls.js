@@ -35,7 +35,7 @@ async function generateWalmartHeaders(){ //gets a token for use When making API 
       resolve(data); // Process the JSON response data here
     })
     .catch(error => {
-      rejects('Fetch error:', error);
+      rejects('Fetch error when generating walmart headers ', error);
     });
   })
 }
@@ -49,7 +49,7 @@ async function search(term, generatedHeaders) {
       const baseURL = 'https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search';
       const params = new URLSearchParams({
         //publisherId: impactRadiusID,
-        query: term,
+        query: encodeURIComponent(term),
         numItems: 5
         //categoryId: "976759" //removed because maybe not working?
       });
@@ -65,7 +65,7 @@ async function search(term, generatedHeaders) {
 
       if (!response.ok) {
         const errorMessage = `Client Walmart Search was unsuccessful. Status: ${response.status} ${response.statusText} `;
-        console.error('Error response: ', response.status, response.statusText, url);
+        console.error('Error response: ', response.status, term, response.statusText, url);
         throw new Error(errorMessage);
       }
       const data = await response.json();

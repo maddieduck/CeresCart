@@ -16,7 +16,7 @@ class Walmart extends GroceryStore {
             .join(' '); // Join the array back into a single string
     }
 
-    async getProducts(finalIngredients) { 
+    async getProducts(finalIngredients) {
         console.log('get products Walmart.js', finalIngredients);
     
         try {
@@ -24,22 +24,22 @@ class Walmart extends GroceryStore {
                 // Call search for each ingredient
                 const generatedHeaders = await generateWalmartHeaders();
                 const searchResult = await search(ingredient, generatedHeaders);
+                console.log('search results ', searchResult);
                 
-                //NEED TO FIX PRODUCT LOOKUP
-                //Extract item IDs from search results 
-                const itemIds = searchResult.items.map(item => item.itemId); 
-                /*
-                const itemIds = searchResult.items
-                .filter(item => item.stock === "Available")
-                .map(item => item.itemId);*/ 
+                // Check if searchResult contains items
+                if (!searchResult.items || searchResult.items.length === 0) {
+                    console.warn(`No available items found for ingredient ${ingredient}`);
+                    return null; // Return null to filter out later
+                }
+    
+                // Extract item IDs from search results 
+                const itemIds = searchResult.items.map(item => item.itemId);
                 console.log(`Item IDs for ingredient ${ingredient}:`, itemIds);
-                
-                //Call productLookup with the array of item IDs
+    
+                // Call productLookup with the array of item IDs
                 const productDetails = await productLookup(itemIds, ingredient, generatedHeaders);
                 console.log(`Product details for ingredient ${ingredient}:`, productDetails);
-                
-                //const productDetails = searchResult; //This is only here until product lookup is fixed
-                
+    
                 // Check if productDetails is valid
                 if (!productDetails || !productDetails.items) {
                     console.warn(`No product details found for ingredient ${ingredient}`);
@@ -53,14 +53,14 @@ class Walmart extends GroceryStore {
                         brand: item.brandName || '',
                         image: item.largeImage || '',
                         price: item.salePrice || '',
-                        upc: item.upc || '', 
+                        upc: item.upc || '',
                         quantity: 0,
                         size: item.size || '',
                         offerId: item.offerId || '',
                         addToCartUrl: item.affiliateAddToCartUrl || '',
                         itemId: item.itemId || ''
                     }));
-                
+    
                 // Check if productsArray is empty
                 if (productsArray.length === 0) {
                     console.warn(`No available products found for ingredient ${ingredient}`);
@@ -77,16 +77,16 @@ class Walmart extends GroceryStore {
             const ingredientData = allIngredientData.filter(data => data !== null);
     
             console.log('get products results', ingredientData); 
-            if(ingredientData.length == 0){
+            if (ingredientData.length == 0) {
                 return {launch: false};  
-            }else{
+            } else {
                 return {launch: true, ingredientData};  
             }
         } catch (error) {
             console.error('Error fetching products:', error);
             return {launch: false};  
         }
-    }
+    }    
     
     async checkout(itemsToCheckout) {
         console.log('checkout Walmart.js ', itemsToCheckout);
