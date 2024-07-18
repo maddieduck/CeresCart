@@ -42,19 +42,6 @@ async function generateWalmartHeaders(){ //gets a token for use When making API 
 
 async function search(term, generatedHeaders) {
   console.log('walmart search API running ', term);
-  var locationId; 
-  
-  locationId = await new Promise((resolve, reject) => {
-    chrome.storage.sync.get('locationId', (result) => {
-      if (chrome.runtime.lastError) {
-        return reject(chrome.runtime.lastError);
-      }
-      resolve(result['locationId']);
-    });
-  });
-
-  //console.log('location id ', locationId);
-
   const attemptSearch = async (retries) => {
     try {
       console.log('headers in Walmart search, Search API', generatedHeaders.headers);
@@ -63,7 +50,7 @@ async function search(term, generatedHeaders) {
       const params = new URLSearchParams({
         //publisherId: impactRadiusID,
         query: term,
-        numItems: 20
+        numItems: 5
         //categoryId: "976759" //removed because maybe not working?
       });
 
@@ -86,6 +73,8 @@ async function search(term, generatedHeaders) {
       return data;
     } catch (error) {
       console.error('ERROR in Search in Walmart API Calls', error, url);
+      throw error;//remove for retries
+
       if (retries > 0) {
         generatedHeaders = await generateWalmartHeaders();
         console.log(`Retrying Walmart search... ${retries} attempts left`);
@@ -148,6 +137,8 @@ async function productLookup(ids, ingredient, generatedHeaders) {
       return data;
     } catch (error) {
       console.error('ERROR in product lookup in Walmart API Calls ', ingredient, ' ids length ', ids.length, error);
+      return null; //remove for retries
+
       if (retries > 0) {
         console.log(`Retrying product lookup... ${retries} attempts left`);
         return attemptProductLookup(retries - 1);
