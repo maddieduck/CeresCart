@@ -61,34 +61,33 @@ async function search(term, generatedHeaders) {
 
       const baseURL = 'https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search';
       const params = new URLSearchParams({
-        publisherId: impactRadiusID,
+        //publisherId: impactRadiusID,
         query: term,
         numItems: 20
-        //categoryId: "976759" //removed because maybe not working 
+        //categoryId: "976759" //removed because maybe not working?
       });
 
-      if (locationId) {
-        console.log('location id appended Walmart search ', locationId);
-        params.append('storeId', locationId);
-      }
-      const url = `${baseURL}?${params.toString()}`;
+      params.append('facet', 'on');
+      params.append('facet.filter', 'exclude_oos:Show available items only');
+
+      var url = `${baseURL}?${params.toString()}`;
       const response = await fetch(url, {
         method: 'GET',
         headers: generatedHeaders.headers
       });
 
       if (!response.ok) {
-        const errorMessage = `Client Walmart Search was unsuccessful. Status: ${response.status} ${response.statusText}`;
-        console.error('Error response:', response.status, response.statusText);
+        const errorMessage = `Client Walmart Search was unsuccessful. Status: ${response.status} ${response.statusText} `;
+        console.error('Error response: ', response.status, response.statusText, url);
         throw new Error(errorMessage);
       }
-
       const data = await response.json();
       console.log('data from walmart search', data);
       return data;
     } catch (error) {
-      console.error('ERROR in Search in Walmart API Calls', error);
+      console.error('ERROR in Search in Walmart API Calls', error, url);
       if (retries > 0) {
+        generatedHeaders = await generateWalmartHeaders();
         console.log(`Retrying Walmart search... ${retries} attempts left`);
         return attemptSearch(retries - 1);
       } else {
@@ -123,15 +122,16 @@ async function productLookup(ids, ingredient, generatedHeaders) {
       //console.log('id strings ', idsString); 
 
       const params = new URLSearchParams({
-        publisherId: impactRadiusID,
         ids: idsString
+        //publisherId: impactRadiusID
       });
       
       if (locationId) {
         console.log('location id appended Walmart productLookup', locationId);
         params.append('storeId', locationId);
       }
-      const url = `${baseURL}?${params.toString()}`; 
+      var url = `${baseURL}?${params.toString()}`; 
+      console.log('url in product search walmart  ', url);
       const response = await fetch(url, {
         method: 'GET',
         headers: generatedHeaders.headers
@@ -139,12 +139,12 @@ async function productLookup(ids, ingredient, generatedHeaders) {
 
       if (!response.ok) {
         const errorMessage = `Client Walmart product lookup was unsuccessful. Status: ${response.status} ${response.statusText}`;
-        console.error('Error response in Product Lookup :', ingredient, ' ids length ', ids.length, response.status, response.statusText);
+        console.error('Error response in Product Lookup :', ingredient, ids, response.status, response.statusText);
         throw new Error(errorMessage);
       }
 
       const data = await response.json();
-      //console.log('data from walmart product lookup', data);
+      console.log('data from walmart product lookup ', ingredient, ' ', data);
       return data;
     } catch (error) {
       console.error('ERROR in product lookup in Walmart API Calls ', ingredient, ' ids length ', ids.length, error);
