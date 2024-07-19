@@ -48,9 +48,9 @@ async function search(term, generatedHeaders) {
 
       const baseURL = 'https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search';
       const params = new URLSearchParams({
-        //publisherId: impactRadiusID,
+        publisherId: impactRadiusID,
         query: encodeURIComponent(term),
-        numItems: 5
+        numItems: 20
         //categoryId: "976759" //removed because maybe not working?
       });
 
@@ -58,6 +58,7 @@ async function search(term, generatedHeaders) {
       params.append('facet.filter', 'exclude_oos:Show available items only');
 
       var url = `${baseURL}?${params.toString()}`;
+      console.log('url in product search walmart  ', url);
       const response = await fetch(url, {
         method: 'GET',
         headers: generatedHeaders.headers
@@ -111,8 +112,8 @@ async function productLookup(ids, ingredient, generatedHeaders) {
       //console.log('id strings ', idsString); 
 
       const params = new URLSearchParams({
-        ids: idsString
-        //publisherId: impactRadiusID
+        ids: idsString,
+        publisherId: impactRadiusID
       });
       
       if (locationId) {
