@@ -91,10 +91,16 @@ class Walmart extends GroceryStore {
     async checkout(itemsToCheckout) {
         console.log('checkout Walmart.js ', itemsToCheckout);
         var locationId; 
-        chrome.storage.sync.get('locationId', (result) => {
-            locationId = result['locationId'];
-            console.log('location id ', locationId);
-          }); 
+
+        locationId = await new Promise((resolve, reject) => {
+            chrome.storage.sync.get('locationId', (result) => {
+              if (chrome.runtime.lastError) {
+                return reject(chrome.runtime.lastError);
+              }
+              resolve(result['locationId']);
+            });
+          });
+
         // Function to wrap chrome.windows.create in a promise
         function createWindow(url) {
             return new Promise((resolve, reject) => {
@@ -137,7 +143,7 @@ class Walmart extends GroceryStore {
     
         try {
             const baseUrl = `https://goto.walmart.com/c/2263813/568844/9383?veh=aff&sourceid=imp_000011112222333344&u=http%3A%2F%2Faffil.walmart.com%2Fcart%2FaddToCart%3Fitems%3D`
-            const concatenatedUrl = itemsToCheckout.reduce((url, item, index) => {
+            var concatenatedUrl = itemsToCheckout.reduce((url, item, index) => {
                 return url + `${item.itemId}_${item.quantity}` + (index < itemsToCheckout.length - 1 ? '%2C' : '');
             }, baseUrl);
     
@@ -147,6 +153,7 @@ class Walmart extends GroceryStore {
                 console.log('store Id added in walmart.js checkout')
                 concatenatedUrl = concatenatedUrl + `&storeId=` + locationId + `&ap=` + locationId; 
             }
+            console.log('checkout url ', concatenatedUrl);
             const window = await createWindow(concatenatedUrl);
             const [tab] = window.tabs;
             await waitForPageLoad(tab.id);
