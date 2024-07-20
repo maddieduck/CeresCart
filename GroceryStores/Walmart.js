@@ -31,14 +31,14 @@ class Walmart extends GroceryStore {
                     console.warn(`No available items found for ingredient ${ingredient}`);
                     return null; // Return null to filter out later
                 }
-    
+                
                 // Extract item IDs from search results 
                 const itemIds = searchResult.items.map(item => item.itemId);
                 console.log(`Item IDs for ingredient ${ingredient}:`, itemIds);
     
                 // Call productLookup with the array of item IDs
                 const productDetails = await productLookup(itemIds, ingredient, generatedHeaders);
-                console.log(`Product details for ingredient ${ingredient}:`, productDetails);
+                //console.log(`Product details for ingredient ${ingredient}:`, productDetails);
     
                 // Check if productDetails is valid
                 if (!productDetails || !productDetails.items) {

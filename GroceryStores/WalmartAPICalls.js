@@ -49,7 +49,7 @@ async function search(term, generatedHeaders) {
       const baseURL = 'https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search';
       const params = new URLSearchParams({
         publisherId: impactRadiusID,
-        query: encodeURIComponent(term),
+        query: term,//encodeURIComponent(term),
         numItems: 20
         //categoryId: "976759" //removed because maybe not working?
       });
@@ -74,7 +74,6 @@ async function search(term, generatedHeaders) {
       return data;
     } catch (error) {
       console.error('ERROR in Search in Walmart API Calls', error, url);
-      throw error;//remove for retries
 
       if (retries > 0) {
         generatedHeaders = await generateWalmartHeaders();
@@ -85,7 +84,7 @@ async function search(term, generatedHeaders) {
       }
     }
   };
-  return attemptSearch(2); // Attempt up to 3 times (initial call + 2 retries)
+  return attemptSearch(1); // Attempt up to 3 times (initial call + 2 retries)
 }
 
 async function productLookup(ids, ingredient, generatedHeaders) {
@@ -138,7 +137,6 @@ async function productLookup(ids, ingredient, generatedHeaders) {
       return data;
     } catch (error) {
       console.error('ERROR in product lookup in Walmart API Calls ', ingredient, ' ids length ', ids.length, error);
-      return null; //remove for retries
 
       if (retries > 0) {
         console.log(`Retrying product lookup... ${retries} attempts left`);
@@ -149,7 +147,7 @@ async function productLookup(ids, ingredient, generatedHeaders) {
     }
   };
 
-  return attemptProductLookup(2); // Attempt up to 3 times (initial call + 2 retries)
+  return attemptProductLookup(1); // Attempt up to 3 times (initial call + 2 retries)
 }
 
 async function stores(zipcode){ //gets a token for use When making API requests that do not require customer consent 
