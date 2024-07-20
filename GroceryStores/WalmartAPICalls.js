@@ -49,9 +49,9 @@ async function search(term, generatedHeaders) {
       const baseURL = 'https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search';
       const params = new URLSearchParams({
         publisherId: impactRadiusID,
-        query: term,//encodeURIComponent(term),
-        numItems: 20
-        //categoryId: "976759" //removed because maybe not working?
+        query: term,
+        numItems: 20,
+        categoryId: "976759" 
       });
 
       params.append('facet', 'on');
