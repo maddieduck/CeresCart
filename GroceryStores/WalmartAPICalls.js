@@ -119,7 +119,7 @@ async function productLookup(ids, ingredient, generatedHeaders) {
       });
       
       if (locationId) {
-        console.log('location id appended Walmart productLookup', locationId);
+        //console.log('location id appended Walmart productLookup', locationId);
         params.append('storeId', locationId);
       }
       var url = `${baseURL}?${params.toString()}`; 
