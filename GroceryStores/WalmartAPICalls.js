@@ -84,7 +84,7 @@ async function search(term, generatedHeaders) {
       }
     }
   };
-  return attemptSearch(1); // Attempt up to 3 times (initial call + 2 retries)
+  return attemptSearch(2); // Attempt up to 3 times (initial call + 2 retries)
 }
 
 async function productLookup(ids, ingredient, generatedHeaders) {
@@ -147,7 +147,7 @@ async function productLookup(ids, ingredient, generatedHeaders) {
     }
   };
 
-  return attemptProductLookup(1); // Attempt up to 3 times (initial call + 2 retries)
+  return attemptProductLookup(2); // Attempt up to 3 times (initial call + 2 retries)
 }
 
 async function stores(zipcode){ //gets a token for use When making API requests that do not require customer consent 
