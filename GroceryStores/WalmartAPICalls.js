@@ -21,23 +21,26 @@ async function getGeolocation(zipcode) { //returns geolocation as an array of [l
   }
 }
 
-async function generateWalmartHeaders(){ //gets a token for use When making API requests that do not require customer consent 
-  return new Promise((resolve, rejects)=>{
-    fetch('https://cerescartapis.onrender.com/generateWalmartHeaders')
-    .then(response => {
+async function generateWalmartHeaders() { //gets a token for use When making API requests that do not require customer consent
+  const attemptFetch = async (retryCount) => {
+    try {
+      const response = await fetch('https://cerescartapis.onrender.com/generateWalmartHeaders');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      resolve(response.json()); // Assuming response is JSON; use .text() for text, etc.
-    })
-    .then(data => {
-      //console.log('walmart headers ', data);
-      resolve(data); // Process the JSON response data here
-    })
-    .catch(error => {
-      rejects('Fetch error when generating walmart headers ', error);
-    });
-  })
+      const data = await response.json(); // Assuming response is JSON; use .text() for text, etc.
+      return data; // Process the JSON response data here
+    } catch (error) {
+      if (retryCount > 0) {
+        console.warn(`Retrying fetch... ${retryCount} attempts left`);
+        return attemptFetch(retryCount - 1);
+      } else {
+        throw new Error(`Fetch error when generating Walmart headers: ${error.message}`);
+      }
+    }
+  };
+
+  return attemptFetch(2); // Attempt up to 3 times (initial call + 2 retries)
 }
 
 async function search(term, generatedHeaders) {
