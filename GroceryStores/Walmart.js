@@ -24,7 +24,7 @@ class Walmart extends GroceryStore {
                 // Call search for each ingredient
                 const generatedHeaders = await generateWalmartHeaders();
                 const searchResult = await search(ingredient, generatedHeaders);
-                console.log('search results ', searchResult);
+                //console.log('search results ', searchResult);
                 
                 // Check if searchResult contains items
                 if (!searchResult.items || searchResult.items.length === 0) {
@@ -34,7 +34,7 @@ class Walmart extends GroceryStore {
                 
                 // Extract item IDs from search results 
                 const itemIds = searchResult.items.map(item => item.itemId);
-                console.log(`Item IDs for ingredient ${ingredient}:`, itemIds);
+                //console.log(`Item IDs for ingredient ${ingredient}:`, itemIds);
     
                 // Call productLookup with the array of item IDs
                 const productDetails = await productLookup(itemIds, ingredient, generatedHeaders);
@@ -142,21 +142,26 @@ class Walmart extends GroceryStore {
         }
         
         try {
+            const baseUrlOffers = `https://goto.walmart.com/c/2263813/1207219/9383?veh=aff&sourceid=imp_000011112222333344&u=http%3A%2F%2Faffil.walmart.com%2Fcart%2FaddToCart%3Foffers%3D`
+            var concatenatedUrlOffers = itemsToCheckout.reduce((url, item, index) => {
+                return url + `${item.offerId}_${item.quantity}` + (index < itemsToCheckout.length - 1 ? '%2C' : '');
+            }, baseUrlOffers); 
+            /*
             const baseUrl = `https://goto.walmart.com/c/2263813/568844/9383?veh=aff&sourceid=imp_000011112222333344&u=http%3A%2F%2Faffil.walmart.com%2Fcart%2FaddToCart%3Fitems%3D`
-            //const baseUrl = `https://goto.walmart.com/c/2263813/1207219/9383?veh=aff&sourceid=imp_000011112222333344&u=http%3A%2F%2Faffil.walmart.com%2Fcart%2FaddToCart%3Foffers%3D`
 
             var concatenatedUrl = itemsToCheckout.reduce((url, item, index) => {
                 return url + `${item.itemId}_${item.quantity}` + (index < itemsToCheckout.length - 1 ? '%2C' : '');
-            }, baseUrl);
-    
+            }, baseUrl); 
+            console.log('offers url ', concatenatedUrl);
+            */
             // Create a single window with the concatenated URL
             
             if(locationId){
                 console.log('store Id added in walmart.js checkout')
-                concatenatedUrl = concatenatedUrl + `&storeId=` + locationId; 
+                concatenatedUrlOffers = concatenatedUrlOffers + `&storeId=` + locationId; 
             }
-            console.log('checkout url ', concatenatedUrl);
-            const window = await createWindow(concatenatedUrl);
+            console.log('checkout url ', concatenatedUrlOffers);
+            const window = await createWindow(concatenatedUrlOffers);
             const [tab] = window.tabs;
             await waitForPageLoad(tab.id);
             closeWindowAfterDelay(window);
