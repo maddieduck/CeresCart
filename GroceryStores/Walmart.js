@@ -202,6 +202,125 @@ class Walmart extends GroceryStore {
             })
         }); 
     }
+
+    async changeLocation(storeId, stateCode, zipCode) {
+        const url = 'https://www.walmart.com/swag/graphql'; // Replace with the actual GraphQL endpoint
+    
+        const payload = {
+            query: `
+                query AdV2DisplayDSP(
+                    $platform: Platform!,
+                    $pageId: String!,
+                    $pageType: PageType!,
+                    $tenant: String!,
+                    $moduleType: ModuleType!,
+                    $pageContext: PageContextIn,
+                    $locationContext: LocationContextIn,
+                    $moduleConfigs: JSON,
+                    $adsContext: AdsContextIn,
+                    $adRequestComposite: AdRequestCompositeIn
+                ) {
+                    adV2(
+                        platform: $platform,
+                        pageId: $pageId,
+                        pageType: $pageType,
+                        tenant: $tenant,
+                        moduleType: $moduleType,
+                        locationContext: $locationContext,
+                        pageContext: $pageContext,
+                        moduleConfigs: $moduleConfigs,
+                        adsContext: $adsContext,
+                        adRequestComposite: $adRequestComposite
+                    ) {
+                        status
+                        adContent {
+                            type
+                            data {
+                                __typename
+                                ...AdDataDisplayAdFragment
+                                __typename
+                                ...AdDataDisplayAdDSPFragment
+                            }
+                        }
+                    }
+                }
+    
+                fragment AdDataDisplayAdDSPFragment on AdData {
+                    ...on MultiImpDspAd {
+                        ads {
+                            assets
+                            eventTrackers
+                            link
+                            metaData
+                            templateId
+                            variantId
+                        }
+                    }
+                    ...on DisplayAdDSP {
+                        assets
+                        eventTrackers
+                        link
+                        metaData
+                        templateId
+                        variantId
+                    }
+                }
+    
+                fragment AdDataDisplayAdFragment on AdData {
+                    ...on DisplayAd {
+                        json
+                        status
+                    }
+                }
+            `,
+            variables: {
+                adsContext: {},
+                pageContext: {},
+                adRequestComposite: {
+                    clientCapabilities: {
+                        templateIds: ["442"],
+                        variantIds: ["442"],
+                        eventTrackers: {
+                            event: 2,
+                            methods: [1, 2]
+                        }
+                    },
+                    adCardLocation: "fs2"
+                },
+                platform: "DESKTOP",
+                pageId: "",
+                pageType: "HOME",
+                tenant: "WM_GLASS",
+                locationContext: {
+                    storeId: storeId,
+                    stateCode: stateCode,
+                    zipCode: zipCode
+                },
+                moduleType: "GridPOVBanners",
+                moduleConfigs: {
+                    moduleLocation: "fs2",
+                    lazy: true
+                }
+            }
+        };
+    
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Include any necessary headers, such as authentication tokens
+            },
+            body: JSON.stringify(payload)
+        });
+    
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Store location updated successfully:', data);
+        } else {
+            console.error('Error updating store location:', response.statusText);
+        }
+    }
+        
 } 
 
 export{Walmart}

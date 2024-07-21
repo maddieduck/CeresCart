@@ -391,6 +391,7 @@ async function shopStore(event){ //a location has been selected from the locatio
   console.log('shop store pressed ', locationIndex); 
   var locationId = allLocationData[locationIndex]['id'];
   var locationName = allLocationData[locationIndex]['name'];
+  console.log('location ID ', locationId);
 
   shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
   shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';

@@ -16,6 +16,10 @@ class GroceryStore {
         throw new Error('Method locations() in GroceryStore must be implemented');
     }
 
+    async changeLocation(storeId, stateCode, zipCode) {
+        console.log('change location called in Grocery Store Parent class');
+    }
+
 }
 
 export{GroceryStore}
