@@ -82,7 +82,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     console.log('store type ingredient', result['storeType']);
                     const groceryStore = returnGroceryClass(result['storeType']); 
                     //remove later 
-                    groceryStore.changeLocation('5959', 'TX', '77098'); 
                     groceryStore.getProducts(finalIngredients, message.locationExists)
                     .then(products => {
                         console.log('products ', products); 

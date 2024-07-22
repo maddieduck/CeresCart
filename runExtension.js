@@ -307,10 +307,6 @@ async function loadLocationsInPopup(newLocationData){
 
   try {
     const { locationId, storeType } = await getLocationAndStoreType();
-    
-    // Now you have locationId and storeType, you can use them in your for loop
-    //console.log('Location ID:', locationId);
-    //console.log('Store Type:', storeType);
 
     for (const index in newLocationData){
       var locationData = newLocationData[index];
@@ -332,14 +328,13 @@ async function loadLocationsInPopup(newLocationData){
         nodeClone.querySelector('.ingrExpShopStore').style.backgroundColor = 'rgb(125,120,185)';
         nodeClone.querySelector('.ingrExpShopStore').innerText = 'Currently Shopping';
       }
+      console.log(locationData)
       nodeClone.querySelector('.ingrExpShopStore').addEventListener('click', shopStore); 
       locationPlaceholder.appendChild(nodeClone); 
     }
-
   } catch (error) {
     console.error('Error retrieving data from Chrome storage:', error);
   }
-
 }
 
 async function insertLocations(){
@@ -396,7 +391,7 @@ async function launchLocationPopup() {
         chrome.storage.sync.get('zipCode', (result) => {
           if (result['zipCode'] != undefined){
             console.log('zip code being used in location popup ', result['zipCode']);
-            locationShadowRoot.getElementById('ingrExpZipCodeInPopup').value = result['zipCode']
+            locationShadowRoot.getElementById('ingrExpZipCodeInPopup').value = result['zipCode'];
             locationShadowRoot.getElementById('ingrExpZipCodeInPopup').addEventListener('keyup', zipCodeInPopupEdited);
           } 
         }); 
