@@ -287,29 +287,59 @@ function closePopup(event) {//closes the main popup or the location popup
   }
 }
 
+async function getLocationAndStoreType() {
+  return new Promise((resolve, reject) => {
+      chrome.storage.sync.get(['locationId', 'storeType'], (result) => {
+          if (chrome.runtime.lastError) {
+              reject(chrome.runtime.lastError);
+          } else {
+              resolve(result);
+          }
+      });
+  });
+}
+
 async function loadLocationsInPopup(newLocationData){
   let locationPlaceholder = locationShadowRoot.getElementById('ingrExpPlaceholderForLocations');
   const locationResponse = await fetch(chrome.runtime.getURL('location.html'));
   const locationHtml = await locationResponse.text();
   allLocationData = newLocationData; 
-  for (const index in newLocationData){
-    var locationData = newLocationData[index];
-    let nodeClone = document.createElement('div');  // Create a new div 
-    nodeClone.innerHTML = locationHtml;  // Set the inner HTML of the div 
-    nodeClone.querySelector('.ingrExpTopLocationDiv').id = 'ingrExpTopLocationDiv' + index;
-    nodeClone.querySelector('.ingrExpLocationName').textContent = locationData["name"];
-    nodeClone.querySelector('.groceryLogo').src = "chrome-extension://nckacfgoolkhaedphbknecabckccgffe" + locationData["logo"];
-    var addressObject = locationData["address"];
-    //console.log('addr obj ', addressObject);
-    var formattedAddress = `${addressObject.addressLine1}\n${addressObject.city}, ${addressObject.state} ${addressObject.zipCode}`;
-    nodeClone.querySelector('.ingrExpLocationAddress').textContent = formattedAddress
-    if (locationData["phone"] != undefined){
-      const formattedNumber = `${locationData["phone"].substring(0, 3)}-${locationData["phone"].substring(3, 6)}-${locationData["phone"].substring(6)}`;  
-      nodeClone.querySelector('.ingrExpPhoneNumber').textContent = formattedNumber 
+
+  try {
+    const { locationId, storeType } = await getLocationAndStoreType();
+    
+    // Now you have locationId and storeType, you can use them in your for loop
+    //console.log('Location ID:', locationId);
+    //console.log('Store Type:', storeType);
+
+    for (const index in newLocationData){
+      var locationData = newLocationData[index];
+      let nodeClone = document.createElement('div');  // Create a new div 
+      nodeClone.innerHTML = locationHtml;  // Set the inner HTML of the div 
+      nodeClone.querySelector('.ingrExpTopLocationDiv').id = 'ingrExpTopLocationDiv' + index;
+      nodeClone.querySelector('.ingrExpLocationName').textContent = locationData["name"];
+      nodeClone.querySelector('.groceryLogo').src = "chrome-extension://nckacfgoolkhaedphbknecabckccgffe" + locationData["logo"];
+      var addressObject = locationData["address"];
+      //console.log('addr obj ', addressObject);
+      var formattedAddress = `${addressObject.addressLine1}\n${addressObject.city}, ${addressObject.state} ${addressObject.zipCode}`;
+      nodeClone.querySelector('.ingrExpLocationAddress').textContent = formattedAddress
+      if (locationData["phone"] != undefined){
+        const formattedNumber = `${locationData["phone"].substring(0, 3)}-${locationData["phone"].substring(3, 6)}-${locationData["phone"].substring(6)}`;  
+        nodeClone.querySelector('.ingrExpPhoneNumber').textContent = formattedNumber 
+      }
+      //check if the location is the one selected 
+      if(locationData['storeType']==storeType && locationData['id']==locationId){
+        nodeClone.querySelector('.ingrExpShopStore').style.backgroundColor = 'rgb(125,120,185)';
+        nodeClone.querySelector('.ingrExpShopStore').innerText = 'Currently Shopping';
+      }
+      nodeClone.querySelector('.ingrExpShopStore').addEventListener('click', shopStore); 
+      locationPlaceholder.appendChild(nodeClone); 
     }
-    nodeClone.querySelector('.ingrExpShopStore').addEventListener('click', shopStore); 
-    locationPlaceholder.appendChild(nodeClone); 
+
+  } catch (error) {
+    console.error('Error retrieving data from Chrome storage:', error);
   }
+
 }
 
 async function insertLocations(){
