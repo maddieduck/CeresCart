@@ -208,7 +208,6 @@ class Walmart extends GroceryStore {
     
     async checkout(itemsToCheckout) {
         await this.changeLocation('5959', 'TX', '77098'); 
-
         console.log('checkout Walmart.js ', itemsToCheckout); 
         var locationId; 
 
