@@ -16,7 +16,7 @@ class Walmart extends GroceryStore {
             .join(' '); // Join the array back into a single string
     }
 
-    async changeLocation(storeId, stateCode, zipCode) { //changes the location of the Walmart store on Walmart.com
+    async changeLocation(storeId, stateCode, zipCode, fs) { //changes the location of the Walmart store on Walmart.com
         const url = 'https://www.walmart.com/swag/graphql'; // Replace with the actual GraphQL endpoint
     
         const payload = {
@@ -98,7 +98,7 @@ class Walmart extends GroceryStore {
                             methods: [1, 2]
                         }
                     },
-                    adCardLocation: "fs2"
+                    adCardLocation: fs
                 },
                 platform: "DESKTOP",
                 pageId: "",
@@ -111,7 +111,7 @@ class Walmart extends GroceryStore {
                 },
                 moduleType: "GridPOVBanners",
                 moduleConfigs: {
-                    moduleLocation: "fs2",
+                    moduleLocation: fs,
                     lazy: true
                 }
             }
@@ -133,6 +133,131 @@ class Walmart extends GroceryStore {
             console.error('Error updating store location:', response.statusText);
         }
     }  
+
+    async changeLocationTwo(storeId, stateCode, zipCode){
+        const url = 'https://www.walmart.com/swag/graphql'; // Replace with the actual GraphQL endpoint
+        const payload = {
+            query: `query AdV2DisplayDSP(
+                $platform:Platform!,
+                $pageId:String!,
+                $pageType:PageType!,
+                $tenant:String!,
+                $moduleType:ModuleType!,
+                $pageContext:PageContextIn,
+                $locationContext:LocationContextIn,
+                $moduleConfigs:JSON,
+                $adsContext:AdsContextIn,
+                $adRequestComposite:AdRequestCompositeIn
+            ) {
+                adV2(
+                    platform:$platform,
+                    pageId:$pageId,
+                    pageType:$pageType,
+                    tenant:$tenant,
+                    moduleType:$moduleType,
+                    locationContext:$locationContext,
+                    pageContext:$pageContext,
+                    moduleConfigs:$moduleConfigs,
+                    adsContext:$adsContext,
+                    adRequestComposite:$adRequestComposite
+                ) {
+                    status
+                    adContent {
+                        type
+                        data {
+                            __typename
+                            ...AdDataDisplayAdFragment
+                            __typename
+                            ...AdDataDisplayAdDSPFragment
+                        }
+                    }
+                }
+            }
+            fragment AdDataDisplayAdDSPFragment on AdData {
+                ...on MultiImpDspAd {
+                    ads {
+                        assets
+                        eventTrackers
+                        link
+                        metaData
+                        templateId
+                        variantId
+                    }
+                }
+                ...on DisplayAdDSP {
+                    assets
+                    eventTrackers
+                    link
+                    metaData
+                    templateId
+                    variantId
+                }
+            }
+            fragment AdDataDisplayAdFragment on AdData {
+                ...on DisplayAd {
+                    json
+                    status
+                }
+            }`,
+            variables: {
+                adRequestComposite: {
+                    categoryId: "",
+                    clientCapabilities: {
+                        templateIds: ["442"],
+                        variantIds: ["442"],
+                        eventTrackers: {
+                            event: 2,
+                            methods: [1, 2]
+                        }
+                    }
+                },
+                adsContext: { dedupeList: [] },
+                pageContext: {
+                    customerContext: {
+                        customerId: "7fcbd5b5-869e-487d-a8a8-f5121c2a1e42",
+                        isPaidMember: false,
+                        isActiveMember: false,
+                        purseTags: [],
+                        paymentMethodMetaData: []
+                    }
+                },
+                pageId: "",
+                pageType: "HOME",
+                platform: "DESKTOP",
+                tenant: "WM_GLASS",
+                locationContext: {
+                    storeId: storeId,
+                    stateCode: stateCode,
+                    zipCode: zipCode
+                },
+                moduleConfigs: {
+                    moduleLocation: "galleryMiddle",
+                    lazy: "2000"
+                },
+                moduleType: "GalleryDisplayAd"
+            }
+        };
+    
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Add any additional headers if required
+                },
+                body: JSON.stringify(payload)
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+    
+            const data = await response.json();
+            console.log('Change Location Two response:', data);
+        } catch (error) {
+            console.error('Error calling Walmart API:', error);
+        }
+    }
 
     async getProducts(finalIngredients) {
         console.log('get products Walmart.js', finalIngredients);
@@ -207,7 +332,9 @@ class Walmart extends GroceryStore {
     }    
     
     async checkout(itemsToCheckout) {
-        await this.changeLocation('5959', 'TX', '77098'); 
+        await this.changeLocation('5959', 'TX', '77098', 'fs1'); 
+        await this.changeLocation('5959', 'TX', '77098', 'fs2'); 
+        await this.changeLocationTwo('5959', 'TX', '77098');
         console.log('checkout Walmart.js ', itemsToCheckout); 
         var locationId; 
 
