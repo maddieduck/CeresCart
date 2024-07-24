@@ -10,6 +10,7 @@
   margin: 0 auto; 
   align-items: center; 
   margin-top: 8px;
+  justify-content: center; /* Align items horizontally in the center */
 }
 #ingrExpPickupAt{
   font-weight: 325;
