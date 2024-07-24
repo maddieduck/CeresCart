@@ -91,7 +91,6 @@
 }
 .ingrExpOuterContainer{
   display: flex;
-  width: 424px;
   margin-bottom: 16px;
   margin-top: 16px;   
   justify-content: center; 
