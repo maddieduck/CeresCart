@@ -16,249 +16,6 @@ class Walmart extends GroceryStore {
             .join(' '); // Join the array back into a single string
     }
 
-    async changeLocation(storeId, stateCode, zipCode, fs) { //changes the location of the Walmart store on Walmart.com
-        const url = 'https://www.walmart.com/swag/graphql'; // Replace with the actual GraphQL endpoint
-    
-        const payload = {
-            query: `
-                query AdV2DisplayDSP(
-                    $platform: Platform!,
-                    $pageId: String!,
-                    $pageType: PageType!,
-                    $tenant: String!,
-                    $moduleType: ModuleType!,
-                    $pageContext: PageContextIn,
-                    $locationContext: LocationContextIn,
-                    $moduleConfigs: JSON,
-                    $adsContext: AdsContextIn,
-                    $adRequestComposite: AdRequestCompositeIn
-                ) {
-                    adV2(
-                        platform: $platform,
-                        pageId: $pageId,
-                        pageType: $pageType,
-                        tenant: $tenant,
-                        moduleType: $moduleType,
-                        locationContext: $locationContext,
-                        pageContext: $pageContext,
-                        moduleConfigs: $moduleConfigs,
-                        adsContext: $adsContext,
-                        adRequestComposite: $adRequestComposite
-                    ) {
-                        status
-                        adContent {
-                            type
-                            data {
-                                __typename
-                                ...AdDataDisplayAdFragment
-                                __typename
-                                ...AdDataDisplayAdDSPFragment
-                            }
-                        }
-                    }
-                }
-    
-                fragment AdDataDisplayAdDSPFragment on AdData {
-                    ...on MultiImpDspAd {
-                        ads {
-                            assets
-                            eventTrackers
-                            link
-                            metaData
-                            templateId
-                            variantId
-                        }
-                    }
-                    ...on DisplayAdDSP {
-                        assets
-                        eventTrackers
-                        link
-                        metaData
-                        templateId
-                        variantId
-                    }
-                }
-    
-                fragment AdDataDisplayAdFragment on AdData {
-                    ...on DisplayAd {
-                        json
-                        status
-                    }
-                }
-            `,
-            variables: {
-                adsContext: {},
-                pageContext: {},
-                adRequestComposite: {
-                    clientCapabilities: {
-                        templateIds: ["442"],
-                        variantIds: ["442"],
-                        eventTrackers: {
-                            event: 2,
-                            methods: [1, 2]
-                        }
-                    },
-                    adCardLocation: fs
-                },
-                platform: "DESKTOP",
-                pageId: "",
-                pageType: "HOME",
-                tenant: "WM_GLASS",
-                locationContext: {
-                    storeId: storeId,
-                    stateCode: stateCode,
-                    zipCode: zipCode
-                },
-                moduleType: "GridPOVBanners",
-                moduleConfigs: {
-                    moduleLocation: fs,
-                    lazy: true
-                }
-            }
-        };
-    
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                // Include any necessary headers, such as authentication tokens
-            },
-            body: JSON.stringify(payload)
-        });
-    
-        if (response.ok) {
-            const data = await response.json();
-            console.log('Store location updated successfully:', data);
-        } else {
-            console.error('Error updating store location:', response.statusText);
-        }
-    }  
-
-    async changeLocationTwo(storeId, stateCode, zipCode){
-        const url = 'https://www.walmart.com/swag/graphql'; // Replace with the actual GraphQL endpoint
-        const payload = {
-            query: `query AdV2DisplayDSP(
-                $platform:Platform!,
-                $pageId:String!,
-                $pageType:PageType!,
-                $tenant:String!,
-                $moduleType:ModuleType!,
-                $pageContext:PageContextIn,
-                $locationContext:LocationContextIn,
-                $moduleConfigs:JSON,
-                $adsContext:AdsContextIn,
-                $adRequestComposite:AdRequestCompositeIn
-            ) {
-                adV2(
-                    platform:$platform,
-                    pageId:$pageId,
-                    pageType:$pageType,
-                    tenant:$tenant,
-                    moduleType:$moduleType,
-                    locationContext:$locationContext,
-                    pageContext:$pageContext,
-                    moduleConfigs:$moduleConfigs,
-                    adsContext:$adsContext,
-                    adRequestComposite:$adRequestComposite
-                ) {
-                    status
-                    adContent {
-                        type
-                        data {
-                            __typename
-                            ...AdDataDisplayAdFragment
-                            __typename
-                            ...AdDataDisplayAdDSPFragment
-                        }
-                    }
-                }
-            }
-            fragment AdDataDisplayAdDSPFragment on AdData {
-                ...on MultiImpDspAd {
-                    ads {
-                        assets
-                        eventTrackers
-                        link
-                        metaData
-                        templateId
-                        variantId
-                    }
-                }
-                ...on DisplayAdDSP {
-                    assets
-                    eventTrackers
-                    link
-                    metaData
-                    templateId
-                    variantId
-                }
-            }
-            fragment AdDataDisplayAdFragment on AdData {
-                ...on DisplayAd {
-                    json
-                    status
-                }
-            }`,
-            variables: {
-                adRequestComposite: {
-                    categoryId: "",
-                    clientCapabilities: {
-                        templateIds: ["442"],
-                        variantIds: ["442"],
-                        eventTrackers: {
-                            event: 2,
-                            methods: [1, 2]
-                        }
-                    }
-                },
-                adsContext: { dedupeList: [] },
-                pageContext: {
-                    customerContext: {
-                        customerId: "7fcbd5b5-869e-487d-a8a8-f5121c2a1e42",
-                        isPaidMember: false,
-                        isActiveMember: false,
-                        purseTags: [],
-                        paymentMethodMetaData: []
-                    }
-                },
-                pageId: "",
-                pageType: "HOME",
-                platform: "DESKTOP",
-                tenant: "WM_GLASS",
-                locationContext: {
-                    storeId: storeId,
-                    stateCode: stateCode,
-                    zipCode: zipCode
-                },
-                moduleConfigs: {
-                    moduleLocation: "galleryMiddle",
-                    lazy: "2000"
-                },
-                moduleType: "GalleryDisplayAd"
-            }
-        };
-    
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // Add any additional headers if required
-                },
-                body: JSON.stringify(payload)
-            });
-    
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-    
-            const data = await response.json();
-            console.log('Change Location Two response:', data);
-        } catch (error) {
-            console.error('Error calling Walmart API:', error);
-        }
-    }
-
     async getProducts(finalIngredients) {
         console.log('get products Walmart.js', finalIngredients);
     
@@ -331,21 +88,43 @@ class Walmart extends GroceryStore {
         }
     }    
     
-    async checkout(itemsToCheckout) {
-        await this.changeLocation('5959', 'TX', '77098', 'fs1'); 
-        await this.changeLocation('5959', 'TX', '77098', 'fs2'); 
-        await this.changeLocationTwo('5959', 'TX', '77098');
-        console.log('checkout Walmart.js ', itemsToCheckout); 
-        var locationId; 
-
-        locationId = await new Promise((resolve, reject) => {
-            chrome.storage.sync.get('locationId', (result) => {
-              if (chrome.runtime.lastError) {
-                return reject(chrome.runtime.lastError);
-              }
-              resolve(result['locationId']);
+    async changeLocation(url) {
+        return new Promise((resolve, reject) => {
+            chrome.windows.create({
+                url: url,
+                type: 'popup',
+                width: 1, // Adjust as needed
+                height: 1, // Adjust as needed
+                left: 0,
+                top: 0
+            }, (newWindow) => {
+                // Add a delay of 1500 ms before resolving the promise
+                setTimeout(() => {
+                    resolve();
+                }, 1500);
             });
-          });
+        });
+    }
+
+    async checkout(itemsToCheckout) { 
+        let locationData = await new Promise((resolve, reject) => {
+            chrome.storage.sync.get('currentLocation', (result) => {
+                if (chrome.runtime.lastError) {
+                    return reject(chrome.runtime.lastError);
+                }
+                resolve(result.currentLocation);
+            });
+        });
+        let locationId = locationData.id;
+        let locationCity = locationData.address.city.toLowerCase().replace(/\s+/g, '-');
+        let locationState = locationData.address.state.toLowerCase();
+    
+        var baseUrl = `https://www.walmart.com/store/${locationId}-${locationCity}-${locationState}`;
+        const urlWithFlag = `${baseUrl}?fromExtension=true`;
+
+        await this.changeLocation(urlWithFlag); 
+
+        console.log('checkout Walmart.js ', itemsToCheckout); 
 
         // Function to wrap chrome.windows.create in a promise
         function createWindow(url) {

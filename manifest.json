@@ -41,6 +41,10 @@
         "js": ["runExtension.js"],
         "type": "module",
         "css": ["styles.css"]        
+      },
+      {
+        "matches": ["*://www.walmart.com/store/*"],
+        "js": ["makeWalmartStore.js"]
       }
     ],
       "web_accessible_resources": [
