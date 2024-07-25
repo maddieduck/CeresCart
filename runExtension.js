@@ -59,7 +59,6 @@ function deployExtension(){
           });
   
           shadowRoot.getElementById('ingrExpClose').addEventListener('click', closePopup); 
-          shadowRoot.getElementById('ingrExpPerson').addEventListener('click', personClicked); 
           shadowRoot.getElementById('minimize').addEventListener('click', minimizeClicked); 
           shadowRoot.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
           shadowRoot.getElementById('change').addEventListener('click', changeButtonPressed); 
@@ -258,10 +257,6 @@ function showIngredientsFound(event){
 
 function closeInMinimizePopup(event){
   document.getElementById('minimizePopup').remove(); 
-}
-
-function personClicked(event){
-  chrome.runtime.sendMessage({to: 'launchPayWindow'}); 
 }
 
 function closePopup(event) {//closes the main popup or the location popup 
@@ -533,41 +528,35 @@ function rightArrowClicked(event){
 
 async function updateCheckoutButton() {
   //console.log('update checkout button');
-  let hasAccess = await chrome.runtime.sendMessage({ to: 'userHasAccess'}); 
-  //console.log('access in checkout button ', hasAccess);
-  if (hasAccess){
-    var totalQuantity = 0;
-    var totalPrice = 0.0;
-    var hasNullPrices = false;
-  
-    // Iterate through allProductData and get the total quantity and price 
-    allProductData.forEach(function (element) {
-      element.productData.forEach(function (product) {
-        var quantity = product.quantity || 0;
-        var price = parseFloat(product.price);
-  
-        totalQuantity += quantity;
-  
-        // Check for null prices only if quantity is not null
-        if (quantity > 0) {
-          if (isNaN(price) || price === null) {
-            hasNullPrices = true;
-          } else {
-            totalPrice += quantity * price;
-          }
+  var totalQuantity = 0;
+  var totalPrice = 0.0;
+  var hasNullPrices = false;
+
+  // Iterate through allProductData and get the total quantity and price 
+  allProductData.forEach(function (element) {
+    element.productData.forEach(function (product) {
+      var quantity = product.quantity || 0;
+      var price = parseFloat(product.price);
+
+      totalQuantity += quantity;
+
+      // Check for null prices only if quantity is not null
+      if (quantity > 0) {
+        if (isNaN(price) || price === null) {
+          hasNullPrices = true;
+        } else {
+          totalPrice += quantity * price;
         }
-      });
+      }
     });
-  
-    if (hasNullPrices) {
-      shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items`;
-    } else if (totalQuantity == 0) {
-      shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `No Items Selected`;
-    } else {
-      shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items for <span class="bold">$${totalPrice.toFixed(2)}</span>`;
-    }
-  }else{
-    shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Sign Up or Log In to Export`;
+  });
+
+  if (hasNullPrices) {
+    shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items`;
+  } else if (totalQuantity == 0) {
+    shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `No Items Selected`;
+  } else {
+    shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items for <span class="bold">$${totalPrice.toFixed(2)}</span>`;
   }
 }
 
@@ -724,22 +713,7 @@ async function checkoutButtonClicked(){
   
   if(productAndQuantityArray.length != 0){
     console.log('quantity and produc ', productAndQuantityArray); 
-    let response = await chrome.runtime.sendMessage({ to: 'userHasAccess'}); 
-    console.log('checkout response ', response);
-    if(response.userPaid){
-      console.log('User has paid.');
-      checkoutUser(productAndQuantityArray);
-    }else if (response.exportsLeft > 0){ 
-      console.log('User has not paid, but has exports left. Exports left. ', response.exportsLeft);
-      let checkoutResponse = await checkoutUser(productAndQuantityArray); 
-      if (checkoutResponse.success){
-        warningPopup((response.exportsLeft - 1) + " Free Recipes Left", 'rgb(125,120,185)'); 
-      }
-    }else{
-      console.log('User has not paid. Launch Extension Pay.'); 
-      warningPopup("No Free Exports Left", 'rgb(210,40,65)'); 
-      chrome.runtime.sendMessage({ to: 'launchPayWindow'}); 
-    }
+    checkoutUser(productAndQuantityArray);
   }else{
     console.log('No items selected. Do nothing.');
   }
