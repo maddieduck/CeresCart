@@ -1,6 +1,10 @@
 *{
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 }
+#defaultPopup {
+  width: 250px;
+  margin: 0;
+}
 #ingrExpPickupDiv{
   display: flex;
   outline: 1px solid rgb(228, 230, 232);
@@ -554,7 +558,7 @@
   align-items: center; /* Center vertically */
   justify-content: space-between; /* Align items with space between */
 }
-#logo{
+.logo{
   height: 48px; 
   width: auto;
   margin-left: 18px;
