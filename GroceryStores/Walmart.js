@@ -95,8 +95,8 @@ class Walmart extends GroceryStore {
                 type: 'popup',
                 width: 1, // Adjust as needed
                 height: 1, // Adjust as needed
-                left: 0,
-                top: 0
+                left: -10000,  // Move off-screen
+                top: -10000    // Move off-screen
             }, (newWindow) => {
                 // Add a delay of 1500 ms before resolving the promise
                 setTimeout(() => {
@@ -134,8 +134,8 @@ class Walmart extends GroceryStore {
                     type: 'popup',
                     width: 1,
                     height: 1,
-                    left: 0,
-                    top: 0
+                    left: -10000,  // Move off-screen
+                    top: -10000    // Move off-screen
                 }, (window) => {
                     if (chrome.runtime.lastError) {
                         reject(chrome.runtime.lastError);
