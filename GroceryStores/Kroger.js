@@ -368,8 +368,8 @@ class Kroger extends GroceryStore {
                 return locationData; 
             })
             .then(locationData =>{
-                //console.log('location data ', locationData)
-                if (locationData != null && locationData['data'].length != 0){
+                console.log('Kroger location data ', locationData)
+                if (locationData != null && locationData['data'].length != 0 ){
                     var locationPopupData = []
                     for (const index in locationData['data']){
                         var singleLocation = locationData['data'][index];
@@ -382,7 +382,7 @@ class Kroger extends GroceryStore {
                             "storeType": "Kroger"
                         }
                         var pickupExists = true //TODO: pickupDepartmentExists(singleLocation['departments']);
-                        if((singleLocation['phone'] != '9999999999') && pickupExists){ //filter locations 
+                        if((singleLocation['phone'] != '9999999999') && pickupExists && singleLocation['chain']=='KROGER'){ //filter locations 
                             locationPopupData.push(newLocation);
                         }
                     } 
