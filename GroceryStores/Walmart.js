@@ -115,14 +115,17 @@ class Walmart extends GroceryStore {
                 resolve(result.currentLocation);
             });
         });
-        let locationId = locationData.id;
-        let locationCity = locationData.address.city.toLowerCase().replace(/\s+/g, '-');
-        let locationState = locationData.address.state.toLowerCase();
+        console.log('locationData in checkout ', locationData); 
+        if(locationData){
+            console.log('store Id exists in checkout ', locationData);
+            let locationCity = locationData.address.city.toLowerCase().replace(/\s+/g, '-');
+            let locationState = locationData.address.state.toLowerCase();
+        
+            var baseUrl = `https://www.walmart.com/store/${locationData.id}-${locationCity}-${locationState}`;
+            const urlWithFlag = `${baseUrl}?fromExtension=true`;
     
-        var baseUrl = `https://www.walmart.com/store/${locationId}-${locationCity}-${locationState}`;
-        const urlWithFlag = `${baseUrl}?fromExtension=true`;
-
-        await this.changeLocation(urlWithFlag); 
+            await this.changeLocation(urlWithFlag); 
+        }
 
         console.log('checkout Walmart.js ', itemsToCheckout); 
 
@@ -172,9 +175,9 @@ class Walmart extends GroceryStore {
                 return url + `${item.offerId}_${item.quantity}` + (index < itemsToCheckout.length - 1 ? '%2C' : '');
             }, baseUrlOffers); 
             
-            if(locationId){
+            if(locationData){
                 console.log('store Id added in walmart.js checkout')
-                concatenatedUrlOffers = concatenatedUrlOffers + `&storeId=` + locationId; 
+                concatenatedUrlOffers = concatenatedUrlOffers + `&storeId=` + locationData.id; 
             }
             console.log('checkout url ', concatenatedUrlOffers);
             const window = await createWindow(concatenatedUrlOffers);

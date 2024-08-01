@@ -16,7 +16,7 @@ function returnGroceryClass(storeType){ //returns the class for the grocery stor
         case 'Kroger':
             return new Kroger(); 
         default:
-            return new Walmart(); 
+            return new Kroger(); 
     }
 }
 
