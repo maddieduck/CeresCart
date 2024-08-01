@@ -88,22 +88,27 @@ class Walmart extends GroceryStore {
         }
     }    
     
-    async changeLocation(url) {
+    async fetchURL(url) {
         return new Promise((resolve, reject) => {
-            chrome.windows.create({
-                url: url,
-                type: 'popup',
-                width: 1, // Adjust as needed
-                height: 1, // Adjust as needed
-                left: -10000,  // Move off-screen
-                top: -10000    // Move off-screen
-            }, (newWindow) => {
-                // Add a delay of 1500 ms before resolving the promise
-                setTimeout(() => {
-                    resolve();
-                }, 1500);
+            fetch(url)
+            .then(response => {
+            if (!response.ok) {
+                reject(); 
+                //throw new Error('Network response was not ok');
+            }
+            return response.text();  // or response.json(), etc.
+            })
+            .then(data => {
+            console.log('Page loaded successfully');
+            console.log(data);  // Process the page data as needed
+            resolve(); 
+            // Optionally, you can close the connection or do other tasks here
+            })
+            .catch(error => {
+                reject(); 
+            //console.error('There was a problem with the fetch operation:', error);
             });
-        });
+        }); 
     }
 
     async checkout(itemsToCheckout) { 
@@ -124,13 +129,14 @@ class Walmart extends GroceryStore {
             var baseUrl = `https://www.walmart.com/store/${locationData.id}-${locationCity}-${locationState}`;
             const urlWithFlag = `${baseUrl}?fromExtension=true`;
     
-            await this.changeLocation(urlWithFlag); 
+            await this.fetchURL(urlWithFlag); 
         }
 
         console.log('checkout Walmart.js ', itemsToCheckout); 
 
         // Function to wrap chrome.windows.create in a promise
         function createWindow(url) {
+            
             return new Promise((resolve, reject) => {
                 chrome.windows.create({
                     url: url,
@@ -147,6 +153,7 @@ class Walmart extends GroceryStore {
                     }
                 });
             });
+            
         }
     
         // Function to monitor when the tab has finished loading
