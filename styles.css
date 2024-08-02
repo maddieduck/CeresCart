@@ -377,7 +377,6 @@
   outline: 1px solid rgb(228, 230, 232);
   border-radius: 8px;
   display: block;
-  height: 144px;
   width: calc(100% - 16px); 
   margin: 0 8px;
   margin-bottom: 8px;
@@ -388,7 +387,7 @@
   margin: 0 auto;
 }
 .ingrExpLocationName{
-  padding-top: 6px;  /* Changed from margin-top to padding-top */
+  margin-top: 8px;  /* Changed from margin-top to padding-top */
   margin-left: 8px;
   padding-left: 0px;
   font-weight: 600;
@@ -403,14 +402,14 @@
 }
 .ingrExpLocationAddress{
   font-weight: 325; 
-  padding-left: 8px;
+  margin-left: 8px;
   font-size: 14px;
-  color: rgb(29, 28, 28, 0.5);
+  color: rgba(22, 22, 22, 0.75);
+  margin-top: 8px;  /* Changed from margin-top to padding-top */
 
   text-align: left;
   line-height: 1.2;
   white-space: pre-line;
-
 
   display: -webkit-box; 
   -webkit-box-orient: vertical;
@@ -419,11 +418,11 @@
 }
 .ingrExpPhoneNumber{
   margin-top: 8px;
-  padding-left: 8px;
+  margin-left: 8px;
   font-weight: 325; 
   font-size: 14px;
   margin-bottom: 0px;
-  color: rgb(29, 28, 28, 0.5);
+  color: rgba(22, 22, 22, 0.75);
   width: 216px;
   text-align: left;
   line-height: 1.2; 
@@ -438,7 +437,8 @@
   text-align: center; 
   cursor: pointer;
   width: calc(100% - 16px); 
-  margin: 8px; 
+  margin: 8px;
+  padding: 0; 
 }
 .ingrExpPlaceholderForLocations{
   border: 0px;

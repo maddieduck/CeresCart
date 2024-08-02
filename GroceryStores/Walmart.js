@@ -87,7 +87,7 @@ class Walmart extends GroceryStore {
             return {launch: false};  
         }
     }    
-    
+
     async changeLocation(url) {
         return new Promise((resolve, reject) => {
             chrome.windows.create({
