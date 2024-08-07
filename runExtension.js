@@ -418,6 +418,9 @@ async function launchLocationPopup() {
 }
 
 async function shopStore(event){ //a location has been selected from the location popup.
+  // Change cursor to spinning wheel
+  document.body.classList.add('wait-cursor');
+
   document.getElementById('ingrExpLocationPopup').remove(); 
   var id = event.target.closest('[id]').id; 
   var locationIndex = Number(id.replace(/ingrExpTopLocationDiv/g, '')); 
@@ -451,6 +454,9 @@ async function shopStore(event){ //a location has been selected from the locatio
   let backgroundResponse = await chrome.runtime.sendMessage({ to: 'ingredients', data: ingredients, locationExists: true});
   const ingredientData = new Map(backgroundResponse.ingredientData);
   insertEachIngredient(ingredientData);
+
+  // Change cursor back to normal
+  document.body.classList.remove('wait-cursor');
 }
 
 function displayNewIngredient(id, rightOrLeft, event){ //loads the image and product info when an arrow is clicked 
@@ -680,7 +686,7 @@ function resetTimeoutOnQuantityButtons(event){
   }, 2000);
 }
 
-async function checkoutUser(quantityAndUPCArray){//lets the user attempt to checkout if they have paid
+async function checkoutUser(quantityAndUPCArray){//lets the user attempt to checkout
   let response = await chrome.runtime.sendMessage({ to: 'checkout', data: quantityAndUPCArray}); 
   console.log('Was cart successful? ', response.success, quantityAndUPCArray); 
   if(response.success){ 
@@ -706,10 +712,14 @@ async function checkoutUser(quantityAndUPCArray){//lets the user attempt to chec
   return (response); 
 }
 
-async function checkoutButtonClicked(){
-  
+function checkoutButtonClicked(){
+  console.log('checkout button clicked ')
+
   //disable button until products are done being added
   shadowRoot.getElementById("ingrExpCheckoutButton").disabled = true; 
+
+  // Change cursor to spinning wheel
+  document.body.classList.add('wait-cursor');
 
   //get the quantity of items to add to cart 
   const productAndQuantityArray = []; 
@@ -730,6 +740,9 @@ async function checkoutButtonClicked(){
   }else{
     console.log('No items selected. Do nothing.');
   }
+  // Change cursor from spinning wheel
+  document.body.classList.remove('wait-cursor');
+
   //enable button again
   shadowRoot.getElementById("ingrExpCheckoutButton").disabled = false;
 }

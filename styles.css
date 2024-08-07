@@ -609,3 +609,6 @@
   flex-direction: column; 
   align-items: center;
 }
+.wait-cursor {
+  cursor: wait;
+}
