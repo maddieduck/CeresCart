@@ -25,15 +25,13 @@ function deployExtension(){
       console.log('location exists ', locationExists);
       let backgroundResponse = await chrome.runtime.sendMessage({to: 'ingredients', data: ingredients, locationExists: locationExists}); 
       
-      if (backgroundResponse.launch) {
+      if(backgroundResponse.launch){
         try {
           const htmlContents = await Promise.all([
             fetch(chrome.runtime.getURL('index.html')).then(response => response.text()),
-            fetch(chrome.runtime.getURL('styles.css')).then(response => response.text()),
+            fetch(chrome.runtime.getURL('styles.css')).then(response => response.text())
           ]);
           const [indexHtml, cssStyle] = htmlContents;
-          //console.log('index ', indexHtml); 
-          //insert HTML with shadowroot and css. 
           const containerDiv = document.createElement('div');
           containerDiv.id = 'ingrExpIngredientExporterPopup';
           shadowRoot = containerDiv.attachShadow({ mode: 'open', name: 'mainShadowRoot'});
@@ -43,21 +41,33 @@ function deployExtension(){
           shadowRoot.appendChild(style);
           document.body.insertAdjacentElement('afterbegin', containerDiv);
   
-          //insert each ingredient into the popup
-          const ingredientData = new Map(backgroundResponse.ingredientData);
-          insertEachIngredient(ingredientData);
-          //set the location name if it exists in memory 
-          
-          chrome.storage.sync.get('locationName', (result) => {
-            console.log('location Name ', result['locationName']);
-            if (result['locationName'] != undefined){
-              shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
-              shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
-              shadowRoot.getElementById('ingrExpPickupAt').textContent = result['locationName']
-              shadowRoot.getElementById('change').style.display = '-webkit-box'; 
-            }
-          });
-  
+          if(backgroundResponse.noLocation){
+            //add the no location html
+            fetch(chrome.runtime.getURL('noLocation.html'))
+            .then(response => response.text())
+            .then(ingredientHtml => {
+              //insert each ingredient into html 
+              let ingredDiv = shadowRoot.getElementById('ingrExpPlaceholderForIngredients');
+              let nodeClone = document.createElement('div'); // Create a new div 
+              nodeClone.innerHTML = ingredientHtml;  //Set the inner HTML of the div 
+              nodeClone.id = 'noLocationDiv';  // Set the id of the new div
+              ingredDiv.appendChild(nodeClone);
+            })
+          }else{
+            //insert each ingredient into the popup
+            const ingredientData = new Map(backgroundResponse.ingredientData);
+            insertEachIngredient(ingredientData);
+            //set the location name if it exists in memory 
+            chrome.storage.sync.get('locationName', (result) => {
+              console.log('location Name ', result['locationName']);
+              if (result['locationName'] != undefined){
+                shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
+                shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
+                shadowRoot.getElementById('ingrExpPickupAt').textContent = result['locationName']
+                shadowRoot.getElementById('change').style.display = '-webkit-box'; 
+              }
+            });
+          }
           shadowRoot.getElementById('ingrExpClose').addEventListener('click', closePopup); 
           shadowRoot.getElementById('minimize').addEventListener('click', minimizeClicked); 
           shadowRoot.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
@@ -73,7 +83,6 @@ function deployExtension(){
 }
 
 // Listening for messages from the background script
-
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   console.log("Message received from background:", message);
   if (message.to == 'pinterestPageChanged') {
@@ -128,6 +137,10 @@ function loadFromLocalStorage(key) {
 }
 
 async function insertEachIngredient(ingredientData){
+  let existingNoLocationDiv = shadowRoot.getElementById('noLocationDiv');
+  if (existingNoLocationDiv) {
+    existingNoLocationDiv.remove();
+  }
   fetch(chrome.runtime.getURL('ingredientContainer.html'))
   .then(response => response.text())
   .then(ingredientHtml => {

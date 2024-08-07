@@ -16,7 +16,7 @@ function returnGroceryClass(storeType){ //returns the class for the grocery stor
         case 'Kroger':
             return new Kroger(); 
         default:
-            return new Kroger(); 
+            return null;
     }
 }
 
@@ -50,12 +50,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 chrome.storage.sync.get(['storeType'], (result) => {
                     console.log('store type ingredient', result['storeType']);
                     const groceryStore = returnGroceryClass(result['storeType']); 
-                    //remove later 
-                    groceryStore.getProducts(finalIngredients, message.locationExists)
-                    .then(products => {
-                        console.log('products ', products); 
-                        sendResponse(products); 
-                    }) 
+                    if(groceryStore == null){
+                        sendResponse({launch: true, noLocation:true}); 
+                    }else{
+                        groceryStore.getProducts(finalIngredients, message.locationExists)
+                        .then(products => {
+                            console.log('products ', products); 
+                            sendResponse(products); 
+                        }) 
+                    }
                 });
             }else{
                 sendResponse({launch: false}); 

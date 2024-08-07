@@ -49,7 +49,7 @@
     ],
       "web_accessible_resources": [
         {
-          "resources": ["index.html", "ingredientContainer.html", "locationPopup.html", "location.html", "minimizePopup.html", "images/*.png", "index.js", "styles.css", "minimizeStyles.css", "GroceryStores/jsrsasign-all-min.js"],
+          "resources": ["index.html", "ingredientContainer.html", "locationPopup.html", "location.html", "minimizePopup.html", "images/*.png", "index.js", "styles.css", "minimizeStyles.css", "GroceryStores/jsrsasign-all-min.js", "noLocation.html"],
           "matches": ["<all_urls>"]
         }
       ],
