@@ -419,44 +419,45 @@ async function launchLocationPopup() {
 
 async function shopStore(event){ //a location has been selected from the location popup.
   // Change cursor to spinning wheel
-  document.body.classList.add('wait-cursor');
-
   document.getElementById('ingrExpLocationPopup').remove(); 
-  var id = event.target.closest('[id]').id; 
-  var locationIndex = Number(id.replace(/ingrExpTopLocationDiv/g, '')); 
-  console.log('shop store pressed ', locationIndex); 
-  var locationId = allLocationData[locationIndex]['id'];
-  var locationName = allLocationData[locationIndex]['name'];
-  console.log('location ID & data ', locationId, allLocationData[locationIndex]);
-
-  shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
-  shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
-  shadowRoot.getElementById('ingrExpPickupAt').textContent = locationName; 
-  chrome.storage.sync.set({['locationId']: locationId});
-  chrome.storage.sync.set({['locationName']: locationName});
-  chrome.storage.sync.set({['storeType']: allLocationData[locationIndex]['storeType']});
-  chrome.storage.sync.set({['currentLocation']: allLocationData[locationIndex]});
-
-  allProductData = [];
-  updateCheckoutButton();  
-
-  //change appears
-  shadowRoot.getElementById('change').style.display = '-webkit-box'; 
+  if (event.target.innerText !== 'Currently Shopping') {
+    document.body.classList.add('wait-cursor');
+    var id = event.target.closest('[id]').id; 
+    var locationIndex = Number(id.replace(/ingrExpTopLocationDiv/g, '')); 
+    console.log('shop store pressed ', locationIndex); 
+    var locationId = allLocationData[locationIndex]['id'];
+    var locationName = allLocationData[locationIndex]['name'];
+    console.log('location ID & data ', locationId, allLocationData[locationIndex]);
   
-  //remove ingredients from the main popup
-  var elementsWithClass = shadowRoot.querySelectorAll('.ingrExpOuterContainer');
-  elementsWithClass.forEach(element => {
-    console.log('remove element')
-    element.parentNode.removeChild(element);
-  });
-
-  //insert ingredients from the new store location
-  let backgroundResponse = await chrome.runtime.sendMessage({ to: 'ingredients', data: ingredients, locationExists: true});
-  const ingredientData = new Map(backgroundResponse.ingredientData);
-  insertEachIngredient(ingredientData);
-
-  // Change cursor back to normal
-  document.body.classList.remove('wait-cursor');
+    shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
+    shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
+    shadowRoot.getElementById('ingrExpPickupAt').textContent = locationName; 
+    chrome.storage.sync.set({['locationId']: locationId});
+    chrome.storage.sync.set({['locationName']: locationName});
+    chrome.storage.sync.set({['storeType']: allLocationData[locationIndex]['storeType']});
+    chrome.storage.sync.set({['currentLocation']: allLocationData[locationIndex]});
+  
+    allProductData = [];
+    updateCheckoutButton();  
+  
+    //change appears
+    shadowRoot.getElementById('change').style.display = '-webkit-box'; 
+    
+    //remove ingredients from the main popup
+    var elementsWithClass = shadowRoot.querySelectorAll('.ingrExpOuterContainer');
+    elementsWithClass.forEach(element => {
+      console.log('remove element')
+      element.parentNode.removeChild(element);
+    }); 
+  
+    //insert ingredients from the new store location
+    let backgroundResponse = await chrome.runtime.sendMessage({ to: 'ingredients', data: ingredients, locationExists: true});
+    const ingredientData = new Map(backgroundResponse.ingredientData);
+    insertEachIngredient(ingredientData);
+  
+    // Change cursor back to normal
+    document.body.classList.remove('wait-cursor');
+  }
 }
 
 function displayNewIngredient(id, rightOrLeft, event){ //loads the image and product info when an arrow is clicked 
