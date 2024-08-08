@@ -573,10 +573,15 @@ async function updateCheckoutButton() {
 
   if (hasNullPrices) {
     shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items`;
+    shadowRoot.getElementById('ingrExpCheckoutButton').style.cursor = 'pointer';
+
   } else if (totalQuantity == 0) {
     shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `No Items Selected`;
+    shadowRoot.getElementById('ingrExpCheckoutButton').style.cursor = 'default';
+
   } else {
     shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items for <span class="bold">$${totalPrice.toFixed(2)}</span>`;
+    shadowRoot.getElementById('ingrExpCheckoutButton').style.cursor = 'pointer';
   }
 }
 
@@ -706,6 +711,8 @@ async function checkoutUser(quantityAndUPCArray){//lets the user attempt to chec
 
     //update checkout button
     shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Items Successfully Added`;
+    shadowRoot.getElementById('ingrExpCheckoutButton').style.cursor = 'default';
+
   }else{
     warningPopup(response.errorMessage,  'rgb(210, 40, 65)');
     console.log('error when trying to add to cart');
