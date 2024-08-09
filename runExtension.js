@@ -692,10 +692,15 @@ function resetTimeoutOnQuantityButtons(event){
   }, 2000);
 }
 
-async function checkoutUser(quantityAndUPCArray){//lets the user attempt to checkout
-  let response = await chrome.runtime.sendMessage({ to: 'checkout', data: quantityAndUPCArray}); 
+async function checkoutUser(quantityAndUPCArray) {
+  // Change cursor to spinning wheel
+  document.body.classList.add('wait-cursor');
+  shadowRoot.getElementById('ingrExpCheckoutButton').style.cursor = 'wait';
+
+  let response = await chrome.runtime.sendMessage({ to: 'checkout', data: quantityAndUPCArray }); 
   console.log('Was cart successful? ', response.success, quantityAndUPCArray); 
-  if(response.success){ 
+
+  if (response.success) { 
     //make all quantities 0 in array 
     allProductData.forEach(outerArray => {
       outerArray.productData.forEach(product => {
@@ -708,50 +713,44 @@ async function checkoutUser(quantityAndUPCArray){//lets the user attempt to chec
       element.classList.remove('startingPlusButtonNoImage');
       element.innerText = '';
     });
-
+    document.body.classList.remove('wait-cursor');
+    shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = 'Items Successfully Added';
     //update checkout button
-    shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Items Successfully Added`;
     shadowRoot.getElementById('ingrExpCheckoutButton').style.cursor = 'default';
-
-  }else{
-    warningPopup(response.errorMessage,  'rgb(210, 40, 65)');
+  } else {
+    warningPopup(response.errorMessage, 'rgb(210, 40, 65)');
     console.log('error when trying to add to cart');
+    document.body.classList.remove('wait-cursor');
+    shadowRoot.getElementById('ingrExpCheckoutButton').style.cursor = 'pointer';
   }  
-  return (response); 
+  return response; 
 }
 
-function checkoutButtonClicked(){
-  console.log('checkout button clicked ')
-
+async function checkoutButtonClicked() {
+  console.log('checkout button clicked ');
   //disable button until products are done being added
   shadowRoot.getElementById("ingrExpCheckoutButton").disabled = true; 
-
-  // Change cursor to spinning wheel
-  document.body.classList.add('wait-cursor');
 
   //get the quantity of items to add to cart 
   const productAndQuantityArray = []; 
   for (const productData of allProductData) {
     for (const product of productData.productData) {
       const quantity = product.quantity;
-      //const upc = product.upc; // Assuming there's a property named 'upc' in your data structure
       if (quantity > 0){
-        //const singleProductAndQuantity = //{'quantity': quantity, 'upc': upc};
         productAndQuantityArray.push(product);
       }
     }
   }
   
-  if(productAndQuantityArray.length != 0){
-    console.log('quantity and produc ', productAndQuantityArray); 
-    checkoutUser(productAndQuantityArray);
-  }else{
+  if (productAndQuantityArray.length != 0) {
+    console.log('quantity and product ', productAndQuantityArray); 
+    //await new Promise(resolve => setTimeout(resolve, 2500)); // Simulated delay
+    await checkoutUser(productAndQuantityArray); 
+  } else {
     console.log('No items selected. Do nothing.');
   }
-  // Change cursor from spinning wheel
-  document.body.classList.remove('wait-cursor');
 
-  //enable button again
+  // Re-enable button and reset cursor after everything is done
   shadowRoot.getElementById("ingrExpCheckoutButton").disabled = false;
 }
 
@@ -771,7 +770,6 @@ function stringIngredientsFromRecipe(i) {
   }
   return null;
 }
-
 
 function findIngredientsOnPage() {
   var currentUrl = window.location.href;
@@ -829,13 +827,13 @@ function findIngredientsOnPage() {
   }
 }
 
-function zipCodeEdited(event) {
+async function zipCodeEdited(event) {
   var zipCode = shadowRoot.getElementById('ingrExpZipCode').value;
   // Check if the Enter key is pressed and the zip code is not blank
   if (event.key === 'Enter'){
     console.log('zip code used ', zipCode)
     chrome.storage.sync.set({['zipCode']: zipCode.trim()}); 
-    launchLocationPopup();
+    await launchLocationPopup();
   }
 }
 
@@ -843,7 +841,6 @@ function zipCodeInPopupEdited(event) {
   console.log('zip code in popup edited ', event.key)
   var zipCode = locationShadowRoot.getElementById('ingrExpZipCodeInPopup').value;
   if (event.key === 'Enter') {
-    //remove all existing locations before running again
     var elementsToRemove = locationShadowRoot.querySelectorAll('.ingrExpTopLocationDiv'); // Use a dot for class name
     elementsToRemove.forEach(element => {
       element.parentNode.removeChild(element);
