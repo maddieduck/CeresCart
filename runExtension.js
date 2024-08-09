@@ -693,10 +693,6 @@ function resetTimeoutOnQuantityButtons(event){
 }
 
 async function checkoutUser(quantityAndUPCArray) {
-  // Change cursor to spinning wheel
-  document.body.classList.add('wait-cursor');
-  shadowRoot.getElementById('ingrExpCheckoutButton').style.cursor = 'wait';
-
   let response = await chrome.runtime.sendMessage({ to: 'checkout', data: quantityAndUPCArray }); 
   console.log('Was cart successful? ', response.success, quantityAndUPCArray); 
 
@@ -713,15 +709,10 @@ async function checkoutUser(quantityAndUPCArray) {
       element.classList.remove('startingPlusButtonNoImage');
       element.innerText = '';
     });
-    document.body.classList.remove('wait-cursor');
     shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = 'Items Successfully Added';
-    //update checkout button
-    shadowRoot.getElementById('ingrExpCheckoutButton').style.cursor = 'default';
   } else {
     warningPopup(response.errorMessage, 'rgb(210, 40, 65)');
     console.log('error when trying to add to cart');
-    document.body.classList.remove('wait-cursor');
-    shadowRoot.getElementById('ingrExpCheckoutButton').style.cursor = 'pointer';
   }  
   return response; 
 }
@@ -744,7 +735,6 @@ async function checkoutButtonClicked() {
   
   if (productAndQuantityArray.length != 0) {
     console.log('quantity and product ', productAndQuantityArray); 
-    //await new Promise(resolve => setTimeout(resolve, 2500)); // Simulated delay
     await checkoutUser(productAndQuantityArray); 
   } else {
     console.log('No items selected. Do nothing.');
