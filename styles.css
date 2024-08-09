@@ -358,8 +358,8 @@
   left: 50%; 
   transform: translateX(-50%); 
 }
-#ingrExpCheckoutButton {
-  background-color: rgb(109, 171, 155);
+.ingrExpCheckoutButton-hover:hover {
+  box-shadow: 0 0 10px rgba(109, 171, 155, 0.75); 
 }
 .bottomButton{
   position: relative; 
@@ -371,6 +371,7 @@
   cursor: pointer;
   width: calc(100% - 32px); /* Set width using calc() function */
   height: 48px;
+  background-color: rgb(109, 171, 155);
 }
 .ingrExpTopLocationDiv{
   align-items: center;
@@ -484,6 +485,9 @@
   background-position: center center; 
   background-size: 16px 16px ; 
   background-repeat: no-repeat; 
+}
+.startingPlusButton:hover{
+  background-color: #5A8C82; 
 }
 .startingPlusButtonNoImage{
   background-image: none !important; /* Hide the background image */

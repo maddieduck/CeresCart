@@ -574,14 +574,15 @@ async function updateCheckoutButton() {
   if (hasNullPrices) {
     shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items`;
     shadowRoot.getElementById('ingrExpCheckoutButton').style.cursor = 'pointer';
-
+    shadowRoot.getElementById('ingrExpCheckoutButton').classList.add('ingrExpCheckoutButton-hover');
   } else if (totalQuantity == 0) {
     shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `No Items Selected`;
     shadowRoot.getElementById('ingrExpCheckoutButton').style.cursor = 'default';
-
+    shadowRoot.getElementById('ingrExpCheckoutButton').classList.remove('ingrExpCheckoutButton-hover');
   } else {
     shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items for <span class="bold">$${totalPrice.toFixed(2)}</span>`;
     shadowRoot.getElementById('ingrExpCheckoutButton').style.cursor = 'pointer';
+    shadowRoot.getElementById('ingrExpCheckoutButton').classList.add('ingrExpCheckoutButton-hover');
   }
 }
 
@@ -710,6 +711,9 @@ async function checkoutUser(quantityAndUPCArray) {
       element.innerText = '';
     });
     shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = 'Items Successfully Added';
+    shadowRoot.getElementById('ingrExpCheckoutButton').classList.remove('ingrExpCheckoutButton-hover');
+    shadowRoot.getElementById('ingrExpCheckoutButton').style.cursor = 'default';
+
   } else {
     warningPopup(response.errorMessage, 'rgb(210, 40, 65)');
     console.log('error when trying to add to cart');
