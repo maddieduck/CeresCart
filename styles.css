@@ -567,6 +567,11 @@
   justify-content: space-between; /* Align items with space between */
 }
 .logo{
+  height: 45px; 
+  width: auto;
+  margin-left: 18px;
+}
+.logoDefaultPopup{
   height: auto; 
   width: 15%;
   margin-left: 18px;
