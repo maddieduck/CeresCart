@@ -73,6 +73,7 @@ function deployExtension(){
           shadowRoot.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
           shadowRoot.getElementById('change').addEventListener('click', changeButtonPressed); 
           shadowRoot.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
+          shadowRoot.getElementById('goToCart').addEventListener('click', goToCart); 
           updateCheckoutButton();
         } catch (error) {
           console.error('ERROR in runExtension.js: ', error);
@@ -570,6 +571,10 @@ async function updateCheckoutButton() {
       }
     });
   });
+  let goToCart = document.getElementById('goToCart');
+  if(goToCart){
+    goToCart.style.display = 'none';
+  }
 
   if (hasNullPrices) {
     shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items`;
@@ -713,6 +718,7 @@ async function checkoutUser(quantityAndUPCArray) {
     shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = 'Items Successfully Added';
     shadowRoot.getElementById('ingrExpCheckoutButton').classList.remove('ingrExpCheckoutButton-hover');
     shadowRoot.getElementById('ingrExpCheckoutButton').style.cursor = 'default';
+    shadowRoot.getElementById('goToCart').style.display = 'block';
 
   } else {
     warningPopup(response.errorMessage, 'rgb(210, 40, 65)');
@@ -841,5 +847,26 @@ function zipCodeInPopupEdited(event) {
     });
     chrome.storage.sync.set({['zipCode']: zipCode.trim()}); 
     insertLocations();
+  }
+}
+
+async function goToCart(event) {
+  console.log('go to cart pressed');
+  let goToCartButton = shadowRoot.getElementById('goToCart');
+  if (goToCartButton) {
+    goToCartButton.style.display = 'none'; // Hide the button
+  } else {
+    console.error('ERROR goToCart button not found');
+  }
+
+  try {
+    let success = await chrome.runtime.sendMessage({ to: 'goToCart' });
+    if (success) {
+      console.log('GoTOCart Message sent successfully');
+    } else {
+      console.error('GoTOCart Message not successful');
+    }
+  } catch (error) {
+    console.error('Error sending goToCart message:', error);
   }
 }

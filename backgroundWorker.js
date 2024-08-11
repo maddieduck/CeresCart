@@ -94,6 +94,22 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 // Handle errors here
             }
         });
+    }else if(message.to === 'goToCart'){
+        chrome.storage.sync.get(['storeType'], (result) => {
+            console.log('store type go to cart', result['storeType']);
+            const groceryStore = returnGroceryClass(result['storeType']); 
+            if(groceryStore != null){
+                let cartUrl = groceryStore.getCartUrl();
+                console.log('cart url ', cartUrl);
+                chrome.tabs.create({
+                    url: cartUrl
+                }, function(tab) {
+                    console.log("New tab created with ID:", tab.id);
+                    sendResponse({success: true});
+                });
+            }
+            sendResponse({success: false});
+        });
     }else{
         console.log('unnhandled message in background listener ', message);
     }

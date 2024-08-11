@@ -354,13 +354,16 @@
   margin-bottom: 12px;
   display: inline-block;
 }
-#ingrExpCheckoutButtonPopup {
-  background-color: rgb(255, 205, 85); 
+#goToCart {
+  background-color: rgb(125,120,185); 
   display: none;
   position: absolute; 
   top: 0;
   left: 50%; 
   transform: translateX(-50%); 
+}
+#goToCart:hover {
+  box-shadow: 0 0 10px rgba(105, 90,160, 0.75); 
 }
 .ingrExpCheckoutButton-hover:hover {
   box-shadow: 0 0 10px rgba(109, 171, 155, 0.75); 

@@ -16,6 +16,10 @@ class GroceryStore {
         throw new Error('Method locations() in GroceryStore must be implemented');
     }
 
+    getCartUrl(){
+        throw new Error('Method getCartUrl() in GroceryStore must be implemented');
+    }
+
 }
 
 export{GroceryStore}

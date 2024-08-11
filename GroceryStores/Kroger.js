@@ -400,6 +400,10 @@ class Kroger extends GroceryStore {
         }); 
     }
 
+    getCartUrl(){
+        return('https://www.kroger.com/cart');
+    }
+
 } 
 
 export{Kroger}

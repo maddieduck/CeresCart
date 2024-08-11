@@ -232,6 +232,10 @@ class Walmart extends GroceryStore {
             })
         }); 
     }      
+
+    getCartUrl(){
+        return('https://www.walmart.com/cart');
+    }
 } 
 
 export{Walmart}
