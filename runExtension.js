@@ -571,9 +571,9 @@ async function updateCheckoutButton() {
       }
     });
   });
-  let goToCart = document.getElementById('goToCart');
-  if(goToCart){
-    goToCart.style.display = 'none';
+  let goToCartButton = shadowRoot.getElementById('goToCart');
+  if (goToCartButton) {
+    goToCartButton.style.display = 'none'; // Hide the button
   }
 
   if (hasNullPrices) {
@@ -745,6 +745,8 @@ async function checkoutButtonClicked() {
   
   if (productAndQuantityArray.length != 0) {
     console.log('quantity and product ', productAndQuantityArray); 
+    shadowRoot.getElementById("ingrExpCheckoutButton").innerText = 'Adding Items to Cart...'; 
+
     await checkoutUser(productAndQuantityArray); 
   } else {
     console.log('No items selected. Do nothing.');
