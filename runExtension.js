@@ -576,18 +576,23 @@ async function updateCheckoutButton() {
     goToCartButton.style.display = 'none'; // Hide the button
   }
 
+  let checkoutButton = shadowRoot.getElementById('ingrExpCheckoutButton'); 
   if (hasNullPrices) {
-    shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items`;
-    shadowRoot.getElementById('ingrExpCheckoutButton').style.cursor = 'pointer';
-    shadowRoot.getElementById('ingrExpCheckoutButton').classList.add('ingrExpCheckoutButton-hover');
+    checkoutButton.innerHTML = `Add <span class="bold">${totalQuantity}</span> Items`;
+    checkoutButton.style.cursor = 'pointer';
+    checkoutButton.classList.add('ingrExpCheckoutButton-hover');
   } else if (totalQuantity == 0) {
-    shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `No Items Selected`;
-    shadowRoot.getElementById('ingrExpCheckoutButton').style.cursor = 'default';
-    shadowRoot.getElementById('ingrExpCheckoutButton').classList.remove('ingrExpCheckoutButton-hover');
+    checkoutButton.innerHTML = `No Items Selected`;
+    checkoutButton.style.cursor = 'default';
+    checkoutButton.classList.remove('ingrExpCheckoutButton-hover');
   } else {
-    shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = `Add <span class="bold">${totalQuantity}</span> Items for <span class="bold">$${totalPrice.toFixed(2)}</span>`;
-    shadowRoot.getElementById('ingrExpCheckoutButton').style.cursor = 'pointer';
-    shadowRoot.getElementById('ingrExpCheckoutButton').classList.add('ingrExpCheckoutButton-hover');
+    checkoutButton.innerHTML = `Add <span class="bold">${totalQuantity}</span> Items for <span class="bold">$${totalPrice.toFixed(2)}</span>`;
+    checkoutButton.style.cursor = 'pointer';
+    checkoutButton.classList.add('ingrExpCheckoutButton-hover');
+    checkoutButton.classList.add("grow");
+    setTimeout(() => {
+      checkoutButton.classList.remove("grow");
+    }, 300); // Adjust the timing to match the CSS transition duration
   }
 }
 

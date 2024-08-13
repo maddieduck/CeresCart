@@ -379,6 +379,10 @@
   width: calc(100% - 32px); /* Set width using calc() function */
   height: 48px;
   background-color: rgb(109, 171, 155);
+  transition: transform 0.3s ease;
+}
+.bottomButton.grow{
+  transform: scale(1.03);
 }
 .ingrExpTopLocationDiv{
   align-items: center;
