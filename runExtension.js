@@ -586,8 +586,6 @@ async function updateCheckoutButton() {
     if (!checkoutButton.querySelector(".tooltip")) {
         var tooltipSpan = document.createElement("span");
         tooltipSpan.className = "tooltip tooltipUp";
-        //tooltipSpan.innerHTML = "TOOLTIP"; // Text inside the tooltip
-        //checkoutButton.appendChild(tooltipSpan);
 
         // Create a list of quantities and descriptions
         let tooltipContent = "<ul>";

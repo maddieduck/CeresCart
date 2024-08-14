@@ -652,6 +652,7 @@
   opacity: 0;
   transition: opacity 0.3s;
   font-size: 14px;
+  max-width: 300px;
 }
 
 .tooltipUp::after {
@@ -683,6 +684,7 @@
   opacity: 0;
   transition: opacity 0.3s;
   font-size: 14px;
+  max-width: 300px;
 }
 
 .tooltipDown::after {
