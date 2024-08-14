@@ -598,6 +598,11 @@ async function updateCheckoutButton() {
         });
         tooltipContent += "</ul>";
 
+        // Apply the desired styles
+        tooltipSpan.style.whiteSpace = "normal";
+        tooltipSpan.style.minWidth = "350px";
+        tooltipSpan.style.textAlign = "left"; // Align the text to the left
+
         tooltipSpan.innerHTML = tooltipContent; // Set the tooltip content
         checkoutButton.appendChild(tooltipSpan);
 
