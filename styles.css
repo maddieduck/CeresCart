@@ -632,3 +632,71 @@
 .wait-cursor {
   cursor: wait;
 }
+/*TOOLTIPS*/ 
+.hoverButtonsUp, .hoverButtonsDown {
+  position: relative; /* Ensure tooltips position correctly relative to the button */
+}
+/* Tooltip pointing up */
+.tooltipUp {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Position above the button */
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltipUp::after {
+  content: '';
+  position: absolute;
+  top: 100%; /* Arrow pointing down */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+/* Tooltip pointing down */
+.tooltipDown {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  top: 125%; /* Position below the button */
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltipDown::after {
+  content: '';
+  position: absolute;
+  bottom: 100%; /* Arrow pointing up */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+/* Hover effects */
+.hoverButtonsUp:hover .tooltipUp,
+.hoverButtonsDown:hover .tooltipDown {
+  visibility: visible;
+  opacity: 1;
+}

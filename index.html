@@ -6,8 +6,14 @@
 <body>
   <div id="ingrExpTopLevelDiv">   
     <div class="headerContainer"> 
-      <button title="minimize" id="minimize" class="topButtons"><img id ="minimizeImage" class="topButtonsImage" src="chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/minimize.png"></button>
-      <button title="close" id="ingrExpClose" class="topButtons"><img id ="ingrExpCloseImage" class="topButtonsImage" src="chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/x.png"></button>
+      <button id="minimize" class="topButtons hoverButtonsDown">
+        <img id="minimizeImage" class="topButtonsImage" src="chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/minimize.png">
+        <span class="tooltip tooltipDown">minimize</span>
+      </button>
+      <button id="ingrExpClose" class="topButtons hoverButtonsDown">
+        <img id ="ingrExpCloseImage" class="topButtonsImage" src="chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/x.png">
+        <span class="tooltip tooltipDown">close</span>
+      </button>
     </div>  
     <div id="ingrExpPickupDiv"> 
       <img id = "location" src = "chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/location.png"> 
