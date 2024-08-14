@@ -648,10 +648,11 @@
   bottom: 125%; /* Position above the button */
   left: 50%;
   transform: translateX(-50%);
-  white-space: nowrap;
+  white-space: normal; /* Allow text to wrap */
   opacity: 0;
   transition: opacity 0.3s;
   font-size: 14px;
+  max-width: 350px; /* Limit the width of the tooltip */
 }
 
 .tooltipUp::after {
@@ -679,10 +680,11 @@
   top: 125%; /* Position below the button */
   left: 50%;
   transform: translateX(-50%);
-  white-space: nowrap;
+  white-space: normal; /* Allow text to wrap */
   opacity: 0;
   transition: opacity 0.3s;
   font-size: 14px;
+  max-width: 350px; /* Limit the width of the tooltip */
 }
 
 .tooltipDown::after {
@@ -701,4 +703,16 @@
 .hoverButtonsDown:hover .tooltipDown {
   visibility: visible;
   opacity: 1;
+}
+
+.tooltip ul {
+  padding-left: 15px; /* Adjusts space between bullets and text */
+  margin: 0; /* Removes the default margin */
+  list-style-position: outside; /* Ensures bullets are outside */
+}
+
+.tooltip li {
+  padding: 0; /* Removes padding */
+  margin: 0; /* Removes margin */
+  text-align: left; /* Ensures text is aligned to the left */
 }

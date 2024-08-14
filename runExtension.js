@@ -556,7 +556,9 @@ async function updateCheckoutButton() {
   allProductData.forEach(function (element) {
     element.productData.forEach(function (product) {
       var quantity = product.quantity || 0;
+      var price = product.price || 0;
       totalQuantity += quantity;
+      totalPrice += price * quantity; // Corrected: Multiply price by quantity
     });
   });
   let goToCartButton = shadowRoot.getElementById('goToCart');
@@ -584,8 +586,23 @@ async function updateCheckoutButton() {
     if (!checkoutButton.querySelector(".tooltip")) {
         var tooltipSpan = document.createElement("span");
         tooltipSpan.className = "tooltip tooltipUp";
-        tooltipSpan.innerHTML = "TOOLTIP"; // Text inside the tooltip
+        //tooltipSpan.innerHTML = "TOOLTIP"; // Text inside the tooltip
+        //checkoutButton.appendChild(tooltipSpan);
+
+        // Create a list of quantities and descriptions
+        let tooltipContent = "<ul>";
+        allProductData.forEach(function (element) {
+          element.productData.forEach(function (product) {
+            if (product.quantity > 0) {
+              tooltipContent += `<li>${product.quantity} - ${product.description}</li>`;
+            }
+          });
+        });
+        tooltipContent += "</ul>";
+
+        tooltipSpan.innerHTML = tooltipContent; // Set the tooltip content
         checkoutButton.appendChild(tooltipSpan);
+
     }
     setTimeout(() => {
       checkoutButton.classList.remove("grow");
