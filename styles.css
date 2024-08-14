@@ -15,7 +15,6 @@
   align-items: center; 
   margin-top: 8px;
   margin-bottom: 16px;
-  
 }
 #ingrExpPickupAt{
   font-weight: 325;
@@ -652,6 +651,7 @@
   white-space: nowrap;
   opacity: 0;
   transition: opacity 0.3s;
+  font-size: 14px;
 }
 
 .tooltipUp::after {
@@ -663,6 +663,7 @@
   border-width: 5px;
   border-style: solid;
   border-color: black transparent transparent transparent;
+  z-index: 9999; /* High z-index to keep the tooltip in front */
 }
 
 /* Tooltip pointing down */
@@ -681,6 +682,7 @@
   white-space: nowrap;
   opacity: 0;
   transition: opacity 0.3s;
+  font-size: 14px;
 }
 
 .tooltipDown::after {
