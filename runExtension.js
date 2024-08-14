@@ -551,24 +551,12 @@ async function updateCheckoutButton() {
   //console.log('update checkout button');
   var totalQuantity = 0;
   var totalPrice = 0.0;
-  var hasNullPrices = false;
-
+  console.log('allProductData ', allProductData);
   // Iterate through allProductData and get the total quantity and price 
   allProductData.forEach(function (element) {
     element.productData.forEach(function (product) {
       var quantity = product.quantity || 0;
-      var price = parseFloat(product.price);
-
       totalQuantity += quantity;
-
-      // Check for null prices only if quantity is not null
-      if (quantity > 0) {
-        if (isNaN(price) || price === null) {
-          hasNullPrices = true;
-        } else {
-          totalPrice += quantity * price;
-        }
-      }
     });
   });
   let goToCartButton = shadowRoot.getElementById('goToCart');
@@ -577,19 +565,28 @@ async function updateCheckoutButton() {
   }
 
   let checkoutButton = shadowRoot.getElementById('ingrExpCheckoutButton'); 
-  if (hasNullPrices) {
-    checkoutButton.innerHTML = `Add <span class="bold">${totalQuantity}</span> Items`;
-    checkoutButton.style.cursor = 'pointer';
-    checkoutButton.classList.add('ingrExpCheckoutButton-hover');
-  } else if (totalQuantity == 0) {
+  if (totalQuantity == 0) {
     checkoutButton.innerHTML = `No Items Selected`;
     checkoutButton.style.cursor = 'default';
     checkoutButton.classList.remove('ingrExpCheckoutButton-hover');
+    //remove tooltip
+    var tooltipSpan = checkoutButton.querySelector(".tooltip");
+    
+    if (tooltipSpan) {
+        button.removeChild(tooltipSpan);
+    }
   } else {
     checkoutButton.innerHTML = `Add <span class="bold">${totalQuantity}</span> Items for <span class="bold">$${totalPrice.toFixed(2)}</span>`;
     checkoutButton.style.cursor = 'pointer';
     checkoutButton.classList.add('ingrExpCheckoutButton-hover');
     checkoutButton.classList.add("grow");
+    // Check if the tooltip already exists to avoid duplicates
+    if (!checkoutButton.querySelector(".tooltip")) {
+        var tooltipSpan = document.createElement("span");
+        tooltipSpan.className = "tooltip tooltipUp";
+        tooltipSpan.innerHTML = "TOOLTIP"; // Text inside the tooltip
+        checkoutButton.appendChild(tooltipSpan);
+    }
     setTimeout(() => {
       checkoutButton.classList.remove("grow");
     }, 300); // Adjust the timing to match the CSS transition duration
