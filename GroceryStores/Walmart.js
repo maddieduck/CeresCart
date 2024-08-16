@@ -93,7 +93,7 @@ class Walmart extends GroceryStore {
             // Get the current browser window's position and size
             chrome.windows.getCurrent({populate: false}, (currentWindow) => {
                 const { left, top, width, height } = currentWindow;
-                let popupTop = top + height - 30;
+                let popupTop = top + height - 70;
                 console.log('popupTop ', popupTop)
                 chrome.windows.create({
                     url: url,
@@ -143,7 +143,7 @@ class Walmart extends GroceryStore {
                 // Get the current browser window's position and size
                 chrome.windows.getCurrent({populate: false}, (currentWindow) => {
                     const { left, top, width, height } = currentWindow;
-                    let popupTop = top + height - 30;
+                    let popupTop = top + height - 70;
 
                     chrome.windows.create({
                         url: url,
