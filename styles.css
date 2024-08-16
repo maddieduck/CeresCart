@@ -391,6 +391,7 @@
   width: calc(100% - 16px); 
   margin: 0 8px;
   margin-bottom: 8px;
+  margin-top: 1px;
 }
 .groceryLogo{
   width: 80%;
@@ -455,6 +456,7 @@
   border: 0px;
   margin: 0px;
   padding: 0px;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 #ingrExpLocationZipDiv{
   border: 0px;
