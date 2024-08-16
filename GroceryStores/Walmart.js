@@ -97,8 +97,8 @@ class Walmart extends GroceryStore {
                 chrome.windows.create({
                     url: url,
                     type: 'popup',
-                    width: 1, // Match the current window's width
-                    height: 1, // Match the current window's height
+                    width: 1, 
+                    height: 1, 
                     left: left, // Align the popup with the current window
                     top: top, // Align the popup with the current window
                     focused: false
@@ -146,8 +146,8 @@ class Walmart extends GroceryStore {
                     chrome.windows.create({
                         url: url,
                         type: 'popup',
-                        width: 1, // Match the current window's width
-                        height: 1, // Match the current window's height
+                        width: 1, 
+                        height: 1, 
                         left: left, // Align the popup with the current window
                         top: top, // Align the popup with the current window
                         focused: false
