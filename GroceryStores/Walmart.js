@@ -93,14 +93,15 @@ class Walmart extends GroceryStore {
             // Get the current browser window's position and size
             chrome.windows.getCurrent({populate: false}, (currentWindow) => {
                 const { left, top, width, height } = currentWindow;
-                
+                let popupTop = top + height - 30;
+                console.log('popupTop ', popupTop)
                 chrome.windows.create({
                     url: url,
                     type: 'popup',
                     width: 1, 
                     height: 1, 
                     left: left, // Align the popup with the current window
-                    top: top, // Align the popup with the current window
+                    top: popupTop, // Align the popup with the current window
                     focused: false
                 }, (newWindow) => {
                     // Add a delay of 1500 ms before resolving the promise
@@ -142,14 +143,15 @@ class Walmart extends GroceryStore {
                 // Get the current browser window's position and size
                 chrome.windows.getCurrent({populate: false}, (currentWindow) => {
                     const { left, top, width, height } = currentWindow;
-                    
+                    let popupTop = top + height - 30;
+
                     chrome.windows.create({
                         url: url,
                         type: 'popup',
                         width: 1, 
                         height: 1, 
                         left: left, // Align the popup with the current window
-                        top: top, // Align the popup with the current window
+                        top: popupTop, // Align the popup with the current window
                         focused: false
                     }, (window) => {
                         if (chrome.runtime.lastError) {
