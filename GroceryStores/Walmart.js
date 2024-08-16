@@ -90,21 +90,28 @@ class Walmart extends GroceryStore {
 
     async changeLocation(url) {
         return new Promise((resolve, reject) => {
-            chrome.windows.create({
-                url: url,
-                type: 'popup',
-                width: 1, // Adjust as needed
-                height: 1, // Adjust as needed
-                left: -10000,  // Move off-screen
-                top: -10000    // Move off-screen
-            }, (newWindow) => {
-                // Add a delay of 1500 ms before resolving the promise
-                setTimeout(() => {
-                    resolve();
-                }, 1500);
+            // Get the current browser window's position and size
+            chrome.windows.getCurrent({populate: false}, (currentWindow) => {
+                const { left, top, width, height } = currentWindow;
+                
+                chrome.windows.create({
+                    url: url,
+                    type: 'popup',
+                    width: 1, // Match the current window's width
+                    height: 1, // Match the current window's height
+                    left: left, // Align the popup with the current window
+                    top: top, // Align the popup with the current window
+                    focused: false
+                }, (newWindow) => {
+                    // Add a delay of 1500 ms before resolving the promise
+                    setTimeout(() => {
+                        resolve();
+                    }, 1500);
+                });
             });
         });
     }
+    
 
     async checkout(itemsToCheckout) { 
         let locationData = await new Promise((resolve, reject) => {
@@ -131,25 +138,30 @@ class Walmart extends GroceryStore {
 
         // Function to wrap chrome.windows.create in a promise
         function createWindow(url) {
-            
             return new Promise((resolve, reject) => {
-                chrome.windows.create({
-                    url: url,
-                    type: 'popup',
-                    width: 1,
-                    height: 1,
-                    left: -10000,  // Move off-screen
-                    top: -10000    // Move off-screen
-                }, (window) => {
-                    if (chrome.runtime.lastError) {
-                        reject(chrome.runtime.lastError);
-                    } else {
-                        resolve(window);
-                    }
+                // Get the current browser window's position and size
+                chrome.windows.getCurrent({populate: false}, (currentWindow) => {
+                    const { left, top, width, height } = currentWindow;
+                    
+                    chrome.windows.create({
+                        url: url,
+                        type: 'popup',
+                        width: 1, // Match the current window's width
+                        height: 1, // Match the current window's height
+                        left: left, // Align the popup with the current window
+                        top: top, // Align the popup with the current window
+                        focused: false
+                    }, (window) => {
+                        if (chrome.runtime.lastError) {
+                            reject(chrome.runtime.lastError);
+                        } else {
+                            resolve(window);
+                        }
+                    });
                 });
             });
-            
         }
+        
     
         // Function to monitor when the tab has finished loading
         function waitForPageLoad(tabId) {

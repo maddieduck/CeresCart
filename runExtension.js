@@ -90,7 +90,12 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     console.log('Pinterest page changed');
     closePopup();
     lookForPinterestIngredient(Date.now(), 6000);
+  } else if (message.to == '') {
+
   }
+  else {
+    console.log('unnhandled message in run extension listener ', message);
+}
 });
 
 function checkForItemprop() { //returns true if pinterest ingredients found
