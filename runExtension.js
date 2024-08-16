@@ -3,7 +3,9 @@ var allLocationData = [];
 var shadowRoot; 
 var locationShadowRoot; 
 var minimizeShadowRoot; 
-var ingredients = findIngredientsOnPage(); //array of ingredients on page 
+var recipe = findRecipeDataOnPage(); 
+console.log('recipe ', recipe);
+var ingredients = recipe.ingredients; 
 console.log('ingredients ', ingredients); 
 var currentUrl = window.location.href;
 console.log("run extension " + currentUrl);
@@ -102,7 +104,7 @@ function checkForItemprop() { //returns true if pinterest ingredients found
   const elements = document.querySelectorAll('[itemprop]');
   if (elements.length > 0) {
     console.log("itemprop found");
-    ingredients = findIngredientsOnPage();
+    ingredients = findRecipeDataOnPage();
     deployExtension();
     return true;
   }
@@ -783,24 +785,77 @@ async function checkoutButtonClicked() {
   shadowRoot.getElementById("ingrExpCheckoutButton").disabled = false;
 }
 
-function stringIngredientsFromRecipe(i) {
-  if (i == null) { // Check if i is null or undefined
-    return null;
+function parseRecipeData(i) {
+  if (i == null) {
+    return {
+      name: null,
+      ingredients: null,
+      instructions: null,
+      totalTime: null,
+      yield: null
+    };
   }
-  const scriptType = i['@type'] ?? false; 
-  if (scriptType === 'Recipe') { 
-    return i['recipeIngredient'];
-  } else if (Array.isArray(scriptType)) {
-    if (scriptType.includes('Recipe')) {
-      if (i['recipeIngredient'] != null) {
-        return i['recipeIngredient'];
-      }
+
+  const scriptType = i['@type'] ?? false;
+  let result = {
+    name: null,
+    ingredients: null,
+    instructions: null,
+    totalTime: null,
+    yield: null
+  };
+
+  if (scriptType === 'Recipe' || (Array.isArray(scriptType) && scriptType.includes('Recipe'))) {
+    // Get the recipe name
+    result.name = i['name'] || null;
+
+    // Get the ingredients
+    result.ingredients = i['recipeIngredient'] || null;
+
+    // Convert 'recipeInstructions' into an array of strings
+    if (Array.isArray(i['recipeInstructions'])) {
+      result.instructions = i['recipeInstructions'].map(instruction => {
+        if (typeof instruction === 'string') {
+          return instruction;
+        } else if (instruction['@type'] === 'HowToStep' && instruction.text) {
+          return instruction.text;
+        } else if (instruction['@type'] === 'HowToStep' && instruction.name) {
+          return instruction.name;
+        }
+        return '';
+      }).filter(step => step.trim().length > 0); // Filter out empty strings
+    } else if (typeof i['recipeInstructions'] === 'string') {
+      result.instructions = [i['recipeInstructions']];
+    } else {
+      result.instructions = null;
     }
+
+    // Parse the total time
+    result.totalTime = parseISODuration(i['totalTime']) || null;
+
+    // Get the recipe yield
+    result.yield = i['recipeYield'] || null;
   }
-  return null;
+
+  return result;
 }
 
-function findIngredientsOnPage() {
+// Function to convert ISO 8601 duration (like PTM15M) to a human-readable format
+function parseISODuration(duration) {
+  if (!duration) return null;
+
+  const matches = duration.match(/P(?:(\d+)D)?T(?:(\d+)H)?(?:(\d+)M)?/);
+
+  if (!matches) return duration; // Return original if it doesn't match the expected format
+
+  const days = matches[1] ? `${matches[1]} day${matches[1] > 1 ? 's' : ''}` : '';
+  const hours = matches[2] ? `${matches[2]} hour${matches[2] > 1 ? 's' : ''}` : '';
+  const minutes = matches[3] ? `${matches[3]} minute${matches[3] > 1 ? 's' : ''}` : '';
+
+  return [days, hours, minutes].filter(Boolean).join(' ').trim();
+}
+
+function findRecipeDataOnPage() {
   var currentUrl = window.location.href;
   console.log("Current URL: " + currentUrl);
 
@@ -811,48 +866,61 @@ function findIngredientsOnPage() {
     var ingredientsArray = [];
     var elementsWithItemprop = document.querySelectorAll('[itemprop]');
 
-    // Loop through each element
     elementsWithItemprop.forEach(function(element) {
-        if (element.getAttribute('itemprop') === 'recipeIngredient') {
-          // If the itemprop is 'recipeIngredient', extract the ingredient and add it to the array
-          var ingredient = element.textContent.trim();
-          ingredientsArray.push(ingredient);
-        }
+      if (element.getAttribute('itemprop') === 'recipeIngredient') {
+        var ingredient = element.textContent.trim();
+        ingredientsArray.push(ingredient);
+      }
     });
-    return ingredientsArray;
+
+    return {
+      ingredients: ingredientsArray,
+      instructions: null,
+      totalTime: null,
+      yield: null
+    };
   } else {
-    //Use the function to strip ingredients from a webpage 
     const scripts = document.querySelectorAll('script[type="application/ld+json"]');
     for (const script of scripts) {
       const schema = JSON.parse(script.textContent);
-      console.log('ingred script ', schema)
+      console.log('Script parsed:', schema);
+
       let graph = schema['@graph'];
-      if (graph != undefined){
+      if (graph != undefined) {
         for (const key in graph) {
           var value = graph[key];
-          var ingredients = stringIngredientsFromRecipe(value) 
-          if(ingredients!= null){
-            return ingredients
+          var recipeData = parseRecipeData(value);
+          if (recipeData.ingredients || recipeData.instructions || recipeData.totalTime || recipeData.yield) {
+            return recipeData;
           }
         }
-      }else{
-        var ingredients = stringIngredientsFromRecipe(schema);
-        if(ingredients!= null){
-          return ingredients
+      } else {
+        var recipeData = parseRecipeData(schema);
+        if (recipeData.ingredients || recipeData.instructions || recipeData.totalTime || recipeData.yield) {
+          return recipeData;
         }
+
         for (const key in schema) {
-          var value = schema[key]; 
-          if (key == 'recipeIngredient'){
-            return schema[key]
-          }
-          var ingredients = stringIngredientsFromRecipe(value) 
-          if(ingredients!= null){
-            return ingredients
+          var value = schema[key];
+          if (key === 'recipeIngredient' || key === 'recipeInstructions' || key === 'totalTime' || key === 'recipeYield') {
+            recipeData[key] = schema[key] || null;
+          } else {
+            var nestedData = parseRecipeData(value);
+            if (nestedData.ingredients || nestedData.instructions || nestedData.totalTime || nestedData.yield) {
+              return nestedData;
+            }
           }
         }
       }
     }
-    return null; 
+
+    // Return nulls if no recipe data is found
+    return {
+      ingredients: null,
+      instructions: null,
+      totalTime: null,
+      yield: null
+    };
   }
 }
 
