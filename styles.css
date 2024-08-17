@@ -706,3 +706,38 @@
   visibility: visible;
   opacity: 1;
 }
+
+/*tooltips over*/ 
+
+.recipe-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#recipe-title {
+  margin-bottom: 10px;
+  margin-top: 0;
+  font-weight: 550;
+  font-size: 30px;
+}
+
+#recipe-description {
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+.recipe-image {
+  flex: 1 1 40%;
+  width: 200px;
+  margin-right: 20px;
+}
+
+.recipe-details {
+  flex: 2 1 50%;
+}
+
+#ingredients, #directions {
+  margin-top: 20px;
+  font-weight: 550;
+  font-size: 22px;
+}
