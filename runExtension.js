@@ -88,14 +88,29 @@ function deployExtension(){
 }
 
 function populateReaderView(recipe){
-  if(recipe.name){
-    var title = shadowRoot.getElementById('recipe-title');
+  var title = shadowRoot.getElementById('recipe-title');
+  if(recipe.name != null){
     title.style.display = 'block';
     title.textContent = recipe.name;
   }else{
     title.style.display = 'none';
   }
-
+  
+  var description = shadowRoot.getElementById('recipe-description');
+  if(recipe.description != null){
+    description.style.display = 'block';
+    description.textContent = recipe.description;
+  }else{
+    description.style.display = 'none';
+  }
+  
+  var image = shadowRoot.getElementById('recipe-image');
+  if(recipe.image != null){
+    image.style.display = 'block';
+    image.src = recipe.image;
+  }else{
+    image.style.display = 'none';
+  }
 }
 
 // Listening for messages from the background script
@@ -805,7 +820,9 @@ function parseRecipeData(i) {
       ingredients: null,
       instructions: null,
       totalTime: null,
-      yield: null
+      yield: null,
+      image: null,
+      description: null
     };
   }
 
@@ -815,30 +832,49 @@ function parseRecipeData(i) {
     ingredients: null,
     instructions: null,
     totalTime: null,
-    yield: null
+    yield: null,
+    image: null,
+    description: null
   };
+
+  // Helper function to decode HTML entities
+  function decodeHTML(html) {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = html;
+    return txt.value;
+  }
 
   if (scriptType === 'Recipe' || (Array.isArray(scriptType) && scriptType.includes('Recipe'))) {
     // Get the recipe name
-    result.name = i['name'] || null;
+    result.name = i['name'] ? decodeHTML(i['name']) : null;
 
     // Get the ingredients
     result.ingredients = i['recipeIngredient'] || null;
+
+    // Get the recipe image (assuming it’s a URL or an array of URLs)
+    if (typeof i['image'] === 'string') {
+      result.image = i['image'];
+    } else if (Array.isArray(i['image']) && i['image'].length > 0) {
+      result.image = i['image'][0];
+    }
+
+    // Get the recipe description
+    result.description = i['description'] ? decodeHTML(i['description']) : null;
 
     // Convert 'recipeInstructions' into an array of strings
     if (Array.isArray(i['recipeInstructions'])) {
       result.instructions = i['recipeInstructions'].map(instruction => {
         if (typeof instruction === 'string') {
-          return instruction;
+          return decodeHTML(instruction);
         } else if (instruction['@type'] === 'HowToStep' && instruction.text) {
-          return instruction.text;
+          return decodeHTML(instruction.text);
         } else if (instruction['@type'] === 'HowToStep' && instruction.name) {
-          return instruction.name;
+          return decodeHTML(instruction.name);
         }
         return '';
       }).filter(step => step.trim().length > 0); // Filter out empty strings
     } else if (typeof i['recipeInstructions'] === 'string') {
-      result.instructions = [i['recipeInstructions']];
+      result.instructions = [decodeHTML(i['recipeInstructions'])];
     } else {
       result.instructions = null;
     }
@@ -890,7 +926,9 @@ function findRecipeDataOnPage() {
       ingredients: ingredientsArray,
       instructions: null,
       totalTime: null,
-      yield: null
+      yield: null,
+      image: null,
+      description: null
     };
   } else {
     const scripts = document.querySelectorAll('script[type="application/ld+json"]');
@@ -903,13 +941,13 @@ function findRecipeDataOnPage() {
         for (const key in graph) {
           var value = graph[key];
           var recipeData = parseRecipeData(value);
-          if (recipeData.ingredients || recipeData.instructions || recipeData.totalTime || recipeData.yield) {
+          if (recipeData.ingredients || recipeData.instructions || recipeData.totalTime || recipeData.yield || recipeData.image || recipeData.description) {
             return recipeData;
           }
         }
       } else {
         var recipeData = parseRecipeData(schema);
-        if (recipeData.ingredients || recipeData.instructions || recipeData.totalTime || recipeData.yield) {
+        if (recipeData.ingredients || recipeData.instructions || recipeData.totalTime || recipeData.yield || recipeData.image || recipeData.description) {
           return recipeData;
         }
 
@@ -919,7 +957,7 @@ function findRecipeDataOnPage() {
             recipeData[key] = schema[key] || null;
           } else {
             var nestedData = parseRecipeData(value);
-            if (nestedData.ingredients || nestedData.instructions || nestedData.totalTime || nestedData.yield) {
+            if (nestedData.ingredients || nestedData.instructions || nestedData.totalTime || nestedData.yield || nestedData.image || nestedData.description) {
               return nestedData;
             }
           }
@@ -932,7 +970,9 @@ function findRecipeDataOnPage() {
       ingredients: null,
       instructions: null,
       totalTime: null,
-      yield: null
+      yield: null,
+      image: null,
+      description: null
     };
   }
 }
