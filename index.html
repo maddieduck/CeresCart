@@ -5,29 +5,56 @@
 </head> 
 <body>
   <div id="ingrExpTopLevelDiv">   
-    <div class="headerContainer"> 
-      <button id="minimize" class="topButtons hoverButtonsDown">
-        <img id="minimizeImage" class="topButtonsImage" src="chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/minimize.png">
-        <span class="tooltip tooltipDown">minimize</span>
-      </button>
-      <button id="ingrExpClose" class="topButtons hoverButtonsDown">
-        <img id ="ingrExpCloseImage" class="topButtonsImage" src="chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/x.png">
-        <span class="tooltip tooltipDown">close</span>
-      </button>
-    </div>  
-    <div id="ingrExpPickupDiv"> 
-      <img id = "location" src = "chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/location.png"> 
-      <input id="ingrExpZipCode" placeholder="Enter zip code"></input> 
-      <div id="ingrExpPickupAt">Pickup at River Oaks</div>
-      <button id="change">Change</button>
-    </div>  
-    <div id="scrollingPart">
-      <div id="ingrExpPlaceholderForIngredients">
+    <div style="width: 550px;">
+      <div class="recipe-container">
+          <div class="recipe-details">
+              <p id="recipe-title">Recipe Name</p>
+              <p id="recipe-description">This is a brief description of the recipe that highlights the flavors and appeal of the dish.</p>
+          </div>
+          <img src="images/Ceres Cart Logo.png" alt="Recipe Image" class="recipe-image">
+      </div>
+      <div>
+          <p id="ingredients">Ingredients</p>
+          <ul style="margin-left: 32px;">
+              <li>Ingredient 1</li>
+              <li>Ingredient 2</li>
+              <li>Ingredient 3</li>
+          </ul>
+      </div>
+      <div>
+          <p id="directions">Directions</p>
+          <ol style="margin-left: 32px;">
+              <li>Do this.</li>
+              <li>Then do this.</li>
+              <li>Finish with this.</li>
+          </ol>
+      </div>
+    </div>
+    <div style="width: 424px">
+      <div class="headerContainer"> 
+        <button id="minimize" class="topButtons hoverButtonsDown">
+          <img id="minimizeImage" class="topButtonsImage" src="chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/minimize.png">
+          <span class="tooltip tooltipDown">minimize</span>
+        </button>
+        <button id="ingrExpClose" class="topButtons hoverButtonsDown">
+          <img id ="ingrExpCloseImage" class="topButtonsImage" src="chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/x.png">
+          <span class="tooltip tooltipDown">close</span>
+        </button>
       </div>  
-    </div>   
-    <div id="buttonContainer"> 
-      <button id="ingrExpCheckoutButton" class="bottomButton hoverButtonsUp">No Items Selected</button>
-      <button id="goToCart" class="bottomButton">Items Added! Go to Cart!</button>
+      <div id="ingrExpPickupDiv"> 
+        <img id = "location" src = "chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/location.png"> 
+        <input id="ingrExpZipCode" placeholder="Enter zip code"></input> 
+        <div id="ingrExpPickupAt">Pickup at River Oaks</div>
+        <button id="change">Change</button>
+      </div>  
+      <div id="scrollingPart">
+        <div id="ingrExpPlaceholderForIngredients">
+        </div>  
+      </div>   
+      <div id="buttonContainer"> 
+        <button id="ingrExpCheckoutButton" class="bottomButton hoverButtonsUp">No Items Selected</button>
+        <button id="goToCart" class="bottomButton">Items Added! Go to Cart!</button>
+      </div>
     </div>
   </div> 
 </body>

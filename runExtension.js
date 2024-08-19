@@ -3,10 +3,6 @@ var allLocationData = [];
 var shadowRoot; 
 var locationShadowRoot; 
 var minimizeShadowRoot; 
-var recipe = findRecipeDataOnPage(); 
-console.log('recipe ', recipe);
-var ingredients = recipe.ingredients; 
-console.log('ingredients ', ingredients); 
 var currentUrl = window.location.href;
 console.log("run extension " + currentUrl);
 var currentUrl = window.location.href;
@@ -20,6 +16,10 @@ if (!currentUrl.includes("pinterest.com")) {
 function deployExtension(){
   const mainPopup = document.getElementById('ingrExpIngredientExporterPopup');
   const minimizedPopup = document.getElementById('minimizePopup');
+  var recipe = findRecipeDataOnPage(); 
+  console.log('recipe ', recipe);
+  var ingredients = recipe.ingredients; 
+  console.log('ingredients ', ingredients); 
 
   if (ingredients != null && ingredients.length > 0) {
     (async () => { // Wrap the block in an async function 
@@ -81,8 +81,21 @@ function deployExtension(){
           console.error('ERROR in runExtension.js: ', error);
         }
       }
+      populateReaderView(recipe); 
+
     })();
   }
+}
+
+function populateReaderView(recipe){
+  if(recipe.name){
+    var title = shadowRoot.getElementById('recipe-title');
+    title.style.display = 'block';
+    title.textContent = recipe.name;
+  }else{
+    title.style.display = 'none';
+  }
+
 }
 
 // Listening for messages from the background script

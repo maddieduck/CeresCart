@@ -312,7 +312,6 @@
 #ingrExpTopLevelDiv {
   background-color: white; 
   max-height: 98%;
-  width: 424px;
   position: fixed;
   z-index: 2147483646;
   top: 10px; 
@@ -321,7 +320,7 @@
   border-radius: 10px; 
   text-align: center;
   display: flex; 
-  flex-direction: column; 
+  flex-direction: row; 
 }
 #scrollingPart {
   background-color: white; 
@@ -715,15 +714,19 @@
 }
 
 #recipe-title {
-  margin-bottom: 10px;
-  margin-top: 0;
+  margin-bottom: 16px;
+  margin-top: 16px;
   font-weight: 550;
   font-size: 30px;
+  text-align: left;
+  margin-left: 16px;
 }
 
 #recipe-description {
   font-style: italic;
   margin-bottom: 20px;
+  text-align: left;
+  margin-left: 16px;
 }
 
 .recipe-image {
@@ -737,7 +740,20 @@
 }
 
 #ingredients, #directions {
+  margin-left: 16px;
   margin-top: 20px;
   font-weight: 550;
   font-size: 22px;
+  text-align: left; /* Ensures the text is left-aligned */
+}
+ul {
+  padding-left: 20px; /* Adjusts spacing for alignment */
+  text-align: left; /* Ensures the list is left-aligned */
+}
+ol {
+  padding-left: 20px; /* Adjusts spacing for alignment */
+}
+ol li {
+  text-align: left; /* Ensures the list items are left-aligned */
+  margin-bottom: 8px;
 }
