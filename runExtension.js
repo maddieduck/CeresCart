@@ -7,6 +7,10 @@ var currentUrl = window.location.href;
 console.log("run extension " + currentUrl);
 var currentUrl = window.location.href;
 console.log("Current URL: " + currentUrl);
+var recipe = findRecipeDataOnPage(); 
+console.log('recipe ', recipe);
+var ingredients = recipe.ingredients; 
+console.log('ingredients ', ingredients); 
 
 if (!currentUrl.includes("pinterest.com")) {
   deployExtension(); 
@@ -16,10 +20,6 @@ if (!currentUrl.includes("pinterest.com")) {
 function deployExtension(){
   const mainPopup = document.getElementById('ingrExpIngredientExporterPopup');
   const minimizedPopup = document.getElementById('minimizePopup');
-  var recipe = findRecipeDataOnPage(); 
-  console.log('recipe ', recipe);
-  var ingredients = recipe.ingredients; 
-  console.log('ingredients ', ingredients); 
 
   if (ingredients != null && ingredients.length > 0) {
     (async () => { // Wrap the block in an async function 

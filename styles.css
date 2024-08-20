@@ -768,3 +768,8 @@ ol li {
   border-left: 1px solid rgb(228, 230, 232); /* Thickness and color of the line */
   margin-left: 20px; /* Spacing around the line */
 }
+#readerView {
+  width: 550px;
+  overflow-y: auto; /* Enable vertical scrolling */
+  height: calc(98% - 32px); /* Calculates the height based on the viewport or parent container */
+}
