@@ -715,7 +715,7 @@
 
 #recipe-title {
   margin-bottom: 16px;
-  margin-top: 16px;
+  margin-top: 8px;
   font-weight: 550;
   font-size: 30px;
   text-align: left;
@@ -728,12 +728,13 @@
   text-align: left;
   margin-left: 16px;
   margin-right: 16px;
+  font-size: 16px;
 }
 
 #recipe-image {
   flex: 1 1 40%;
   width: 200px;
-  margin-top: 16px;
+  margin-top: 8px;
 }
 
 .recipe-details {
@@ -744,12 +745,13 @@
   margin-left: 16px;
   margin-top: 20px;
   font-weight: 550;
-  font-size: 22px;
+  font-size: 20px;
   text-align: left; /* Ensures the text is left-aligned */
 }
 ul {
   padding-left: 20px; /* Adjusts spacing for alignment */
   text-align: left; /* Ensures the list is left-aligned */
+  font-size: 16px;
 }
 ol {
   padding-left: 20px; /* Adjusts spacing for alignment */
@@ -757,6 +759,7 @@ ol {
 ol li {
   text-align: left; /* Ensures the list items are left-aligned */
   margin-bottom: 8px;
+  font-size: 16px;
 }
 .vertical-line {
   border-left: 1px solid rgb(228, 230, 232); /* Thickness and color of the line */
