@@ -770,6 +770,11 @@ ol li {
 }
 #readerView {
   width: 550px;
-  overflow-y: auto; /* Enable vertical scrolling */
-  height: calc(98% - 32px); /* Calculates the height based on the viewport or parent container */
+  overflow-y: auto; 
+  height: calc(98% - 32px); 
+}
+#productSearch{
+  width: 424px;
+  overflow-y: auto; 
+  height: calc(98% - 32px); 
 }
