@@ -112,6 +112,7 @@ function populateReaderView(recipe){
     image.style.display = 'none';
   }
 
+  //populate ingredients 
   var ingredients = shadowRoot.getElementById('ingredients');
   const ingredientList = shadowRoot.getElementById('ingredientList');
   // Check if recipe.ingredients is an array
@@ -129,11 +130,32 @@ function populateReaderView(recipe){
     });
 
     // Ensure the title and list are visible
-    ingredientsTitle.style.display = 'block';
+    ingredients.style.display = 'block';
     ingredientList.style.display = 'block';
   }else{
     ingredients.style.display = 'none';
     ingredientList.style.display = 'none';
+  }
+
+  // Handle Instructions
+  const instructionsTitle = shadowRoot.getElementById('instructions');
+  const instructionsList = shadowRoot.getElementById('instructionsList');
+
+  // Check if recipe.instructions is an array
+  if (Array.isArray(recipe.instructions) && recipe.instructions.length > 0) {
+    instructionsList.innerHTML = ''; // Clear any previous content
+    recipe.instructions.forEach(instruction => {
+      const li = document.createElement('li');
+      li.textContent = instruction;
+      instructionsList.appendChild(li);
+    });
+
+    // Ensure the title and list are visible
+    instructionsTitle.style.display = 'block';
+    instructionsList.style.display = 'block';
+  } else {
+    instructionsTitle.style.display = 'none';
+    instructionsList.style.display = 'none';
   }
 }
 
