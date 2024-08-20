@@ -4,17 +4,23 @@
   <link rel="stylesheet" href="styles.css">
 </head> 
 <body>
-  <div id="ingrExpTopLevelDiv"> 
+  <div id="ingrExpTopLevelDiv">  
     <div class="headerContainer"> 
-      <button id="minimize" class="topButtons hoverButtonsDown">
-        <img id="minimizeImage" class="topButtonsImage" src="chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/minimize.png">
-        <span class="tooltip tooltipDown">minimize</span>
-      </button>
-      <button id="ingrExpClose" class="topButtons hoverButtonsDown">
-        <img id ="ingrExpCloseImage" class="topButtonsImage" src="chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/x.png">
-        <span class="tooltip tooltipDown">close</span>
-      </button>
-    </div>  
+      <div class="headerLeftAlign">
+        <img id="headerLogo" src="chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/Ceres Logo White.png"> 
+        <p id="ceresCartText">Ceres Cart</p>
+      </div>
+      <div class="headerRightAlign">
+        <button id="minimize" class="topButtons hoverButtonsDown">
+          <img id="minimizeImage" class="topButtonsImage" src="chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/minimize.png">
+          <span class="tooltip tooltipDown">minimize</span>
+        </button>
+        <button id="ingrExpClose" class="topButtons hoverButtonsDown">
+          <img id="ingrExpCloseImage" class="topButtonsImage" src="chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/x.png">
+          <span class="tooltip tooltipDown">close</span>
+        </button>
+      </div>
+    </div>
     <div class="contentContainer">
       <div id="readerView">
         <div class="recipe-container">

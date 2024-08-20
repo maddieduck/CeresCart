@@ -170,7 +170,6 @@
 }
 .topButtons{
   margin-right: 8px;
-  margin-top: 8px;
   border: none;
   height: 24px;
   width: 24px;
@@ -200,10 +199,12 @@
   border-color: rgb(228, 230, 232);
   background-color: rgb(228, 230, 232);
 }
-.headerContainer{
+.headerContainer {
   display: flex;
-  justify-content: flex-end; 
+  justify-content: flex-start; /* Align items to the left */
   flex-shrink: 0; /* Prevents the header from shrinking */
+  align-items: center; /* Align items vertically in the center */
+  background-color: rgb(160, 205, 200)
 }
 .ingrExpCircleButton{
   height: 30px;
@@ -782,4 +783,26 @@ ol li {
   display: flex;
   flex-grow: 1; /* Takes up the remaining space after the header */
   overflow: hidden;
+}
+#ceresCartText{
+  font-size: 16px;
+  margin: 0;
+  margin-left: 8px;
+  font-weight: 550;
+}
+#headerLogo{
+  height: 25px;
+  width: 25px;
+  margin-left: 16px;
+  padding-top: 7.5px;
+  padding-bottom: 7.5px;
+}
+.headerLeftAlign {
+  display: flex;
+  align-items: center; /* Center items vertically */
+}
+.headerRightAlign {
+  margin-left: auto; /* Push this section to the right */
+  display: flex;
+  align-items: center; /* Center items vertically */
 }
