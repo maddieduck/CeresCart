@@ -92,6 +92,7 @@
 }
 #location{
   height: 25px;
+  width: 25px;
   margin-left: 4px;
   padding-top: 7.5px;
   padding-bottom: 7.5px;
@@ -732,9 +733,11 @@
 }
 
 #recipe-image {
-  flex: 1 1 40%;
-  width: 200px;
+  width: 40%; /* Set the desired width */
+  height: auto; /* Automatically adjusts height based on aspect ratio */
+  max-height: 100%; /* Prevents the height from exceeding the container */
   margin-top: 8px;
+  object-fit: contain; /* Ensures the image is fully visible within the specified width */
 }
 
 .recipe-details {
