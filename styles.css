@@ -203,6 +203,7 @@
 .headerContainer{
   display: flex;
   justify-content: flex-end; 
+  flex-shrink: 0; /* Prevents the header from shrinking */
 }
 .ingrExpCircleButton{
   height: 30px;
@@ -312,7 +313,6 @@
 }
 #ingrExpTopLevelDiv {
   background-color: white; 
-  max-height: 98%;
   position: fixed;
   z-index: 2147483646;
   top: 10px; 
@@ -322,6 +322,8 @@
   text-align: center;
   display: flex; 
   flex-direction: column; 
+  overflow: hidden;
+  height: 98%; /* Adjust as needed */
 }
 #scrollingPart {
   background-color: white; 
@@ -771,10 +773,13 @@ ol li {
 #readerView {
   width: 550px;
   overflow-y: auto; 
-  height: calc(98% - 32px); 
 }
 #productSearch{
   width: 424px;
   overflow-y: auto; 
-  height: calc(98% - 32px); 
+}
+.contentContainer {
+  display: flex;
+  flex-grow: 1; /* Takes up the remaining space after the header */
+  overflow: hidden;
 }
