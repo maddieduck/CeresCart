@@ -892,6 +892,9 @@ function parseRecipeData(i) {
       ingredients: null,
       instructions: null,
       totalTime: null,
+      performTime: null,
+      preTime: null,
+      cookTime: null,
       yield: null,
       image: null,
       description: null
@@ -904,6 +907,9 @@ function parseRecipeData(i) {
     ingredients: null,
     instructions: null,
     totalTime: null,
+    performTime: null,
+    preTime: null,
+    cookTime: null,
     yield: null,
     image: null,
     description: null
@@ -951,8 +957,11 @@ function parseRecipeData(i) {
       result.instructions = null;
     }
 
-    // Parse the total time
+    // Parse the times
     result.totalTime = parseISODuration(i['totalTime']) || null;
+    result.performTime = parseISODuration(i['performTime']) || null;
+    result.preTime = parseISODuration(i['prepTime']) || null;
+    result.cookTime = parseISODuration(i['cookTime']) || null;
 
     // Get the recipe yield
     result.yield = i['recipeYield'] || null;
@@ -961,19 +970,22 @@ function parseRecipeData(i) {
   return result;
 }
 
-// Function to convert ISO 8601 duration (like PTM15M) to a human-readable format
+// Function to convert ISO 8601 duration (like P0Y0M0DT0H5M0.000S) to a human-readable format
 function parseISODuration(duration) {
   if (!duration) return null;
 
-  const matches = duration.match(/P(?:(\d+)D)?T(?:(\d+)H)?(?:(\d+)M)?/);
+  // Regular expression to match and capture the relevant parts of the duration
+  const matches = duration.match(/P(?:\d+Y)?(?:\d+M)?(?:\d+D)?T(?:\d+H)?(\d+M)?(?:[\d.]+S)?/);
 
   if (!matches) return duration; // Return original if it doesn't match the expected format
 
-  const days = matches[1] ? `${matches[1]} day${matches[1] > 1 ? 's' : ''}` : '';
-  const hours = matches[2] ? `${matches[2]} hour${matches[2] > 1 ? 's' : ''}` : '';
-  const minutes = matches[3] ? `${matches[3]} minute${matches[3] > 1 ? 's' : ''}` : '';
+  const minutes = matches[1] ? parseInt(matches[1]) : 0;
 
-  return [days, hours, minutes].filter(Boolean).join(' ').trim();
+  if (minutes > 0) {
+    return `${minutes} minute${minutes > 1 ? 's' : ''}`;
+  } else {
+    return "0 minutes"; // In case there’s no valid time found, return 0 minutes
+  }
 }
 
 function findRecipeDataOnPage() {
@@ -998,6 +1010,9 @@ function findRecipeDataOnPage() {
       ingredients: ingredientsArray,
       instructions: null,
       totalTime: null,
+      performTime: null,
+      preTime: null,
+      cookTime: null,
       yield: null,
       image: null,
       description: null
@@ -1013,23 +1028,23 @@ function findRecipeDataOnPage() {
         for (const key in graph) {
           var value = graph[key];
           var recipeData = parseRecipeData(value);
-          if (recipeData.ingredients || recipeData.instructions || recipeData.totalTime || recipeData.yield || recipeData.image || recipeData.description) {
+          if (recipeData.ingredients || recipeData.instructions || recipeData.totalTime || recipeData.performTime || recipeData.preTime || recipeData.cookTime || recipeData.yield || recipeData.image || recipeData.description) {
             return recipeData;
           }
         }
       } else {
         var recipeData = parseRecipeData(schema);
-        if (recipeData.ingredients || recipeData.instructions || recipeData.totalTime || recipeData.yield || recipeData.image || recipeData.description) {
+        if (recipeData.ingredients || recipeData.instructions || recipeData.totalTime || recipeData.performTime || recipeData.preTime || recipeData.cookTime || recipeData.yield || recipeData.image || recipeData.description) {
           return recipeData;
         }
 
         for (const key in schema) {
           var value = schema[key];
-          if (key === 'recipeIngredient' || key === 'recipeInstructions' || key === 'totalTime' || key === 'recipeYield') {
+          if (key === 'recipeIngredient' || key === 'recipeInstructions' || key === 'totalTime' || key === 'performTime' || key === 'prepTime' || key === 'cookTime' || key === 'recipeYield') {
             recipeData[key] = schema[key] || null;
           } else {
             var nestedData = parseRecipeData(value);
-            if (nestedData.ingredients || nestedData.instructions || nestedData.totalTime || nestedData.yield || nestedData.image || nestedData.description) {
+            if (nestedData.ingredients || nestedData.instructions || nestedData.totalTime || nestedData.performTime || nestedData.preTime || nestedData.cookTime || nestedData.yield || nestedData.image || nestedData.description) {
               return nestedData;
             }
           }
@@ -1042,12 +1057,16 @@ function findRecipeDataOnPage() {
       ingredients: null,
       instructions: null,
       totalTime: null,
+      performTime: null,
+      preTime: null,
+      cookTime: null,
       yield: null,
       image: null,
       description: null
     };
   }
 }
+
 
 async function zipCodeEdited(event) {
   var zipCode = shadowRoot.getElementById('ingrExpZipCode').value;
