@@ -858,7 +858,6 @@ async function checkoutButtonClicked() {
   // Re-enable button and reset cursor after everything is done
   shadowRoot.getElementById("ingrExpCheckoutButton").disabled = false;
 }
-
 function parseRecipeData(i) {
   if (i == null) {
     return {
@@ -866,6 +865,10 @@ function parseRecipeData(i) {
       ingredients: null,
       instructions: null,
       totalTime: null,
+      cookTime: null,
+      performTime: null,
+      prepTime: null,
+      cuisine: null,
       yield: null,
       image: null,
       description: null
@@ -878,6 +881,10 @@ function parseRecipeData(i) {
     ingredients: null,
     instructions: null,
     totalTime: null,
+    cookTime: null,
+    performTime: null,
+    prepTime: null,
+    cuisine: null,
     yield: null,
     image: null,
     description: null
@@ -925,11 +932,17 @@ function parseRecipeData(i) {
       result.instructions = null;
     }
 
-    // Parse the total time
+    // Parse times (ISO 8601 duration format)
     result.totalTime = parseISODuration(i['totalTime']) || null;
+    result.cookTime = parseISODuration(i['cookTime']) || null;
+    result.performTime = parseISODuration(i['performTime']) || null;
+    result.prepTime = parseISODuration(i['prepTime']) || null;
 
     // Get the recipe yield
     result.yield = i['recipeYield'] || null;
+
+    // Get the cuisine type
+    result.cuisine = i['recipeCuisine'] || null;
   }
 
   return result;
@@ -972,6 +985,10 @@ function findRecipeDataOnPage() {
       ingredients: ingredientsArray,
       instructions: null,
       totalTime: null,
+      cookTime: null,
+      performTime: null,
+      prepTime: null,
+      cuisine: null,
       yield: null,
       image: null,
       description: null
@@ -1016,6 +1033,10 @@ function findRecipeDataOnPage() {
       ingredients: null,
       instructions: null,
       totalTime: null,
+      cookTime: null,
+      performTime: null,
+      prepTime: null,
+      cuisine: null,
       yield: null,
       image: null,
       description: null
