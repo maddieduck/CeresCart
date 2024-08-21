@@ -157,6 +157,32 @@ function populateReaderView(recipe){
     instructionsTitle.style.display = 'none';
     instructionsList.style.display = 'none';
   }
+
+  // Handle Times
+  const times = shadowRoot.getElementById('times');
+  times.innerHTML = ''; // Clear existing times
+
+  // Function to add a time block
+  function addTimeBlock(timeName, timeQuantity) {
+    const timeDiv = document.createElement('div');
+    const nameP = document.createElement('p');
+    nameP.className = 'timeName';
+    nameP.textContent = timeName;
+
+    const quantityP = document.createElement('p');
+    quantityP.className = 'timeQuantity';
+    quantityP.textContent = timeQuantity;
+
+    timeDiv.appendChild(nameP);
+    timeDiv.appendChild(quantityP);
+    times.appendChild(timeDiv);
+  }
+
+  // Add each time if it exists
+  if (recipe.prepTime) addTimeBlock('Prep Time', recipe.prepTime);
+  if (recipe.performTime) addTimeBlock('Perform Time', recipe.performTime);
+  if (recipe.cookTime) addTimeBlock('Cook Time', recipe.cookTime);
+  if (recipe.totalTime) addTimeBlock('Total Time', recipe.totalTime);
 }
 
 // Listening for messages from the background script
@@ -858,6 +884,7 @@ async function checkoutButtonClicked() {
   // Re-enable button and reset cursor after everything is done
   shadowRoot.getElementById("ingrExpCheckoutButton").disabled = false;
 }
+
 function parseRecipeData(i) {
   if (i == null) {
     return {
@@ -865,10 +892,6 @@ function parseRecipeData(i) {
       ingredients: null,
       instructions: null,
       totalTime: null,
-      cookTime: null,
-      performTime: null,
-      prepTime: null,
-      cuisine: null,
       yield: null,
       image: null,
       description: null
@@ -881,10 +904,6 @@ function parseRecipeData(i) {
     ingredients: null,
     instructions: null,
     totalTime: null,
-    cookTime: null,
-    performTime: null,
-    prepTime: null,
-    cuisine: null,
     yield: null,
     image: null,
     description: null
@@ -932,17 +951,11 @@ function parseRecipeData(i) {
       result.instructions = null;
     }
 
-    // Parse times (ISO 8601 duration format)
+    // Parse the total time
     result.totalTime = parseISODuration(i['totalTime']) || null;
-    result.cookTime = parseISODuration(i['cookTime']) || null;
-    result.performTime = parseISODuration(i['performTime']) || null;
-    result.prepTime = parseISODuration(i['prepTime']) || null;
 
     // Get the recipe yield
     result.yield = i['recipeYield'] || null;
-
-    // Get the cuisine type
-    result.cuisine = i['recipeCuisine'] || null;
   }
 
   return result;
@@ -985,10 +998,6 @@ function findRecipeDataOnPage() {
       ingredients: ingredientsArray,
       instructions: null,
       totalTime: null,
-      cookTime: null,
-      performTime: null,
-      prepTime: null,
-      cuisine: null,
       yield: null,
       image: null,
       description: null
@@ -1033,10 +1042,6 @@ function findRecipeDataOnPage() {
       ingredients: null,
       instructions: null,
       totalTime: null,
-      cookTime: null,
-      performTime: null,
-      prepTime: null,
-      cuisine: null,
       yield: null,
       image: null,
       description: null

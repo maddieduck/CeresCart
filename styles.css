@@ -806,13 +806,17 @@ ol li {
   display: flex;
   align-items: center; /* Center items vertically */
 }
-#times{
+#times {
   margin: 32px;
   display: flex;
   flex-direction: row;
-  justify-content: space-around; /* Equally spaces the divs by placing equal space on either side */
-
+  justify-content: space-around;
+  border-top: 1px solid black; /* Add a border to the top */
+  border-bottom: 1px solid black; /* Add a border to the bottom */
+  border-left: none; /* No border on the left */
+  border-right: none; /* No border on the right */
 }
+
 .timeName{
   margin: 0;
   font-weight: 550;
