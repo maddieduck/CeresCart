@@ -806,3 +806,19 @@ ol li {
   display: flex;
   align-items: center; /* Center items vertically */
 }
+#times{
+  margin: 32px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around; /* Equally spaces the divs by placing equal space on either side */
+
+}
+.timeName{
+  margin: 0;
+  font-weight: 550;
+  font-size: 18px;
+}
+.timeQuantity{
+  margin: 0;
+  font-size: 16px;
+}
