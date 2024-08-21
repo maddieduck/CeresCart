@@ -13,7 +13,7 @@
   width: 280px;
   margin: 0 auto; 
   align-items: center; 
-  margin-top: 8px;
+  margin-top: 16px;
   margin-bottom: 16px;
 }
 #ingrExpPickupAt{
@@ -174,7 +174,7 @@
   height: 24px;
   width: 24px;
   border-radius: 50%; 
-  background-color: rgb(240, 240, 240);
+  background-color: rgb(255, 255, 255);
   cursor: pointer;
 }
 .topButtonsImage {
@@ -769,11 +769,11 @@ ol li {
 }
 .vertical-line {
   border-left: 1px solid rgb(228, 230, 232); /* Thickness and color of the line */
-  margin-left: 20px; /* Spacing around the line */
 }
 #readerView {
   width: 550px;
   overflow-y: auto; 
+  padding-right: 16px;
 }
 #productSearch{
   width: 424px;
