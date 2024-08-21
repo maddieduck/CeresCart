@@ -1,57 +1,57 @@
 {
-    "manifest_version":3,
-    "name": "Ceres Cart",
-    "version": "1.0.4",
-    "description": "Streamline grocery shopping with the help of Ceres Cart.",
-    "author": "Maddie Drake",
-    "action": {
-        "default_popup": "defaultPopup.html",
-        "default_title": "Ceres Cart",
-        "default_icon":{
-            "16": "/images/Ceres Logo Green.png",
-            "32": "/images/Ceres Logo Green.png",
-            "48": "/images/Ceres Logo Green.png",
-            "128": "/images/Ceres Logo Green.png"
-        }
-     },
-     "icons": {
-      "16": "/images/Ceres Cart Logo.png",
-      "32": "/images/Ceres Cart Logo.png",
-      "48": "/images/Ceres Cart Logo.png",
-      "128": "/images/Ceres Cart Logo.png"
-     },
-    "oauth2": {
-      "client_id": "cerescart-f4187f9b0cfa74e1107fe736009f3e24587190955792211001",
-      "scopes": ["cart.basic:write"],
-      "redirect_uris": [
-        "https://nckacfgoolkhaedphbknecabckccgffe.chromiumapp.org"
-      ]
+  "manifest_version":3,
+  "name": "Ceres Cart",
+  "version": "2.0.0",
+  "description": "Streamline grocery shopping with the help of Ceres Cart.",
+  "author": "Maddie Drake",
+  "action": {
+      "default_popup": "defaultPopup.html",
+      "default_title": "Ceres Cart",
+      "default_icon":{
+          "16": "/images/Ceres Logo Green.png",
+          "32": "/images/Ceres Logo Green.png",
+          "48": "/images/Ceres Logo Green.png",
+          "128": "/images/Ceres Logo Green.png"
+      }
+   },
+   "icons": {
+    "16": "/images/Ceres Cart Logo.png",
+    "32": "/images/Ceres Cart Logo.png",
+    "48": "/images/Ceres Cart Logo.png",
+    "128": "/images/Ceres Cart Logo.png"
+   },
+  "oauth2": {
+    "client_id": "cerescart-f4187f9b0cfa74e1107fe736009f3e24587190955792211001",
+    "scopes": ["cart.basic:write"],
+    "redirect_uris": [
+      "https://nckacfgoolkhaedphbknecabckccgffe.chromiumapp.org"
+    ]
+  },
+   "background":{
+      "service_worker": "backgroundWorker.js",
+      "type": "module"
+  },  
+   "permissions": [
+     "storage",
+     "tabs"
+   ],
+   "content_scripts": [ 
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["runExtension.js"],
+      "type": "module",
+      "css": ["styles.css"]        
     },
-     "background":{
-        "service_worker": "backgroundWorker.js",
-        "type": "module"
-    },  
-     "permissions": [
-       "storage",
-       "tabs"
-     ],
-     "content_scripts": [ 
+    {
+      "matches": ["*://www.walmart.com/store/*"],
+      "js": ["makeWalmartStore.js"]
+    }
+  ],
+    "web_accessible_resources": [
       {
-        "matches": ["http://*/*", "https://*/*"],
-        "js": ["runExtension.js"],
-        "type": "module",
-        "css": ["styles.css"]        
-      },
-      {
-        "matches": ["*://www.walmart.com/store/*"],
-        "js": ["makeWalmartStore.js"]
+        "resources": ["index.html", "ingredientContainer.html", "locationPopup.html", "location.html", "minimizePopup.html", "images/*.png", "index.js", "styles.css", "minimizeStyles.css", "GroceryStores/jsrsasign-all-min.js", "noLocation.html"],
+        "matches": ["<all_urls>"]
       }
     ],
-      "web_accessible_resources": [
-        {
-          "resources": ["index.html", "ingredientContainer.html", "locationPopup.html", "location.html", "minimizePopup.html", "images/*.png", "index.js", "styles.css", "minimizeStyles.css", "GroceryStores/jsrsasign-all-min.js", "noLocation.html"],
-          "matches": ["<all_urls>"]
-        }
-      ],
-      "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoDYfy2AY8x703pYGXXpkikhGhaBElTuJ2TcSHbRHXm/V+OW3JM0Em9VcgViKehWAWqNrgzHPvizQCF00cppX3NJXjIoN2H+WyvdB1ZwT30h9zzYdoYjMLFe5+vNnCj9KNcWshPicwmOKu1+ikBKjbYdor/P/dUa4oLg0kG8fuOYHC9pu1i/dGxyxylcA1NDRawyCFZVhDVfOwK2tmSnZNs967RkuRdj5I2cISWBgtCTmEtZKhvEuhrs/zcqpieolOaBrpncMvBphkkxqXYgVkUwZZ5VbKkOTHRRDs6wQqXhSDV+Igcx2uHbL1ujaxwKqu+jKTmk3qvfEWfzcsHMXUQIDAQAB"
-    }
+    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoDYfy2AY8x703pYGXXpkikhGhaBElTuJ2TcSHbRHXm/V+OW3JM0Em9VcgViKehWAWqNrgzHPvizQCF00cppX3NJXjIoN2H+WyvdB1ZwT30h9zzYdoYjMLFe5+vNnCj9KNcWshPicwmOKu1+ikBKjbYdor/P/dUa4oLg0kG8fuOYHC9pu1i/dGxyxylcA1NDRawyCFZVhDVfOwK2tmSnZNs967RkuRdj5I2cISWBgtCTmEtZKhvEuhrs/zcqpieolOaBrpncMvBphkkxqXYgVkUwZZ5VbKkOTHRRDs6wQqXhSDV+Igcx2uHbL1ujaxwKqu+jKTmk3qvfEWfzcsHMXUQIDAQAB"
+  }
