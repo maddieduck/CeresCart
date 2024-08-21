@@ -365,7 +365,7 @@ async function minimizeClicked(event){
     document.body.insertAdjacentElement('afterbegin', containerDiv); 
     minimizeShadowRoot.getElementById('ingredientsFound').addEventListener('click', showIngredientsFound); 
     minimizeShadowRoot.getElementById('closeInMinimizePopup').addEventListener('click', closeInMinimizePopup); 
-    minimizeShadowRoot.getElementById('ingredientsFound').textContent = allProductData.length + " Ingredients Found";
+    minimizeShadowRoot.getElementById('ingredientsFound').textContent = " Recipe Found!";
   }catch (error) { 
     console.error('ERROR in minimized clicked ', error); 
   }

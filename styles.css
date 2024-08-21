@@ -561,7 +561,7 @@
 }
 #minimizeTopLevelDiv{
   background-color: white; 
-  width: 280px;
+  width: 235px;
   height: 75px;
   position: fixed;
   z-index: 2147483646;
@@ -596,8 +596,10 @@
   border-radius: 8px;
   cursor: pointer;
   height: 44px;
-  margin-right: 48px; 
+  margin-right: 40px; 
   margin-left: auto; 
+  padding-left: 16px;
+  padding-right: 16px;
 }
 #ingredientsFound:hover{
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
