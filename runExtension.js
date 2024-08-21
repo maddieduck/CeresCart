@@ -893,7 +893,7 @@ function parseRecipeData(i) {
       instructions: null,
       totalTime: null,
       performTime: null,
-      preTime: null,
+      prepTime: null,
       cookTime: null,
       yield: null,
       image: null,
@@ -908,7 +908,7 @@ function parseRecipeData(i) {
     instructions: null,
     totalTime: null,
     performTime: null,
-    preTime: null,
+    prepTime: null,
     cookTime: null,
     yield: null,
     image: null,
@@ -929,11 +929,28 @@ function parseRecipeData(i) {
     // Get the ingredients
     result.ingredients = i['recipeIngredient'] || null;
 
-    // Get the recipe image (assuming it’s a URL or an array of URLs)
+    // Handle the image extraction
     if (typeof i['image'] === 'string') {
       result.image = i['image'];
-    } else if (Array.isArray(i['image']) && i['image'].length > 0) {
-      result.image = i['image'][0];
+    } else if (Array.isArray(i['image'])) {
+      // If the image is an array, look for the highest resolution image
+      let bestImage = null;
+      let highestResolution = 0;
+
+      i['image'].forEach(imageObj => {
+        if (typeof imageObj === 'object' && imageObj.url) {
+          const width = parseInt(imageObj.width || 0);
+          const height = parseInt(imageObj.height || 0);
+          const resolution = width * height;
+
+          if (resolution > highestResolution) {
+            highestResolution = resolution;
+            bestImage = imageObj.url;
+          }
+        }
+      });
+
+      result.image = bestImage;
     }
 
     // Get the recipe description
@@ -960,7 +977,7 @@ function parseRecipeData(i) {
     // Parse the times
     result.totalTime = parseISODuration(i['totalTime']) || null;
     result.performTime = parseISODuration(i['performTime']) || null;
-    result.preTime = parseISODuration(i['prepTime']) || null;
+    result.prepTime = parseISODuration(i['prepTime']) || null;
     result.cookTime = parseISODuration(i['cookTime']) || null;
 
     // Get the recipe yield
@@ -1011,7 +1028,7 @@ function findRecipeDataOnPage() {
       instructions: null,
       totalTime: null,
       performTime: null,
-      preTime: null,
+      prepTime: null,
       cookTime: null,
       yield: null,
       image: null,
@@ -1028,13 +1045,13 @@ function findRecipeDataOnPage() {
         for (const key in graph) {
           var value = graph[key];
           var recipeData = parseRecipeData(value);
-          if (recipeData.ingredients || recipeData.instructions || recipeData.totalTime || recipeData.performTime || recipeData.preTime || recipeData.cookTime || recipeData.yield || recipeData.image || recipeData.description) {
+          if (recipeData.ingredients || recipeData.instructions || recipeData.totalTime || recipeData.performTime || recipeData.prepTime || recipeData.cookTime || recipeData.yield || recipeData.image || recipeData.description) {
             return recipeData;
           }
         }
       } else {
         var recipeData = parseRecipeData(schema);
-        if (recipeData.ingredients || recipeData.instructions || recipeData.totalTime || recipeData.performTime || recipeData.preTime || recipeData.cookTime || recipeData.yield || recipeData.image || recipeData.description) {
+        if (recipeData.ingredients || recipeData.instructions || recipeData.totalTime || recipeData.performTime || recipeData.prepTime || recipeData.cookTime || recipeData.yield || recipeData.image || recipeData.description) {
           return recipeData;
         }
 
@@ -1044,7 +1061,7 @@ function findRecipeDataOnPage() {
             recipeData[key] = schema[key] || null;
           } else {
             var nestedData = parseRecipeData(value);
-            if (nestedData.ingredients || nestedData.instructions || nestedData.totalTime || nestedData.performTime || nestedData.preTime || nestedData.cookTime || nestedData.yield || nestedData.image || nestedData.description) {
+            if (nestedData.ingredients || nestedData.instructions || nestedData.totalTime || nestedData.performTime || nestedData.prepTime || nestedData.cookTime || nestedData.yield || nestedData.image || nestedData.description) {
               return nestedData;
             }
           }
@@ -1058,7 +1075,7 @@ function findRecipeDataOnPage() {
       instructions: null,
       totalTime: null,
       performTime: null,
-      preTime: null,
+      prepTime: null,
       cookTime: null,
       yield: null,
       image: null,
@@ -1066,7 +1083,6 @@ function findRecipeDataOnPage() {
     };
   }
 }
-
 
 async function zipCodeEdited(event) {
   var zipCode = shadowRoot.getElementById('ingrExpZipCode').value;
