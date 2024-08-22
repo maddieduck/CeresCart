@@ -183,6 +183,8 @@ function populateReaderView(recipe){
   if (recipe.performTime) addTimeBlock('Perform Time', recipe.performTime);
   if (recipe.cookTime) addTimeBlock('Cook Time', recipe.cookTime);
   if (recipe.totalTime) addTimeBlock('Total Time', recipe.totalTime);
+
+  
 }
 
 // Listening for messages from the background script
