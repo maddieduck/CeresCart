@@ -831,3 +831,15 @@ ol li {
   margin: 0;
   font-size: 16px;
 }
+#authorText{
+  text-align: left;
+  margin-left: 16px;
+  margin-right: 16px;
+  font-size: 16px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+#recipeViewIcon{
+  height: 20px;
+  margin-left: 16px;
+}
