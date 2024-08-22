@@ -1089,7 +1089,6 @@ function findRecipeDataOnPage() {
   }
 }
 
-
 async function zipCodeEdited(event) {
   var zipCode = shadowRoot.getElementById('ingrExpZipCode').value;
   // Check if the Enter key is pressed and the zip code is not blank
