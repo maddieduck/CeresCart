@@ -10,7 +10,7 @@ async function getRefinedIngredients(userInput) {
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',//'gpt-4', //'gpt-3.5-turbo',
+        model: 'gpt-3.5-turbo',//'gpt-4', // 'gpt-4o-mini'
         messages: [
           { role: 'system', content: 'You are a helpful assistant.' },
           { role: 'user', content: `Take this array of ingredients and provide a more 
