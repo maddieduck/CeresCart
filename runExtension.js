@@ -196,12 +196,15 @@ function populateReaderView(recipe){
     authorDiv.style.display = 'none';
   }  
   
-  // Handle Servings
+  // Handle Servings/Yield (display only the first value if it's an array)
   var servingsDiv = shadowRoot.getElementById('servingsDiv');
   var servingsText = shadowRoot.getElementById('servingsText');
-  if (recipe.servings != null) {
-    servingsDiv.style.display = 'block';
-    servingsText.textContent = recipe.servings + ' Servings';
+  if (Array.isArray(recipe.yield) && recipe.yield.length > 0) {
+    servingsDiv.style.display = 'flex';
+    servingsText.textContent = recipe.yield[0] + ' Servings';
+  } else if (recipe.yield != null) {
+    servingsDiv.style.display = 'flex';
+    servingsText.textContent = recipe.yield + ' Servings';
   } else {
     servingsDiv.style.display = 'none';
   }
@@ -237,7 +240,8 @@ function checkForItemprop() { //returns true if pinterest ingredients found
   const elements = document.querySelectorAll('[itemprop]');
   if (elements.length > 0) {
     console.log("itemprop found");
-    ingredients = findRecipeDataOnPage();
+    recipe = findRecipeDataOnPage();
+    ingredients = recipe.ingredients; 
     deployExtension();
     return true;
   }
