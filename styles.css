@@ -846,4 +846,5 @@ ol li {
 .recipeViewIconAndText{
   display: flex; 
   flex-direction: row;
+  align-items: center; /* Vertically center the icon */
 }

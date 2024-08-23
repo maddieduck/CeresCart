@@ -190,7 +190,7 @@ function populateReaderView(recipe){
   const authorText = shadowRoot.getElementById('authorText');
   
   if (recipe.author != null) {
-    authorDiv.style.display = 'block';
+    authorDiv.style.display = 'flex';
     authorText.textContent = recipe.author;
   } else {
     authorDiv.style.display = 'none';
@@ -213,7 +213,7 @@ function populateReaderView(recipe){
   var caloriesDiv = shadowRoot.getElementById('caloriesDiv');
   var caloriesText = shadowRoot.getElementById('caloriesText');
   if (recipe.calories != null) {
-    caloriesDiv.style.display = 'block';
+    caloriesDiv.style.display = 'flex';
     caloriesText.textContent = recipe.calories + ' Calories';
   } else {
     caloriesDiv.style.display = 'none';
@@ -934,7 +934,9 @@ function parseRecipeData(i) {
       cookTime: null,
       yield: null,
       image: null,
-      description: null
+      description: null,
+      author: null,
+      calories: null
     };
   }
 
@@ -949,7 +951,9 @@ function parseRecipeData(i) {
     cookTime: null,
     yield: null,
     image: null,
-    description: null
+    description: null,
+    author: null,
+    calories: null
   };
 
   // Helper function to decode HTML entities
@@ -971,10 +975,8 @@ function parseRecipeData(i) {
       result.image = i['image'];
     } else if (Array.isArray(i['image'])) {
       if (typeof i['image'][0] === 'string') {
-        // If the image array contains strings, select the first one (or customize the selection logic)
         result.image = i['image'][0];
       } else if (typeof i['image'][0] === 'object') {
-        // If the image array contains objects, select the highest resolution image
         let bestImage = null;
         let highestResolution = 0;
 
@@ -997,6 +999,19 @@ function parseRecipeData(i) {
 
     // Get the recipe description
     result.description = i['description'] ? decodeHTML(i['description']) : null;
+
+    // Get the author
+    if (typeof i['author'] === 'string') {
+      result.author = decodeHTML(i['author']);
+    } else if (Array.isArray(i['author'])) {
+      // If there are multiple authors, combine them into a single string
+      result.author = i['author'].map(author => decodeHTML(author.name || author)).join(', ');
+    } else if (i['author'] && i['author'].name) {
+      result.author = decodeHTML(i['author'].name);
+    }
+
+    // Get the calories
+    result.calories = i['nutrition'] && i['nutrition']['calories'] ? decodeHTML(i['nutrition']['calories']) : null;
 
     // Convert 'recipeInstructions' into an array of strings
     if (Array.isArray(i['recipeInstructions'])) {
@@ -1033,17 +1048,16 @@ function parseRecipeData(i) {
 function parseISODuration(duration) {
   if (!duration) return null;
 
-  // Regular expression to match and capture the relevant parts of the duration
   const matches = duration.match(/P(?:\d+Y)?(?:\d+M)?(?:\d+D)?T(?:\d+H)?(\d+M)?(?:[\d.]+S)?/);
 
-  if (!matches) return duration; // Return original if it doesn't match the expected format
+  if (!matches) return duration;
 
   const minutes = matches[1] ? parseInt(matches[1]) : 0;
 
   if (minutes > 0) {
     return `${minutes} minute${minutes > 1 ? 's' : ''}`;
   } else {
-    return "0 minutes"; // In case there’s no valid time found, return 0 minutes
+    return "0 minutes";
   }
 }
 
