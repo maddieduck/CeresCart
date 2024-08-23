@@ -184,7 +184,38 @@ function populateReaderView(recipe){
   if (recipe.cookTime) addTimeBlock('Cook Time', recipe.cookTime);
   if (recipe.totalTime) addTimeBlock('Total Time', recipe.totalTime);
 
+
+  // Populate author
+  const authorDiv = shadowRoot.getElementById('authorDiv');
+  const authorText = shadowRoot.getElementById('authorText');
   
+  if (recipe.author != null) {
+    authorDiv.style.display = 'block';
+    authorText.textContent = recipe.author;
+  } else {
+    authorDiv.style.display = 'none';
+  }  
+  
+  // Handle Servings
+  var servingsDiv = shadowRoot.getElementById('servingsDiv');
+  var servingsText = shadowRoot.getElementById('servingsText');
+  if (recipe.servings != null) {
+    servingsDiv.style.display = 'block';
+    servingsText.textContent = recipe.servings + ' Servings';
+  } else {
+    servingsDiv.style.display = 'none';
+  }
+
+  // Handle Calories
+  var caloriesDiv = shadowRoot.getElementById('caloriesDiv');
+  var caloriesText = shadowRoot.getElementById('caloriesText');
+  if (recipe.calories != null) {
+    caloriesDiv.style.display = 'block';
+    caloriesText.textContent = recipe.calories + ' Calories';
+  } else {
+    caloriesDiv.style.display = 'none';
+  }
+
 }
 
 // Listening for messages from the background script

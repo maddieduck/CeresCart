@@ -27,9 +27,9 @@
             <div class="recipe-details">
                 <p id="recipe-title">Recipe Name</p>
                 <p id="recipe-description">This is a brief description of the recipe that highlights the flavors and appeal of the dish.</p>
-                <div style="display: flex; flex-direction: row;">
-                  <img id = "recipeViewIcon" src = "chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/author.png"> 
-                  <p id="authorText">Author</p>
+                <div id="authorDiv" class="recipeViewIconAndText" style="margin-bottom: 16px;">
+                  <img class = "recipeViewIcon" src = "chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/author.png"> 
+                  <p id="authorText" class="recipeViewText">Author</p>
                 </div>
             </div>
             <img src="images/Ceres Cart Logo.png" alt="Recipe Image" id="recipe-image">
@@ -52,13 +52,13 @@
             <p class="timeQuantity">Time Quantity</p>
           </div>
         </div>
-        <div style="display: flex; flex-direction: row;">
-          <img id = "recipeViewIcon" src = "chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/serving.png"> 
-          <p id="authorText">2 Servings</p>
+        <div id="servingsDiv" class="recipeViewIconAndText">
+          <img class = "recipeViewIcon" src = "chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/serving.png"> 
+          <p id="servingsText" class="recipeViewText">2 Servings</p>
         </div>
-        <div style="display: flex; flex-direction: row;">
-          <img id = "recipeViewIcon" src = "chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/calories.png"> 
-          <p id="authorText">100 Calories</p>
+        <div id="caloriesDiv" class="recipeViewIconAndText" style="margin-top: 8px;">
+          <img class = "recipeViewIcon" src = "chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/calories.png"> 
+          <p id="caloriesText" class="recipeViewText">100 Calories</p>
         </div>
         <div>
             <p id="ingredients">Ingredients</p>

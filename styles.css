@@ -831,7 +831,7 @@ ol li {
   margin: 0;
   font-size: 16px;
 }
-#authorText{
+.recipeViewText{
   text-align: left;
   margin-left: 16px;
   margin-right: 16px;
@@ -839,7 +839,11 @@ ol li {
   margin-top: 0;
   margin-bottom: 0;
 }
-#recipeViewIcon{
+.recipeViewIcon{
   height: 20px;
   margin-left: 16px;
+}
+.recipeViewIconAndText{
+  display: flex; 
+  flex-direction: row;
 }
