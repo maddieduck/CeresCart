@@ -5,16 +5,20 @@
   width: 250px;
   margin: 0;
 }
-#ingrExpPickupDiv{
+#ingrExpPickupDiv {
   display: flex;
   outline: 1px solid rgb(228, 230, 232);
   border-radius: 8px;
   height: 40px;
   width: 280px;
-  margin: 0 auto; 
-  align-items: center; 
+  margin: 0 auto;
+  align-items: center;
   margin-top: 16px;
   margin-bottom: 16px;
+  position: sticky;
+  top: 0; /* Sticks the element at the top */
+  background-color: white; /* Ensures background is preserved when sticky */
+  z-index: 1; /* Ensures it stays above content */
 }
 #ingrExpPickupAt{
   font-weight: 325;
@@ -327,12 +331,11 @@
   height: 98%; /* Adjust as needed */
 }
 #scrollingPart {
-  background-color: white; 
-  overflow: auto;
-  flex-grow: 1; 
-  border-radius: 10px; 
-  overflow-y: auto; /* Enable vertical scrolling */
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+  background-color: white;
+  overflow-y: auto;
+  flex-grow: 1;
+  border-radius: 10px;
+  overflow-x: hidden;
 }
 #ingrExpTopLevelLocationPopup{
   background-color: white;
@@ -350,11 +353,13 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 #buttonContainer {
-  position: relative; /* Set position to relative */
-  width: 100%; /* Set width to match button width */
-  margin-top: 12px;
-  margin-bottom: 12px;
-  display: inline-block;
+  position: sticky;
+  bottom: 0; /* Sticks the element at the bottom */
+  width: 100%;
+  background-color: white; /* Ensures background is preserved when sticky */
+  z-index: 1; /* Ensures it stays above content */
+  padding-bottom: 12px; /* Adjusted for margin */
+  padding-top: 12px;
 }
 #goToCart {
   background-color: rgb(125,120,185); 
@@ -777,9 +782,12 @@ ol li {
   overflow-y: auto; 
   padding-right: 16px;
 }
-#productSearch{
+#productSearch {
   width: 424px;
-  overflow-y: auto; 
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden; /* Prevent entire container from scrolling */
 }
 .contentContainer {
   display: flex;
