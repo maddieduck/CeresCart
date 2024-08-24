@@ -646,6 +646,7 @@
 /*TOOLTIPS*/ 
 .hoverButtonsUp, .hoverButtonsDown {
   position: relative; /* Ensure tooltips position correctly relative to the button */
+  z-index: 2147483646;
 }
 /* Tooltip pointing up */
 .tooltipUp {
@@ -665,6 +666,8 @@
   transition: opacity 0.3s;
   font-size: 14px;
   max-width: 300px;
+  z-index: 2147483646;
+
 }
 
 .tooltipUp::after {
@@ -697,6 +700,8 @@
   transition: opacity 0.3s;
   font-size: 14px;
   max-width: 300px;
+  z-index: 2147483646;
+
 }
 
 .tooltipDown::after {
