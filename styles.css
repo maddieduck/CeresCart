@@ -848,12 +848,14 @@ ol li {
   flex-direction: row;
   align-items: center; /* Vertically center the icon */
 }
-#shadow {
+#overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
-  z-index: 999; /* Behind the popup but above other content */
+  background-color: rgba(0, 0, 0, 0.75); /* Semi-transparent black for shadow effect */
+  z-index: 999; /* Ensure it's above the page but behind your popup */
+  pointer-events: none; /* Make sure it doesn’t block interactions with the popup */
+  display: block; /* Hide by default */
 }
