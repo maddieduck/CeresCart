@@ -855,7 +855,7 @@ ol li {
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.75); /* Semi-transparent black for shadow effect */
-  z-index: 999; /* Ensure it's above the page but behind your popup */
+  z-index: 2147483645; /* Ensure it's above the page but behind your popup */
   pointer-events: none; /* Make sure it doesn’t block interactions with the popup */
   display: block; /* Hide by default */
 }
