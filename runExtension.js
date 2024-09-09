@@ -20,73 +20,73 @@ if (!currentUrl.includes("pinterest.com")) {
 async function deployExtension(){
   const mainPopup = document.getElementById('ingrExpIngredientExporterPopup');
   const minimizedPopup = document.getElementById('minimizePopup');
+  if (ingredients != null && ingredients.length > 0) {
+    try {
+      //insert index.html 
+      const htmlContents = await Promise.all([
+        fetch(chrome.runtime.getURL('index.html')).then(response => response.text()),
+        fetch(chrome.runtime.getURL('styles.css')).then(response => response.text())
+      ]);
+      const [indexHtml, cssStyle] = htmlContents;
+      const containerDiv = document.createElement('div');
+      containerDiv.id = 'ingrExpIngredientExporterPopup';
+      shadowRoot = containerDiv.attachShadow({ mode: 'open', name: 'mainShadowRoot'});
+      shadowRoot.innerHTML = indexHtml;
+      const style = document.createElement('style'); 
+      style.textContent = cssStyle; 
+      shadowRoot.appendChild(style);
+      document.body.insertAdjacentElement('afterbegin', containerDiv);
 
-  try {
-    //insert index.html 
-    const htmlContents = await Promise.all([
-      fetch(chrome.runtime.getURL('index.html')).then(response => response.text()),
-      fetch(chrome.runtime.getURL('styles.css')).then(response => response.text())
-    ]);
-    const [indexHtml, cssStyle] = htmlContents;
-    const containerDiv = document.createElement('div');
-    containerDiv.id = 'ingrExpIngredientExporterPopup';
-    shadowRoot = containerDiv.attachShadow({ mode: 'open', name: 'mainShadowRoot'});
-    shadowRoot.innerHTML = indexHtml;
-    const style = document.createElement('style'); 
-    style.textContent = cssStyle; 
-    shadowRoot.appendChild(style);
-    document.body.insertAdjacentElement('afterbegin', containerDiv);
+      // Now that shadowRoot is ready, populate the reader view
+      populateReaderView(recipe);
 
-    // Now that shadowRoot is ready, populate the reader view
-    populateReaderView(recipe);
+      //check if location exists 
+      var locationExists = await loadFromLocalStorage('locationName');
+      console.log('location exists ', locationExists);
+      //TODO: Call location in bg script 
+      let backgroundResponse = await chrome.runtime.sendMessage({to: 'ingredients', data: ingredients, locationExists: locationExists}); 
 
-    //check if location exists 
-    var locationExists = await loadFromLocalStorage('locationName');
-    console.log('location exists ', locationExists);
-    //TODO: Call location in bg script 
-    let backgroundResponse = await chrome.runtime.sendMessage({to: 'ingredients', data: ingredients, locationExists: locationExists}); 
+      if(backgroundResponse.noLocation){
+        // Add the no location HTML
+        fetch(chrome.runtime.getURL('noLocation.html'))
+        .then(response => response.text())
+        .then(ingredientHtml => {
+          // Insert each ingredient into HTML 
+          let ingredDiv = shadowRoot.getElementById('ingrExpPlaceholderForIngredients');
+          let nodeClone = document.createElement('div'); // Create a new div 
+          nodeClone.innerHTML = ingredientHtml;  // Set the inner HTML of the div 
+          nodeClone.id = 'noLocationDiv';  // Set the id of the new div 
+          ingredDiv.appendChild(nodeClone);
+        });
+      } else {
+        // Insert each ingredient into the popup
+        const ingredientData = new Map(backgroundResponse.ingredientData);
+        insertEachIngredient(ingredientData);
+        // Set the location name if it exists in memory 
+        chrome.storage.sync.get('locationName', (result) => {
+          console.log('location Name ', result['locationName']);
+          if (result['locationName'] != undefined){
+            shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
+            shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
+            shadowRoot.getElementById('ingrExpPickupAt').textContent = result['locationName']
+            shadowRoot.getElementById('change').style.display = '-webkit-box'; 
+          }
+        });
+      }
 
-    if(backgroundResponse.noLocation){
-      // Add the no location HTML
-      fetch(chrome.runtime.getURL('noLocation.html'))
-      .then(response => response.text())
-      .then(ingredientHtml => {
-        // Insert each ingredient into HTML 
-        let ingredDiv = shadowRoot.getElementById('ingrExpPlaceholderForIngredients');
-        let nodeClone = document.createElement('div'); // Create a new div 
-        nodeClone.innerHTML = ingredientHtml;  // Set the inner HTML of the div 
-        nodeClone.id = 'noLocationDiv';  // Set the id of the new div 
-        ingredDiv.appendChild(nodeClone);
-      });
-    } else {
-      // Insert each ingredient into the popup
-      const ingredientData = new Map(backgroundResponse.ingredientData);
-      insertEachIngredient(ingredientData);
-      // Set the location name if it exists in memory 
-      chrome.storage.sync.get('locationName', (result) => {
-        console.log('location Name ', result['locationName']);
-        if (result['locationName'] != undefined){
-          shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
-          shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
-          shadowRoot.getElementById('ingrExpPickupAt').textContent = result['locationName']
-          shadowRoot.getElementById('change').style.display = '-webkit-box'; 
-        }
-      });
+      // Add event listeners after the HTML is injected
+      shadowRoot.getElementById('ingrExpClose').addEventListener('click', closePopup); 
+      shadowRoot.getElementById('minimize').addEventListener('click', minimizeClicked); 
+      shadowRoot.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
+      shadowRoot.getElementById('change').addEventListener('click', changeButtonPressed); 
+      shadowRoot.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
+      shadowRoot.getElementById('goToCart').addEventListener('click', goToCart); 
+      updateCheckoutButton();
+
+    } catch (error) {
+      console.error('ERROR in runExtension.js: ', error);
     }
-
-    // Add event listeners after the HTML is injected
-    shadowRoot.getElementById('ingrExpClose').addEventListener('click', closePopup); 
-    shadowRoot.getElementById('minimize').addEventListener('click', minimizeClicked); 
-    shadowRoot.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
-    shadowRoot.getElementById('change').addEventListener('click', changeButtonPressed); 
-    shadowRoot.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
-    shadowRoot.getElementById('goToCart').addEventListener('click', goToCart); 
-    updateCheckoutButton();
-
-  } catch (error) {
-    console.error('ERROR in runExtension.js: ', error);
   }
-
 }
 
 function populateReaderView(recipe){
