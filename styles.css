@@ -18,7 +18,6 @@
   position: sticky;
   top: 0; /* Sticks the element at the top */
   background-color: white; /* Ensures background is preserved when sticky */
-  z-index: 1; /* Ensures it stays above content */
 }
 #ingrExpPickupAt{
   font-weight: 325;
@@ -645,7 +644,11 @@
   cursor: wait;
 }
 /*TOOLTIPS*/ 
-.hoverButtonsUp, .hoverButtonsDown {
+.hoverButtonsUp {
+  position: relative; /* Ensure tooltips position correctly relative to the button */
+  z-index: 2147483647;
+}
+.hoverButtonsDown {
   position: relative; /* Ensure tooltips position correctly relative to the button */
   z-index: 2147483646;
 }
@@ -658,7 +661,6 @@
   border-radius: 5px;
   padding: 5px;
   position: absolute;
-  z-index: 1;
   bottom: 125%; /* Position above the button */
   left: 50%;
   transform: translateX(-50%);
@@ -667,7 +669,7 @@
   transition: opacity 0.3s;
   font-size: 14px;
   max-width: 300px;
-  z-index: 2147483646;
+  z-index: 2147483647;
 
 }
 
@@ -680,7 +682,7 @@
   border-width: 5px;
   border-style: solid;
   border-color: black transparent transparent transparent;
-  z-index: 9999; /* High z-index to keep the tooltip in front */
+  z-index: 9999; 
 }
 
 /* Tooltip pointing down */
@@ -692,7 +694,6 @@
   border-radius: 5px;
   padding: 5px;
   position: absolute;
-  z-index: 1;
   top: 125%; /* Position below the button */
   left: 50%;
   transform: translateX(-50%);
@@ -701,7 +702,7 @@
   transition: opacity 0.3s;
   font-size: 14px;
   max-width: 300px;
-  z-index: 2147483646;
+  z-index: 2147483647;
 
 }
 
