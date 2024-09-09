@@ -356,9 +356,9 @@
   bottom: 0; /* Sticks the element at the bottom */
   width: 100%;
   background-color: white; /* Ensures background is preserved when sticky */
-  z-index: 1; /* Ensures it stays above content */
   padding-bottom: 12px; /* Adjusted for margin */
   padding-top: 12px;
+  z-index: 2147483647;
 }
 #goToCart {
   background-color: rgb(125,120,185); 
@@ -569,7 +569,7 @@
   width: 235px;
   height: 75px;
   position: fixed;
-  z-index: 2147483646;
+  z-index: 2147483647;
   top: 10px; 
   right: 10px; 
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -702,7 +702,7 @@
   transition: opacity 0.3s;
   font-size: 14px;
   max-width: 300px;
-  z-index: 2147483647;
+  z-index: 2147483646;
 
 }
 
