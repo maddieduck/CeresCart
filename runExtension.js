@@ -1,16 +1,16 @@
-var allProductData = []; //2D array of all data from grocery store
+var allProductData = []; // 2D array of all data from grocery store
 var allLocationData = []; 
 var shadowRoot; 
 var locationShadowRoot; 
 var minimizeShadowRoot; 
 var currentUrl = window.location.href;
 console.log("run extension " + currentUrl);
-var currentUrl = window.location.href;
 console.log("Current URL: " + currentUrl);
+
 var recipe = findRecipeDataOnPage(); 
 console.log('recipe ', recipe);
 var ingredients = recipe.ingredients; 
-console.log('ingredients ', ingredients); 
+console.log('ingredients ', ingredients);
 
 if (!currentUrl.includes("pinterest.com")) {
   deployExtension(); 
@@ -44,22 +44,22 @@ function deployExtension(){
           document.body.insertAdjacentElement('afterbegin', containerDiv);
   
           if(backgroundResponse.noLocation){
-            //add the no location html
+            // Add the no location HTML
             fetch(chrome.runtime.getURL('noLocation.html'))
             .then(response => response.text())
             .then(ingredientHtml => {
-              //insert each ingredient into html 
+              // Insert each ingredient into HTML 
               let ingredDiv = shadowRoot.getElementById('ingrExpPlaceholderForIngredients');
               let nodeClone = document.createElement('div'); // Create a new div 
-              nodeClone.innerHTML = ingredientHtml;  //Set the inner HTML of the div 
+              nodeClone.innerHTML = ingredientHtml;  // Set the inner HTML of the div 
               nodeClone.id = 'noLocationDiv';  // Set the id of the new div
               ingredDiv.appendChild(nodeClone);
-            })
-          }else{
-            //insert each ingredient into the popup
+            });
+          } else {
+            // Insert each ingredient into the popup
             const ingredientData = new Map(backgroundResponse.ingredientData);
             insertEachIngredient(ingredientData);
-            //set the location name if it exists in memory 
+            // Set the location name if it exists in memory 
             chrome.storage.sync.get('locationName', (result) => {
               console.log('location Name ', result['locationName']);
               if (result['locationName'] != undefined){
@@ -70,6 +70,11 @@ function deployExtension(){
               }
             });
           }
+
+          // Now that shadowRoot is ready, populate the reader view
+          populateReaderView(recipe);
+
+          // Add event listeners after the HTML is injected
           shadowRoot.getElementById('ingrExpClose').addEventListener('click', closePopup); 
           shadowRoot.getElementById('minimize').addEventListener('click', minimizeClicked); 
           shadowRoot.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
@@ -77,12 +82,11 @@ function deployExtension(){
           shadowRoot.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
           shadowRoot.getElementById('goToCart').addEventListener('click', goToCart); 
           updateCheckoutButton();
+
         } catch (error) {
           console.error('ERROR in runExtension.js: ', error);
         }
       }
-      populateReaderView(recipe); 
-
     })();
   }
 }
