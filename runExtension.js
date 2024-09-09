@@ -165,6 +165,7 @@ function populateReaderView(recipe){
   times.innerHTML = ''; // Clear existing times
 
   // Function to add a time block
+  /*
   function addTimeBlock(timeName, timeQuantity) {
     const timeDiv = document.createElement('div');
     const nameP = document.createElement('p');
@@ -185,7 +186,7 @@ function populateReaderView(recipe){
   if (recipe.performTime) addTimeBlock('Perform Time', recipe.performTime);
   if (recipe.cookTime) addTimeBlock('Cook Time', recipe.cookTime);
   if (recipe.totalTime) addTimeBlock('Total Time', recipe.totalTime);
-
+  */ 
 
   // Populate author
   const authorDiv = shadowRoot.getElementById('authorDiv');
@@ -199,7 +200,10 @@ function populateReaderView(recipe){
   }  
   
   // Handle Servings/Yield (display only the first value if it's an array)
+  
   var servingsDiv = shadowRoot.getElementById('servingsDiv');
+  servingsDiv.style.display = 'none';
+  /*
   var servingsText = shadowRoot.getElementById('servingsText');
   if (Array.isArray(recipe.yield) && recipe.yield.length > 0) {
     servingsDiv.style.display = 'flex';
@@ -209,10 +213,13 @@ function populateReaderView(recipe){
     servingsText.textContent = recipe.yield + ' Servings';
   } else {
     servingsDiv.style.display = 'none';
-  }
+  }*/ 
 
   // Handle Calories
+  
   var caloriesDiv = shadowRoot.getElementById('caloriesDiv');
+  caloriesDiv.style.display = 'none';
+  /*
   var caloriesText = shadowRoot.getElementById('caloriesText');
   if (recipe.calories != null) {
     caloriesDiv.style.display = 'flex';
@@ -220,7 +227,7 @@ function populateReaderView(recipe){
   } else {
     caloriesDiv.style.display = 'none';
   }
-
+  */ 
 }
 
 // Listening for messages from the background script

@@ -827,7 +827,7 @@ ol li {
   margin-bottom: 32px;
   margin-left: 16px;
   margin-right: 0;
-  display: flex;
+  display: none;
   flex-direction: row;
   justify-content: space-around;
   border-top: 1px solid black; /* Add a border to the top */
