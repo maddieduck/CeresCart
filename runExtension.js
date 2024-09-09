@@ -43,7 +43,14 @@ async function deployExtension(){
       //check if location exists 
       var locationExists = await loadFromLocalStorage('locationName');
       console.log('location exists ', locationExists);
-      //TODO: Call location in bg script 
+      // Set the location name if it exists in memory 
+      if (locationExists != undefined){
+        shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
+        shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
+        shadowRoot.getElementById('ingrExpPickupAt').textContent = locationExists;
+        shadowRoot.getElementById('change').style.display = '-webkit-box'; 
+      }
+
       let backgroundResponse = await chrome.runtime.sendMessage({to: 'ingredients', data: ingredients, locationExists: locationExists}); 
 
       if(backgroundResponse.noLocation){
@@ -62,16 +69,6 @@ async function deployExtension(){
         // Insert each ingredient into the popup
         const ingredientData = new Map(backgroundResponse.ingredientData);
         insertEachIngredient(ingredientData);
-        // Set the location name if it exists in memory 
-        chrome.storage.sync.get('locationName', (result) => {
-          console.log('location Name ', result['locationName']);
-          if (result['locationName'] != undefined){
-            shadowRoot.getElementById('ingrExpZipCode').style.display = 'none';
-            shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
-            shadowRoot.getElementById('ingrExpPickupAt').textContent = result['locationName']
-            shadowRoot.getElementById('change').style.display = '-webkit-box'; 
-          }
-        });
       }
 
       // Add event listeners after the HTML is injected

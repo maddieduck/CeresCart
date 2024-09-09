@@ -644,14 +644,11 @@
   cursor: wait;
 }
 /*TOOLTIPS*/ 
-.hoverButtonsUp {
+.hoverButtonsUp, .hoverButtonsDown {
   position: relative; /* Ensure tooltips position correctly relative to the button */
   z-index: 2147483647;
 }
-.hoverButtonsDown {
-  position: relative; /* Ensure tooltips position correctly relative to the button */
-  z-index: 2147483646;
-}
+
 /* Tooltip pointing up */
 .tooltipUp {
   visibility: hidden;
