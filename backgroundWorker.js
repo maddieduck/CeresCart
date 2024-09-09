@@ -1,7 +1,6 @@
 import { stripIngredients } from './stripIngredients.js'
 import { getRefinedIngredients } from './ChatGPT.js'
 import { Kroger } from './GroceryStores/Kroger.js'
-import { search, stores} from './GroceryStores/WalmartAPICalls.js'
 import {Walmart} from './GroceryStores/Walmart.js'
 
 chrome.runtime.onInstalled.addListener(function() {
