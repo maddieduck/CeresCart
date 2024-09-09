@@ -523,6 +523,7 @@
   position: absolute; 
   right: 16px; 
   top: 8px; 
+  z-index: 2147483647;
 }
 .minusButton{
   width: 40px;
