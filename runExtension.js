@@ -271,7 +271,7 @@ function lookForPinterestIngredient(startTime, maxDuration) {
 }
 
 function warningPopup(warningText, color){
-  var popup = shadowRoot.getElementById('ingrExpCheckoutButtonPopup');
+  var popup = shadowRoot.getElementById('goToCart');
   popup.style.display = 'block';
   popup.textContent = warningText; 
   popup.style.backgroundColor = color;

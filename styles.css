@@ -356,8 +356,8 @@
   bottom: 0; /* Sticks the element at the bottom */
   width: 100%;
   background-color: white; /* Ensures background is preserved when sticky */
-  padding-bottom: 12px; /* Adjusted for margin */
-  padding-top: 12px;
+  margin-bottom: 12px; /* Adjusted for margin */
+  margin-top: 12px;
   z-index: 2147483647;
 }
 #goToCart {
@@ -367,6 +367,7 @@
   top: 0;
   left: 50%; 
   transform: translateX(-50%); 
+  z-index: 2147483647;
 }
 #goToCart:hover {
   box-shadow: 0 0 10px rgba(105, 90,160, 0.75); 
