@@ -39,8 +39,7 @@
     {
       "matches": ["http://*/*", "https://*/*"],
       "js": ["runExtension.js"],
-      "type": "module",
-      "css": ["styles.css"]        
+      "type": "module"
     },
     {
       "matches": ["*://www.walmart.com/store/*"],

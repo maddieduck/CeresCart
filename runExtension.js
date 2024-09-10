@@ -14,13 +14,14 @@ console.log('ingredients ', ingredients);
 
 if (!currentUrl.includes("pinterest.com")) {
   deployExtension(); 
-  console.log('deploy ext');
+  console.log('ext deployed');
 }
 
 async function deployExtension(){
   const mainPopup = document.getElementById('ingrExpIngredientExporterPopup');
   const minimizedPopup = document.getElementById('minimizePopup');
   if (ingredients != null && ingredients.length > 0) {
+    console.log('deploy ext '); 
     try {
       //insert index.html 
       const htmlContents = await Promise.all([
