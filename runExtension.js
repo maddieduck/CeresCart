@@ -970,6 +970,40 @@ function parseRecipeData(i) {
     return txt.value;
   }
 
+  // Add parseInstructions function here
+  function parseInstructions(instructions, schema) {
+    if (!instructions) {
+      instructions = schema;
+    }
+  
+    function extractStepsFromSchema(steps) {
+      return steps.flatMap(step => {
+        if (typeof step === 'string') {
+          return decodeHTML(step);
+        } else if (step['@type'] === 'HowToStep' && (step.text || step.name)) {
+          return decodeHTML(step.text || step.name);
+        } else if (step['@type'] === 'HowToSection' && step.itemListElement) {
+          // Recursively handle HowToSection to extract its steps
+          return extractStepsFromSchema(step.itemListElement);
+        }
+        return [];
+      });
+    }
+  
+    if (typeof instructions === 'string') {
+      return [decodeHTML(instructions)];
+    } else if (Array.isArray(instructions)) {
+      // Handle array of instructions (HowToStep or HowToSection)
+      return extractStepsFromSchema(instructions).filter(step => step.trim().length > 0);
+    } else if (typeof instructions === 'object') {
+      if (instructions['@type'] === 'HowToStep' || instructions['@type'] === 'HowToSection') {
+        return extractStepsFromSchema([instructions]);
+      }
+    }
+  
+    return null;
+  }  
+
   if (scriptType === 'Recipe' || (Array.isArray(scriptType) && scriptType.includes('Recipe'))) {
     // Get the recipe name
     result.name = i['name'] ? decodeHTML(i['name']) : null;
@@ -1011,7 +1045,6 @@ function parseRecipeData(i) {
     if (typeof i['author'] === 'string') {
       result.author = decodeHTML(i['author']);
     } else if (Array.isArray(i['author'])) {
-      // If there are multiple authors, combine them into a single string
       result.author = i['author'].map(author => decodeHTML(author.name || author)).join(', ');
     } else if (i['author'] && i['author'].name) {
       result.author = decodeHTML(i['author'].name);
@@ -1020,23 +1053,8 @@ function parseRecipeData(i) {
     // Get the calories
     result.calories = i['nutrition'] && i['nutrition']['calories'] ? decodeHTML(i['nutrition']['calories']) : null;
 
-    // Convert 'recipeInstructions' into an array of strings
-    if (Array.isArray(i['recipeInstructions'])) {
-      result.instructions = i['recipeInstructions'].map(instruction => {
-        if (typeof instruction === 'string') {
-          return decodeHTML(instruction);
-        } else if (instruction['@type'] === 'HowToStep' && instruction.text) {
-          return decodeHTML(instruction.text);
-        } else if (instruction['@type'] === 'HowToStep' && instruction.name) {
-          return decodeHTML(instruction.name);
-        }
-        return '';
-      }).filter(step => step.trim().length > 0); // Filter out empty strings
-    } else if (typeof i['recipeInstructions'] === 'string') {
-      result.instructions = [decodeHTML(i['recipeInstructions'])];
-    } else {
-      result.instructions = null;
-    }
+    // Use the new parseInstructions function here
+    result.instructions = parseInstructions(i['recipeInstructions'], i);
 
     // Parse the times
     result.totalTime = parseISODuration(i['totalTime']) || null;
