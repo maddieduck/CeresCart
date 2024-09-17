@@ -50,6 +50,7 @@ async function deployExtension(){
         shadowRoot.getElementById('ingrExpPickupAt').style.display = '-webkit-box';
         shadowRoot.getElementById('ingrExpPickupAt').textContent = locationExists;
         shadowRoot.getElementById('change').style.display = '-webkit-box'; 
+        shadowRoot.getElementById('loadingContainer').style.display = 'block';
       }
 
       let backgroundResponse = await chrome.runtime.sendMessage({to: 'ingredients', data: ingredients, locationExists: locationExists}); 
@@ -60,6 +61,7 @@ async function deployExtension(){
         .then(response => response.text())
         .then(ingredientHtml => {
           // Insert each ingredient into HTML 
+          shadowRoot.getElementById('loadingContainer').style.display = 'none';
           let ingredDiv = shadowRoot.getElementById('ingrExpPlaceholderForIngredients');
           let nodeClone = document.createElement('div'); // Create a new div 
           nodeClone.innerHTML = ingredientHtml;  // Set the inner HTML of the div 
@@ -70,6 +72,7 @@ async function deployExtension(){
         // Insert each ingredient into the popup
         const ingredientData = new Map(backgroundResponse.ingredientData);
         insertEachIngredient(ingredientData);
+        shadowRoot.getElementById('loadingContainer').style.display = 'none';
       }
 
       // Add event listeners after the HTML is injected
