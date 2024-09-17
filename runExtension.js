@@ -495,6 +495,7 @@ async function loadLocationsInPopup(newLocationData){
       nodeClone.querySelector('.ingrExpShopStore').addEventListener('click', shopStore); 
       locationPlaceholder.appendChild(nodeClone); 
     }
+
   } catch (error) {
     console.error('Error retrieving data from Chrome storage:', error);
   }
@@ -505,6 +506,7 @@ async function insertLocations(){
   console.log('background response ', backgroundResponse)
   if(backgroundResponse.locationsFound){
     loadLocationsInPopup(backgroundResponse.locationData); 
+    locationShadowRoot.getElementById('loadingContainerLocationPopup').style.display = 'none';
     locationShadowRoot.getElementById('ingrExpNoLocationsFound').style.display = 'none'; 
   }else{
     locationShadowRoot.getElementById('ingrExpZipCodeInPopup').style.display = '-webkit-box';
@@ -573,9 +575,10 @@ async function launchLocationPopup() {
 }
 
 async function shopStore(event){ //a location has been selected from the location popup.
-  // Change cursor to spinning wheel
   document.getElementById('ingrExpLocationPopup').remove(); 
   if (event.target.innerText !== 'Currently Shopping') {
+    shadowRoot.getElementById('loadingContainer').style.display = 'block'; //display loading wheel
+
     document.body.classList.add('wait-cursor');
     var id = event.target.closest('[id]').id; 
     var locationIndex = Number(id.replace(/ingrExpTopLocationDiv/g, '')); 
@@ -608,10 +611,9 @@ async function shopStore(event){ //a location has been selected from the locatio
     //insert ingredients from the new store location
     let backgroundResponse = await chrome.runtime.sendMessage({ to: 'ingredients', data: ingredients, locationExists: true});
     const ingredientData = new Map(backgroundResponse.ingredientData);
-    insertEachIngredient(ingredientData);
-  
-    // Change cursor back to normal
-    document.body.classList.remove('wait-cursor');
+    insertEachIngredient(ingredientData);  
+
+    shadowRoot.getElementById('loadingContainer').style.display = 'none'; //hide loading wheel 
   }
 }
 

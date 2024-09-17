@@ -872,3 +872,8 @@ ol li {
   pointer-events: none; /* Make sure it doesn’t block interactions with the popup */
   display: block; /* Hide by default */
 }
+.loadingText{
+  color: rgb(255, 160, 175);
+  font-weight: bold;
+  font-size: 18px;
+}

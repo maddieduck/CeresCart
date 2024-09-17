@@ -11,7 +11,6 @@ function stripIngredients(products) {
   return cleanProducts;
 }
 
-
 function replaceWords(products) {
   const newWordPairs = [
     ["spring onion", "green onion"],
