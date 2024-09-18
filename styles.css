@@ -734,6 +734,7 @@
   font-size: 30px;
   text-align: left;
   margin-left: 16px;
+  margin-right: 16px;
 }
 
 #recipe-description {
@@ -874,4 +875,12 @@ ol li {
   color: rgb(255, 160, 175);
   font-weight: bold;
   font-size: 18px;
+}
+#ingredientList{
+  margin-left: 32px;
+  margin-right: 8px;
+}
+#instructionsList{
+  margin-left: 32px;
+  margin-right: 8px;
 }
