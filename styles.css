@@ -641,9 +641,7 @@
   flex-direction: column; 
   align-items: center;
 }
-.wait-cursor {
-  cursor: wait;
-}
+
 /*TOOLTIPS*/ 
 .hoverButtonsUp, .hoverButtonsDown {
   position: relative; /* Ensure tooltips position correctly relative to the button */

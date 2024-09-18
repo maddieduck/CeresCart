@@ -577,9 +577,12 @@ async function launchLocationPopup() {
 async function shopStore(event){ //a location has been selected from the location popup.
   document.getElementById('ingrExpLocationPopup').remove(); 
   if (event.target.innerText !== 'Currently Shopping') {
-    shadowRoot.getElementById('loadingContainer').style.display = 'block'; //display loading wheel
+    let existingNoLocationDiv = shadowRoot.getElementById('noLocationDiv');
+    if (existingNoLocationDiv) {
+      existingNoLocationDiv.remove();
+    }
+    shadowRoot.getElementById('loadingContainer').style.display = 'block'; //hide loading wheel 
 
-    document.body.classList.add('wait-cursor');
     var id = event.target.closest('[id]').id; 
     var locationIndex = Number(id.replace(/ingrExpTopLocationDiv/g, '')); 
     console.log('shop store pressed ', locationIndex); 
