@@ -978,12 +978,68 @@ function parseRecipeData(i) {
     return txt.value;
   }
 
-  // Add parseInstructions function here
+  // Helper function to handle image extraction
+  function extractImage(image) {
+    if (typeof image === 'string') {
+      return image;
+    }
+    
+    if (Array.isArray(image)) {
+      for (const img of image) {
+        const extracted = extractImage(img);
+        if (extracted) return extracted;
+      }
+    }
+    
+    if (typeof image === 'object' && image.url) {
+      return image.url;
+    }
+
+    return null;
+  }
+
+  // Enhanced image extraction function to choose the best image
+  function getBestImage(imageData) {
+    if (!imageData) return null;
+
+    if (typeof imageData === 'string') {
+      return imageData;
+    }
+
+    if (Array.isArray(imageData)) {
+      let bestImage = null;
+      let highestResolution = 0;
+
+      imageData.forEach(imgObj => {
+        const img = extractImage(imgObj);
+
+        if (typeof img === 'object' && img.width && img.height) {
+          const resolution = parseInt(img.width) * parseInt(img.height);
+          if (resolution > highestResolution) {
+            highestResolution = resolution;
+            bestImage = img.url;
+          }
+        } else if (typeof img === 'string' && !bestImage) {
+          bestImage = img;
+        }
+      });
+
+      return bestImage;
+    }
+
+    if (typeof imageData === 'object' && imageData.url) {
+      return imageData.url;
+    }
+
+    return null;
+  }
+
+  // Function to parse instructions
   function parseInstructions(instructions, schema) {
     if (!instructions) {
       instructions = schema;
     }
-  
+
     function extractStepsFromSchema(steps) {
       return steps.flatMap(step => {
         if (typeof step === 'string') {
@@ -991,26 +1047,24 @@ function parseRecipeData(i) {
         } else if (step['@type'] === 'HowToStep' && (step.text || step.name)) {
           return decodeHTML(step.text || step.name);
         } else if (step['@type'] === 'HowToSection' && step.itemListElement) {
-          // Recursively handle HowToSection to extract its steps
           return extractStepsFromSchema(step.itemListElement);
         }
         return [];
       });
     }
-  
+
     if (typeof instructions === 'string') {
       return [decodeHTML(instructions)];
     } else if (Array.isArray(instructions)) {
-      // Handle array of instructions (HowToStep or HowToSection)
       return extractStepsFromSchema(instructions).filter(step => step.trim().length > 0);
     } else if (typeof instructions === 'object') {
       if (instructions['@type'] === 'HowToStep' || instructions['@type'] === 'HowToSection') {
         return extractStepsFromSchema([instructions]);
       }
     }
-  
+
     return null;
-  }  
+  }
 
   if (scriptType === 'Recipe' || (Array.isArray(scriptType) && scriptType.includes('Recipe'))) {
     // Get the recipe name
@@ -1020,31 +1074,7 @@ function parseRecipeData(i) {
     result.ingredients = i['recipeIngredient'] || null;
 
     // Handle the image extraction
-    if (typeof i['image'] === 'string') {
-      result.image = i['image'];
-    } else if (Array.isArray(i['image'])) {
-      if (typeof i['image'][0] === 'string') {
-        result.image = i['image'][0];
-      } else if (typeof i['image'][0] === 'object') {
-        let bestImage = null;
-        let highestResolution = 0;
-
-        i['image'].forEach(imageObj => {
-          if (typeof imageObj === 'object' && imageObj.url) {
-            const width = parseInt(imageObj.width || 0);
-            const height = parseInt(imageObj.height || 0);
-            const resolution = width * height;
-
-            if (resolution > highestResolution) {
-              highestResolution = resolution;
-              bestImage = imageObj.url;
-            }
-          }
-        });
-
-        result.image = bestImage;
-      }
-    }
+    result.image = getBestImage(i['image']);
 
     // Get the recipe description
     result.description = i['description'] ? decodeHTML(i['description']) : null;
@@ -1061,7 +1091,7 @@ function parseRecipeData(i) {
     // Get the calories
     result.calories = i['nutrition'] && i['nutrition']['calories'] ? decodeHTML(i['nutrition']['calories']) : null;
 
-    // Use the new parseInstructions function here
+    // Parse the instructions
     result.instructions = parseInstructions(i['recipeInstructions'], i);
 
     // Parse the times
