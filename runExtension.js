@@ -1086,6 +1086,9 @@ function parseRecipeData(i) {
       result.author = i['author'].map(author => decodeHTML(author.name || author)).join(', ');
     } else if (i['author'] && i['author'].name) {
       result.author = decodeHTML(i['author'].name);
+    }else{
+      const authorMeta = document.querySelector('meta[name="author"]');
+      result.author = authorMeta ? authorMeta.getAttribute('content') : null;
     }
 
     // Get the calories
