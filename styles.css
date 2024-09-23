@@ -780,9 +780,6 @@ ol li {
   margin-bottom: 8px;
   font-size: 16px;
 }
-.vertical-line {
-  border-left: 1px solid rgb(228, 230, 232); /* Thickness and color of the line */
-}
 #readerView {
   width: 550px;
   overflow-y: auto; 
@@ -885,4 +882,20 @@ ol li {
 #instructionsList{
   margin-left: 32px;
   margin-right: 8px;
+}
+.center-container {
+  display: flex;
+  align-items: center; /* Vertically center elements */
+  justify-content: center; /* Optionally center them horizontally */
+}
+
+#collapseLeft, #collapseRight {
+  height: 20px;
+  background-color: transparent;
+  border: none;
+}
+.vertical-line {
+  height: 100%; /* Set the desired height for the line */
+  border-left: 1px solid rgb(228, 230, 232); /* Thickness and color of the line */
+  margin: 0 4px; /* Space between the images and line */
 }
