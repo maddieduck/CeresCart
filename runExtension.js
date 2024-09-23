@@ -82,6 +82,8 @@ async function deployExtension(){
       shadowRoot.getElementById('change').addEventListener('click', changeButtonPressed); 
       shadowRoot.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
       shadowRoot.getElementById('goToCart').addEventListener('click', goToCart); 
+      shadowRoot.getElementById('collapseLeft').addEventListener('click', collapseLeft); 
+      shadowRoot.getElementById('collapseRight').addEventListener('click', collapseRight); 
       updateCheckoutButton();
 
     } catch (error) {
@@ -1249,5 +1251,25 @@ async function goToCart(event) {
     }
   } catch (error) {
     console.error('Error sending goToCart message:', error);
+  }
+}
+
+function collapseLeft(event){
+  var readerView = shadowRoot.getElementById('readerView');
+  if(readerView.style.display == 'none'){
+    shadowRoot.getElementById('readerView').style.display = 'block';
+    shadowRoot.getElementById('overlay').style.display = 'block';
+  }else{
+    shadowRoot.getElementById('readerView').style.display = 'none';
+    shadowRoot.getElementById('overlay').style.display = 'none';
+  }
+}
+
+function collapseRight(event){
+  var readerView = shadowRoot.getElementById('productSearch');
+  if(readerView.style.display == 'none'){
+    shadowRoot.getElementById('productSearch').style.display = 'flex';
+  }else{
+    shadowRoot.getElementById('productSearch').style.display = 'none';
   }
 }
