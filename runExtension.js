@@ -1260,6 +1260,8 @@ function collapseLeft(event){
   shadowRoot.getElementById('readerView').style.display = 'none';
   shadowRoot.getElementById('expandArrow').style.display = 'block';
   shadowRoot.getElementById("expandArrowImage").src = 'chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/left arrow.png';
+  shadowRoot.getElementById('overlay').style.display = 'none';
+
 }
 
 function collapseRight(event){
