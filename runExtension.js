@@ -1269,13 +1269,15 @@ function collapseRight(event){
   shadowRoot.getElementById("expandArrowImage").src = 'chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/right arrow.png';
 }
 
-function expandArrowClicked(event){
-  console.log('expand arrow clicked ', shadowRoot.getElementById("expandArrowImage").src)
-  if(shadowRoot.getElementById("expandArrowImage").src == 'chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/left%20arrow.png'){
+function expandArrowClicked(event) {
+  const arrowImageSrc = shadowRoot.getElementById("expandArrowImage").src;
+
+  if (arrowImageSrc.includes('left-arrow.png')) {
     shadowRoot.getElementById('readerView').style.display = 'block';
-  }else{
+  } else {
     shadowRoot.getElementById('productSearch').style.display = 'block';
   }
+
   shadowRoot.getElementById('expandArrow').style.display = 'none';
   shadowRoot.getElementById('collapseContainer').style.display = 'block';
 }
