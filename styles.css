@@ -894,7 +894,7 @@ ol li {
   background-color: transparent;
   border: none;
 }
-.vertical-line {
+#vertical-line {
   height: 100%; /* Set the desired height for the line */
   border-left: 1px solid rgb(228, 230, 232); /* Thickness and color of the line */
   margin: 0 4px; /* Space between the images and line */

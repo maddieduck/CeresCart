@@ -1259,9 +1259,13 @@ function collapseLeft(event){
   if(readerView.style.display == 'none'){
     shadowRoot.getElementById('readerView').style.display = 'block';
     shadowRoot.getElementById('overlay').style.display = 'block';
+    shadowRoot.getElementById('vertical-line').style.display = 'block';
+    shadowRoot.getElementById('collapseRight').style.display = 'block';
   }else{
     shadowRoot.getElementById('readerView').style.display = 'none';
     shadowRoot.getElementById('overlay').style.display = 'none';
+    shadowRoot.getElementById('vertical-line').style.display = 'none';
+    shadowRoot.getElementById('collapseRight').style.display = 'none';
   }
 }
 
