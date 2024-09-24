@@ -883,7 +883,7 @@ ol li {
   margin-left: 32px;
   margin-right: 8px;
 }
-.center-container {
+#collapseContainer {
   display: flex;
   align-items: center; /* Vertically center elements */
   justify-content: center; /* Optionally center them horizontally */
@@ -898,4 +898,20 @@ ol li {
   height: 100%; /* Set the desired height for the line */
   border-left: 1px solid rgb(228, 230, 232); /* Thickness and color of the line */
   margin: 0 4px; /* Space between the images and line */
+}
+#expandArrow{
+  border-width: 1px;
+  border: 1px solid; 
+  margin-right: 16px;
+  height: 40px;
+  width: 40px;
+  background-color: rgb(255, 255, 255);
+  border-radius: 50%; 
+  border-color: rgb(228, 230, 232);
+  cursor: pointer;
+  display: none;
+}
+#expandArrow:hover {
+  border-color: rgb(228, 230, 232);
+  background-color: rgb(228, 230, 232);
 }
