@@ -84,6 +84,7 @@ async function deployExtension(){
       shadowRoot.getElementById('goToCart').addEventListener('click', goToCart); 
       shadowRoot.getElementById('collapseLeft').addEventListener('click', collapseLeft); 
       shadowRoot.getElementById('collapseRight').addEventListener('click', collapseRight); 
+      shadowRoot.getElementById('expandArrow').addEventListener('click', expandArrowClicked); 
       updateCheckoutButton();
 
     } catch (error) {
@@ -1258,9 +1259,17 @@ function collapseLeft(event){
   shadowRoot.getElementById('collapseContainer').style.display = 'none';
   shadowRoot.getElementById('readerView').style.display = 'none';
   shadowRoot.getElementById('expandArrow').style.display = 'block';
+  document.getElementById("expandArrowImage").src = 'chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/right arrow.png';
 }
 
 function collapseRight(event){
+  shadowRoot.getElementById('collapseContainer').style.display = 'none';
+  shadowRoot.getElementById('productSearch').style.display = 'none';
+  shadowRoot.getElementById('expandArrow').style.display = 'block';
+  document.getElementById("expandArrowImage").src = 'chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/left arrow.png';
+}
+
+function expandArrowClicked(event){
   shadowRoot.getElementById('collapseContainer').style.display = 'none';
   shadowRoot.getElementById('productSearch').style.display = 'none';
   shadowRoot.getElementById('expandArrow').style.display = 'block';
