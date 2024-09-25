@@ -1261,7 +1261,6 @@ function collapseLeft(event){
   shadowRoot.getElementById("expandArrowImage").src = 'chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/left arrow.png';
   shadowRoot.getElementById('overlay').style.display = 'none';
   shadowRoot.getElementById('expandArrow').addEventListener('click', expandArrowClicked); 
-
 }
 
 function collapseRight(event){
@@ -1284,5 +1283,5 @@ function expandArrowClicked(event) {
   }
 
   shadowRoot.getElementById('expandArrow').style.display = 'none';
-  shadowRoot.getElementById('collapseContainer').style.display = 'block';
+  shadowRoot.getElementById('collapseContainer').style.display = 'flex';
 }
