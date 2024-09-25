@@ -1280,6 +1280,6 @@ function expandArrowClicked(event) {
     shadowRoot.getElementById('readerView').style.display = 'block';
     shadowRoot.getElementById('overlay').style.display = 'block';
   } else {
-    shadowRoot.getElementById('productSearch').style.display = 'block';
+    shadowRoot.getElementById('productSearch').style.display = 'flex';
   }
 }
