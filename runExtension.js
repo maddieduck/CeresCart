@@ -82,8 +82,8 @@ async function deployExtension(){
       shadowRoot.getElementById('change').addEventListener('click', changeButtonPressed); 
       shadowRoot.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
       shadowRoot.getElementById('goToCart').addEventListener('click', goToCart); 
-      //shadowRoot.getElementById('collapseLeft').addEventListener('click', collapseLeft); 
-      //shadowRoot.getElementById('collapseRight').addEventListener('click', collapseRight); 
+      shadowRoot.getElementById('collapseLeft').addEventListener('click', collapseLeft); 
+      shadowRoot.getElementById('collapseRight').addEventListener('click', collapseRight); 
       updateCheckoutButton();
 
     } catch (error) {
@@ -1253,7 +1253,7 @@ async function goToCart(event) {
     console.error('Error sending goToCart message:', error);
   }
 }
-/*
+
 function collapseLeft(event){
   shadowRoot.getElementById('collapseContainer').style.display = 'none';
   shadowRoot.getElementById('readerView').style.display = 'none';
@@ -1270,7 +1270,6 @@ function collapseRight(event){
   shadowRoot.getElementById('expandArrow').style.display = 'block';
   shadowRoot.getElementById("expandArrowImage").src = 'chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/right arrow.png';
   shadowRoot.getElementById('expandArrow').addEventListener('click', expandArrowClicked); 
-
 }
 
 function expandArrowClicked(event) {
@@ -1287,4 +1286,3 @@ function expandArrowClicked(event) {
   shadowRoot.getElementById('expandArrow').style.display = 'none';
   shadowRoot.getElementById('collapseContainer').style.display = 'block';
 }
-*/
