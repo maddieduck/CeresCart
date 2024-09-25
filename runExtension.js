@@ -82,9 +82,8 @@ async function deployExtension(){
       shadowRoot.getElementById('change').addEventListener('click', changeButtonPressed); 
       shadowRoot.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
       shadowRoot.getElementById('goToCart').addEventListener('click', goToCart); 
-      shadowRoot.getElementById('collapseLeft').addEventListener('click', collapseLeft); 
-      shadowRoot.getElementById('collapseRight').addEventListener('click', collapseRight); 
-      shadowRoot.getElementById('expandArrow').addEventListener('click', expandArrowClicked); 
+      //shadowRoot.getElementById('collapseLeft').addEventListener('click', collapseLeft); 
+      //shadowRoot.getElementById('collapseRight').addEventListener('click', collapseRight); 
       updateCheckoutButton();
 
     } catch (error) {
@@ -1254,13 +1253,14 @@ async function goToCart(event) {
     console.error('Error sending goToCart message:', error);
   }
 }
-
+/*
 function collapseLeft(event){
   shadowRoot.getElementById('collapseContainer').style.display = 'none';
   shadowRoot.getElementById('readerView').style.display = 'none';
   shadowRoot.getElementById('expandArrow').style.display = 'block';
   shadowRoot.getElementById("expandArrowImage").src = 'chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/left arrow.png';
   shadowRoot.getElementById('overlay').style.display = 'none';
+  shadowRoot.getElementById('expandArrow').addEventListener('click', expandArrowClicked); 
 
 }
 
@@ -1269,6 +1269,8 @@ function collapseRight(event){
   shadowRoot.getElementById('productSearch').style.display = 'none';
   shadowRoot.getElementById('expandArrow').style.display = 'block';
   shadowRoot.getElementById("expandArrowImage").src = 'chrome-extension://nckacfgoolkhaedphbknecabckccgffe/images/right arrow.png';
+  shadowRoot.getElementById('expandArrow').addEventListener('click', expandArrowClicked); 
+
 }
 
 function expandArrowClicked(event) {
@@ -1276,6 +1278,8 @@ function expandArrowClicked(event) {
 
   if (arrowImageSrc.includes('left-arrow.png')) {
     shadowRoot.getElementById('readerView').style.display = 'block';
+    shadowRoot.getElementById('overlay').style.display = 'block';
+
   } else {
     shadowRoot.getElementById('productSearch').style.display = 'block';
   }
@@ -1283,3 +1287,4 @@ function expandArrowClicked(event) {
   shadowRoot.getElementById('expandArrow').style.display = 'none';
   shadowRoot.getElementById('collapseContainer').style.display = 'block';
 }
+*/

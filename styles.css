@@ -146,7 +146,7 @@
   border-color: rgb(228, 230, 232);
   background-color: rgb(228, 230, 232);
 }
-#ingrExpLeftArrowImage{
+.ingrExpLeftArrowImage{
   height: 20px;
   padding-top: 4px;
   padding-right: 3px;
@@ -900,6 +900,7 @@ ol li {
   margin: 0 4px; /* Space between the images and line */
 }
 #expandArrow{
+  position: absolute; /* Allow positioning */
   border-width: 1px;
   border: 1px solid; 
   margin-right: 16px;
@@ -910,6 +911,8 @@ ol li {
   border-color: rgb(228, 230, 232);
   cursor: pointer;
   display: none;
+  transform: translateX(-50%); /* Fine-tunes the positioning to achieve the desired overlap */
+  z-index: 2147483646; /* Ensures the button stays above other elements */
 }
 #expandArrow:hover {
   border-color: rgb(228, 230, 232);
