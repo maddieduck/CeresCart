@@ -1272,16 +1272,15 @@ function collapseRight(event){
 }
 
 function expandArrowClicked(event) {
+  shadowRoot.getElementById('expandArrow').style.display = 'none';
+  shadowRoot.getElementById('collapseContainer').style.display = 'flex';
+
   const arrowImageSrc = shadowRoot.getElementById("expandArrowImage").src;
 
   if (arrowImageSrc.includes('left-arrow.png')) {
     shadowRoot.getElementById('readerView').style.display = 'block';
     shadowRoot.getElementById('overlay').style.display = 'block';
-
   } else {
     shadowRoot.getElementById('productSearch').style.display = 'block';
   }
-
-  shadowRoot.getElementById('expandArrow').style.display = 'none';
-  shadowRoot.getElementById('collapseContainer').style.display = 'flex';
 }
