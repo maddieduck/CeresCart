@@ -1274,10 +1274,9 @@ function collapseRight(event){
 function expandArrowClicked(event) {
   shadowRoot.getElementById('expandArrow').style.display = 'none';
   shadowRoot.getElementById('collapseContainer').style.display = 'flex';
-
   const arrowImageSrc = shadowRoot.getElementById("expandArrowImage").src;
 
-  if (arrowImageSrc.includes('left-arrow.png')) {
+  if (arrowImageSrc.includes('left%20arrow.png')) {
     shadowRoot.getElementById('readerView').style.display = 'block';
     shadowRoot.getElementById('overlay').style.display = 'block';
   } else {
