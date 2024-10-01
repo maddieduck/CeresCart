@@ -207,7 +207,9 @@
   justify-content: flex-start; /* Align items to the left */
   flex-shrink: 0; /* Prevents the header from shrinking */
   align-items: center; /* Align items vertically in the center */
-  background-color: rgb(160, 205, 200)
+  background-color: rgb(160, 205, 200);
+  border-radius: 10px 10px 0 0; /* Top corners have a radius of 20px, bottom corners have none */
+
 }
 .ingrExpCircleButton{
   height: 30px;
@@ -326,8 +328,8 @@
   text-align: center;
   display: flex; 
   flex-direction: column; 
-  overflow: hidden;
   height: 98%; /* Adjust as needed */
+  overflow: visible; /* was hidden - Ensure the expandArrow is not cut off */
   
 }
 #scrollingPart {
