@@ -915,7 +915,7 @@ ol li {
   cursor: pointer;
   display: none;
   transform: translateX(-50%); /* Fine-tunes the positioning to achieve the desired overlap */
-  z-index: 2147483646; /* Ensures the button stays above other elements */
+  z-index: 2147483647; /* Ensures the button stays above other elements */
 }
 #expandArrow:hover {
   border-color: rgb(228, 230, 232);

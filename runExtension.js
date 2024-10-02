@@ -1263,6 +1263,7 @@ function collapseLeft(event){
   shadowRoot.getElementById("expandArrowImage").classList.add('ingrExpLeftArrowImage');
   shadowRoot.getElementById('overlay').style.display = 'none';
   shadowRoot.getElementById('expandArrow').addEventListener('click', expandArrowClicked); 
+  shadowRoot.getElementById("expandArrowTooltipText").innerHTML = 'expand<br>reader view';
 }
 
 function collapseRight(event){
@@ -1273,6 +1274,7 @@ function collapseRight(event){
   shadowRoot.getElementById("expandArrowImage").classList.remove('ingrExpLeftArrowImage');
   shadowRoot.getElementById("expandArrowImage").classList.add('ingrExpRightArrowImage');
   shadowRoot.getElementById('expandArrow').addEventListener('click', expandArrowClicked); 
+  shadowRoot.getElementById("expandArrowTooltipText").innerHTML = 'expand<br>products';
 }
 
 function expandArrowClicked(event) {
