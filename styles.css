@@ -760,6 +760,7 @@
   margin-left: 16px;
   margin-right: 16px;
   font-size: 16px;
+  line-height: 1.2;
 }
 
 #recipe-image {
@@ -892,10 +893,14 @@ ol li {
 #ingredientList{
   margin-left: 32px;
   margin-right: 8px;
+  line-height: 1.2;
+
 }
 #instructionsList{
   margin-left: 32px;
   margin-right: 8px;
+  line-height: 1.2;
+
 }
 #collapseContainer {
   display: flex;
