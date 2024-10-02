@@ -329,7 +329,19 @@
   flex-direction: column; 
   height: 98%; /* Adjust as needed */
   overflow: visible; /* was hidden - Ensure the expandArrow is not cut off */
-  margin: auto;
+}
+.fullReaderView{
+  width: 1063px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.readerViewOnly{
+  width: 550px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.productsOnly{
+  right: 10px;
 }
 #scrollingPart {
   background-color: white;

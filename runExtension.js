@@ -1254,7 +1254,7 @@ async function goToCart(event) {
   }
 }
 
-function collapseLeft(event){
+function collapseLeft(event){ //products only 
   shadowRoot.getElementById('collapseContainer').style.display = 'none';
   shadowRoot.getElementById('readerView').style.display = 'none';
   shadowRoot.getElementById('expandArrow').style.display = 'block';
@@ -1264,9 +1264,12 @@ function collapseLeft(event){
   shadowRoot.getElementById('overlay').style.display = 'none';
   shadowRoot.getElementById('expandArrow').addEventListener('click', expandArrowClicked); 
   shadowRoot.getElementById("expandArrowTooltipText").innerHTML = 'expand<br>reader view';
+  //resize extension
+  shadowRoot.getElementById('ingrExpTopLevelDiv').classList.remove('fullReaderView');
+  shadowRoot.getElementById('ingrExpTopLevelDiv').classList.add('productsOnly');
 }
 
-function collapseRight(event){
+function collapseRight(event){ //reader view only 
   shadowRoot.getElementById('collapseContainer').style.display = 'none';
   shadowRoot.getElementById('productSearch').style.display = 'none';
   shadowRoot.getElementById('expandArrow').style.display = 'block';
@@ -1275,6 +1278,10 @@ function collapseRight(event){
   shadowRoot.getElementById("expandArrowImage").classList.add('ingrExpRightArrowImage');
   shadowRoot.getElementById('expandArrow').addEventListener('click', expandArrowClicked); 
   shadowRoot.getElementById("expandArrowTooltipText").innerHTML = 'expand<br>products';
+  //resize extension
+  shadowRoot.getElementById('ingrExpTopLevelDiv').classList.remove('fullReaderView');
+  shadowRoot.getElementById('ingrExpTopLevelDiv').classList.add('readerViewOnly');
+
   var locationPopup = document.getElementById('ingrExpLocationPopup');
   if (locationPopup){
     locationPopup.remove();
@@ -1286,6 +1293,11 @@ function expandArrowClicked(event) {
   shadowRoot.getElementById('expandArrow').style.display = 'none';
   shadowRoot.getElementById('collapseContainer').style.display = 'flex';
   const arrowImageSrc = shadowRoot.getElementById("expandArrowImage").src;
+  //resize extension
+  shadowRoot.getElementById('ingrExpTopLevelDiv').classList.add('fullReaderView');
+  shadowRoot.getElementById('ingrExpTopLevelDiv').classList.remove('fullReaderView');
+  shadowRoot.getElementById('ingrExpTopLevelDiv').classList.remove('readerViewOnly');
+
 
   if (arrowImageSrc.includes('left%20arrow.png')) {
     shadowRoot.getElementById('readerView').style.display = 'block';
