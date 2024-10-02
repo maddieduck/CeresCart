@@ -972,12 +972,77 @@ function parseRecipeData(i) {
     author: null,
     calories: null
   };
+  
 
   // Helper function to decode HTML entities
   function decodeHTML(html) {
     const txt = document.createElement('textarea');
     txt.innerHTML = html;
     return txt.value;
+  }
+
+  // Function to sanitize characters in strings
+  function sanitizeString(str) {
+    return str
+      .replace(/&#8211;/g, '-')  // En dash
+      .replace(/&#8212;/g, '-')  // Em dash
+      .replace(/&#8220;/g, '"')  // Left double quotation mark
+      .replace(/&#8221;/g, '"')  // Right double quotation mark
+      .replace(/&#8216;/g, "'")   // Left single quotation mark
+      .replace(/&#8217;/g, "'")   // Right single quotation mark
+      .replace(/&nbsp;/g, ' ')     // Non-breaking space
+      .replace(/&#x27;/g, "'")    // Apostrophe
+      .replace(/&lt;/g, '<')       // Less than
+      .replace(/&gt;/g, '>')       // Greater than
+      .replace(/&amp;/g, '&');     // Ampersand
+      // Add more replacements as needed for other characters
+  }
+
+  // Function to convert decimal numbers to fractions
+  // Function to convert decimal numbers to fractions
+  function decimalToFraction(num) {
+    if (isNaN(num)) return num; // Return if not a number
+
+    // Define a maximum denominator
+    const maxDenominator = 100; // You can adjust this value to limit the complexity of fractions
+
+    // Function to find the closest fraction
+    function findClosestFraction(value, maxDenominator) {
+      let closestNumerator = 0;
+      let closestDenominator = 1;
+      let closestDifference = Infinity;
+
+      for (let denominator = 1; denominator <= maxDenominator; denominator++) {
+        const numerator = Math.round(value * denominator);
+        const fractionValue = numerator / denominator;
+        const difference = Math.abs(value - fractionValue);
+
+        if (difference < closestDifference) {
+          closestDifference = difference;
+          closestNumerator = numerator;
+          closestDenominator = denominator;
+        }
+      }
+
+      return { numerator: closestNumerator, denominator: closestDenominator };
+    }
+
+    const tolerance = 1.0E-6; // Small tolerance for comparison
+    let wholeNumber = Math.floor(num);
+    let fractionalPart = num - wholeNumber;
+
+    if (Math.abs(fractionalPart) < tolerance) {
+      return wholeNumber.toString(); // Return whole number if no fraction
+    }
+
+    // Find the closest fraction
+    const { numerator, denominator } = findClosestFraction(fractionalPart, maxDenominator);
+
+    // Return in "whole numerator/denominator" format
+    if (wholeNumber > 0) {
+      return `${wholeNumber} ${numerator}/${denominator}`;
+    }
+    return `${numerator}/${denominator}`;
   }
 
   // Helper function to handle image extraction
@@ -1073,7 +1138,16 @@ function parseRecipeData(i) {
     result.name = i['name'] ? decodeHTML(i['name']) : null;
 
     // Get the ingredients
-    result.ingredients = i['recipeIngredient'] || null;
+    if (i['recipeIngredient']) {
+      result.ingredients = i['recipeIngredient'].map(ingredient => {
+        // Sanitize after decoding
+        const sanitizedIngredient = sanitizeString(decodeHTML(ingredient));
+        // Convert decimal numbers to fractions
+        return sanitizedIngredient.replace(/(\d*\.?\d+)/g, (match) => decimalToFraction(parseFloat(match)));
+      });
+    } else {
+      result.ingredients = null;
+    }
 
     // Handle the image extraction
     result.image = getBestImage(i['image']);
