@@ -330,7 +330,6 @@
   flex-direction: column; 
   height: 98%; /* Adjust as needed */
   overflow: visible; /* was hidden - Ensure the expandArrow is not cut off */
-  
 }
 #scrollingPart {
   background-color: white;
