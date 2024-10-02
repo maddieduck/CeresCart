@@ -1275,6 +1275,8 @@ function collapseRight(event){
   shadowRoot.getElementById("expandArrowImage").classList.add('ingrExpRightArrowImage');
   shadowRoot.getElementById('expandArrow').addEventListener('click', expandArrowClicked); 
   shadowRoot.getElementById("expandArrowTooltipText").innerHTML = 'expand<br>products';
+  locationShadowRoot.getElementById('loadingContainerLocationPopup').style.display = 'none';
+
 }
 
 function expandArrowClicked(event) {
