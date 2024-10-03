@@ -1369,7 +1369,7 @@ function expandArrowClicked(event) {
   const arrowImageSrc = shadowRoot.getElementById("expandArrowImage").src;
   //resize extension
   shadowRoot.getElementById('ingrExpTopLevelDiv').classList.add('fullReaderView');
-  shadowRoot.getElementById('ingrExpTopLevelDiv').classList.remove('fullReaderView');
+  shadowRoot.getElementById('ingrExpTopLevelDiv').classList.remove('productsOnly');
   shadowRoot.getElementById('ingrExpTopLevelDiv').classList.remove('readerViewOnly');
 
 
