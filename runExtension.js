@@ -53,6 +53,17 @@ async function deployExtension(){
         shadowRoot.getElementById('loadingContainer').style.display = 'block';
       }
 
+      // Add event listeners after the HTML is injected
+      shadowRoot.getElementById('ingrExpClose').addEventListener('click', closePopup); 
+      shadowRoot.getElementById('minimize').addEventListener('click', minimizeClicked); 
+      shadowRoot.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
+      shadowRoot.getElementById('change').addEventListener('click', changeButtonPressed); 
+      shadowRoot.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
+      shadowRoot.getElementById('goToCart').addEventListener('click', goToCart); 
+      shadowRoot.getElementById('collapseLeft').addEventListener('click', collapseLeft); 
+      shadowRoot.getElementById('collapseRight').addEventListener('click', collapseRight); 
+      updateCheckoutButton();
+
       let backgroundResponse = await chrome.runtime.sendMessage({to: 'ingredients', data: ingredients, locationExists: locationExists}); 
 
       if(backgroundResponse.noLocation){
@@ -74,18 +85,6 @@ async function deployExtension(){
         insertEachIngredient(ingredientData);
         shadowRoot.getElementById('loadingContainer').style.display = 'none';
       }
-
-      // Add event listeners after the HTML is injected
-      shadowRoot.getElementById('ingrExpClose').addEventListener('click', closePopup); 
-      shadowRoot.getElementById('minimize').addEventListener('click', minimizeClicked); 
-      shadowRoot.getElementById('ingrExpCheckoutButton').addEventListener('click', checkoutButtonClicked); 
-      shadowRoot.getElementById('change').addEventListener('click', changeButtonPressed); 
-      shadowRoot.getElementById('ingrExpZipCode').addEventListener('keyup', zipCodeEdited); 
-      shadowRoot.getElementById('goToCart').addEventListener('click', goToCart); 
-      shadowRoot.getElementById('collapseLeft').addEventListener('click', collapseLeft); 
-      shadowRoot.getElementById('collapseRight').addEventListener('click', collapseRight); 
-      updateCheckoutButton();
-
     } catch (error) {
       console.error('ERROR in runExtension.js: ', error);
     }
