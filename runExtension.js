@@ -1296,6 +1296,7 @@ async function zipCodeInPopupEdited(event) {
   console.log('zip code in popup edited ', event.key)
   var zipCode = locationShadowRoot.getElementById('ingrExpZipCodeInPopup').value;
   if (event.key === 'Enter') {
+    locationShadowRoot.getElementById('ingrExpNoLocationsFound').style.display = 'none'; 
     locationShadowRoot.getElementById('loadingContainerLocationPopup').style.display = 'block';
     var elementsToRemove = locationShadowRoot.querySelectorAll('.ingrExpTopLocationDiv');
     elementsToRemove.forEach(element => {
