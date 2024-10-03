@@ -19,7 +19,7 @@ async function getRefinedIngredients(userInput) {
           comma-separated string of ingredients. Exclude any non-essential words, adjectives or descriptors 
           that don't represent the core product you want to buy. If ingredients are separated with 'or' or 
           'and,' make them two distinct items in the new list. Consolidate duplicates. Remove
-          any unnecessary symbols or characters like parentheses. 
+          any unnecessary symbols or characters like parentheses. Remove anything that is made of just water. 
           ${userInput}` }]
       })
     });
