@@ -1,7 +1,7 @@
 var allProductData = []; // 2D array of all data from grocery store
 var allLocationData = []; 
 var shadowRoot; 
-var locationShadowRoot; 
+var shadowRoot; 
 var minimizeShadowRoot; 
 var currentUrl = window.location.href;
 console.log("run extension " + currentUrl);
@@ -464,7 +464,7 @@ async function getLocationAndStoreType() {
 }
 
 async function loadLocationsInPopup(newLocationData){
-  let locationPlaceholder = locationShadowRoot.getElementById('ingrExpPlaceholderForLocations');
+  let locationPlaceholder = shadowRoot.getElementById('ingrExpPlaceholderForLocations');
   const locationResponse = await fetch(chrome.runtime.getURL('location.html'));
   const locationHtml = await locationResponse.text();
   allLocationData = newLocationData; 
@@ -507,12 +507,12 @@ async function insertLocations(){
   console.log('background response ', backgroundResponse)
   if(backgroundResponse.locationsFound){
     loadLocationsInPopup(backgroundResponse.locationData); 
-    locationShadowRoot.getElementById('loadingContainerLocationPopup').style.display = 'none';
-    locationShadowRoot.getElementById('ingrExpNoLocationsFound').style.display = 'none'; 
+    shadowRoot.getElementById('loadingContainerLocationPopup').style.display = 'none';
+    shadowRoot.getElementById('ingrExpNoLocationsFound').style.display = 'none'; 
   }else{
-    locationShadowRoot.getElementById('ingrExpZipCodeInPopup').style.display = '-webkit-box';
-    locationShadowRoot.getElementById('ingrExpZipCodeInPopup').addEventListener('keyup', zipCodeInPopupEdited);
-    locationShadowRoot.getElementById('ingrExpNoLocationsFound').style.display = 'inline-block'; 
+    shadowRoot.getElementById('ingrExpZipCodeInPopup').style.display = '-webkit-box';
+    shadowRoot.getElementById('ingrExpZipCodeInPopup').addEventListener('keyup', zipCodeInPopupEdited);
+    shadowRoot.getElementById('ingrExpNoLocationsFound').style.display = 'inline-block'; 
   }
 }
 
@@ -529,8 +529,8 @@ function changeButtonPressed(){
 async function launchLocationPopup() {
   console.log('launch location popup'); 
 
-  var pickupAt = document.getElementById('ingrExpPickupAt'); //check if the location is being displayed in main popup
-  if (document.getElementById('ingrExpLocationPopup') == null){ //check if popup is already open 
+  var pickupAt = shadowRoot.getElementById('ingrExpPickupAt'); //check if the location is being displayed in main popup
+  if (shadowRoot.getElementById('ingrExpLocationPopup') == null){ //check if popup is already open 
     try { 
       // Fetch the HTML and CSS contents
       const htmlContents = await Promise.all([
@@ -556,16 +556,12 @@ async function launchLocationPopup() {
       }
 
       // Add event listener for close button
-      
-      //shadowRoot.querySelector('#ingrExpCloseInPopup').addEventListener('click', closePopup);
       shadowRoot.getElementById('ingrExpCloseInPopup').addEventListener('click', closePopup);
-      //shadowRoot.getElementById('ingrExpClose').addEventListener('click', closePopup); 
-
-/*
       console.log('display style ', pickupAt.style.display);
       if (pickupAt.style.display == '-webkit-box') { // Show the zip code if location is displayed
         console.log('show zip code');
-        const zipCodeInput = containerDiv.querySelector('#ingrExpZipCodeInPopup');
+
+        const zipCodeInput = shadowRoot.getElementById('ingrExpZipCodeInPopup');
         zipCodeInput.style.display = '-webkit-box';
 
         chrome.storage.sync.get('zipCode', (result) => {
@@ -577,12 +573,12 @@ async function launchLocationPopup() {
         });
       } else {
         console.log('dont display zipcode');
-        containerDiv.querySelector('#ingrExpZipCodeInPopup').style.display = 'none';
+        shadowRoot.getElementById('ingrExpZipCodeInPopup').style.display = 'none';
       }
 
       // Insert location-specific elements (if necessary)
       insertLocations();
-      */ 
+      
     } catch (error) {
       console.error('ERROR in launch location popup: ', error);
     }
@@ -1310,17 +1306,17 @@ async function zipCodeEdited(event) {
 
 async function zipCodeInPopupEdited(event) {
   console.log('zip code in popup edited ', event.key)
-  var zipCode = locationShadowRoot.getElementById('ingrExpZipCodeInPopup').value;
+  var zipCode = shadowRoot.getElementById('ingrExpZipCodeInPopup').value;
   if (event.key === 'Enter') {
-    locationShadowRoot.getElementById('ingrExpNoLocationsFound').style.display = 'none'; 
-    locationShadowRoot.getElementById('loadingContainerLocationPopup').style.display = 'block';
-    var elementsToRemove = locationShadowRoot.querySelectorAll('.ingrExpTopLocationDiv');
+    shadowRoot.getElementById('ingrExpNoLocationsFound').style.display = 'none'; 
+    shadowRoot.getElementById('loadingContainerLocationPopup').style.display = 'block';
+    var elementsToRemove = shadowRoot.querySelectorAll('.ingrExpTopLocationDiv');
     elementsToRemove.forEach(element => {
       element.parentNode.removeChild(element);
     });
     chrome.storage.sync.set({['zipCode']: zipCode.trim()}); 
     await insertLocations();
-    locationShadowRoot.getElementById('loadingContainerLocationPopup').style.display = 'none';
+    shadowRoot.getElementById('loadingContainerLocationPopup').style.display = 'none';
   }
 }
 
