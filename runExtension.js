@@ -440,13 +440,13 @@ function closePopup(event) {//closes the main popup or the location popup
       mainPopup.remove(); 
     }    
 
-    var locationPopup = document.getElementById('ingrExpLocationPopup');
+    var locationPopup = shadowRoot.getElementById('ingrExpLocationPopup');
     if (locationPopup){
       locationPopup.remove();
       console.log('remove location popup');
     }
   }else if (event.target.id === "ingrExpCloseImageInPopup"){
-    document.getElementById('ingrExpLocationPopup').remove();
+    shadowRoot.getElementById('ingrExpLocationPopup').remove();
     console.log('remove location popup');
   }
 }
@@ -527,53 +527,70 @@ function changeButtonPressed(){
 }
 
 async function launchLocationPopup() {
-  console.log('launch location popup ', locationShadowRoot); 
-  //display or hide the zip code in the lcoations popup 
-  var pickupAt = shadowRoot.getElementById('ingrExpPickupAt'); //check if the location is being displayed in main popup
-  if (document.getElementById('ingrExpLocationPopup') == null){//check if popup is already open 
-    try{ //insert the popup       
+  console.log('launch location popup'); 
+
+  var pickupAt = document.getElementById('ingrExpPickupAt'); //check if the location is being displayed in main popup
+  if (document.getElementById('ingrExpLocationPopup') == null){ //check if popup is already open 
+    try { 
+      // Fetch the HTML and CSS contents
       const htmlContents = await Promise.all([
         fetch(chrome.runtime.getURL('locationPopup.html')).then(response => response.text()),
         fetch(chrome.runtime.getURL('styles.css')).then(response => response.text()),
       ]);
       const [locationHtml, cssStyle] = htmlContents;
 
-      //insert HTML with shadowroot and css. 
+      // Create a container for the popup
       const containerDiv = document.createElement('div');
       containerDiv.id = 'ingrExpLocationPopup';
-      locationShadowRoot = containerDiv.attachShadow({ mode: 'open', name: 'locationShadowRoot'});
-      locationShadowRoot.innerHTML = locationHtml;
-      const style = document.createElement('style'); 
-      style.textContent = cssStyle; 
-      locationShadowRoot.appendChild(style); 
-      document.body.insertAdjacentElement('afterbegin', containerDiv);
-      locationShadowRoot.getElementById('ingrExpCloseInPopup').addEventListener('click', closePopup); 
+      containerDiv.innerHTML = locationHtml;
 
-      console.log('display style ', pickupAt.style.display);
-      if (pickupAt.style.display == '-webkit-box'){ //The store location is showing, show the zip code 
-        console.log('show zip code')
+      // Insert the CSS styles within a <style> tag
+      const style = document.createElement('style');
+      style.textContent = cssStyle;
+      containerDiv.appendChild(style);
 
-        locationShadowRoot.getElementById('ingrExpZipCodeInPopup').style.display = '-webkit-box';
-        chrome.storage.sync.get('zipCode', (result) => {
-          if (result['zipCode'] != undefined){
-            console.log('zip code being used in location popup ', result['zipCode']);
-            locationShadowRoot.getElementById('ingrExpZipCodeInPopup').value = result['zipCode'];
-            locationShadowRoot.getElementById('ingrExpZipCodeInPopup').addEventListener('keyup', zipCodeInPopupEdited);
-          } 
-        }); 
-
-      }else{ 
-        console.log('dont display zipcode');
-        locationShadowRoot.getElementById('ingrExpZipCodeInPopup').style.display = 'none';
+      // Insert the containerDiv into the placeholderForLocationPopup div
+      const placeholder = shadowRoot.getElementById('placeholderForLocationPopup');
+      if (placeholder) {
+        placeholder.appendChild(containerDiv); // insert popup into the placeholder element
       }
-      insertLocations()
-    }catch (error) {
+
+      // Add event listener for close button
+      
+      //shadowRoot.querySelector('#ingrExpCloseInPopup').addEventListener('click', closePopup);
+      shadowRoot.getElementById('ingrExpCloseInPopup').addEventListener('click', closePopup);
+      //shadowRoot.getElementById('ingrExpClose').addEventListener('click', closePopup); 
+
+/*
+      console.log('display style ', pickupAt.style.display);
+      if (pickupAt.style.display == '-webkit-box') { // Show the zip code if location is displayed
+        console.log('show zip code');
+        const zipCodeInput = containerDiv.querySelector('#ingrExpZipCodeInPopup');
+        zipCodeInput.style.display = '-webkit-box';
+
+        chrome.storage.sync.get('zipCode', (result) => {
+          if (result['zipCode'] !== undefined) {
+            console.log('zip code being used in location popup ', result['zipCode']);
+            zipCodeInput.value = result['zipCode'];
+            zipCodeInput.addEventListener('keyup', zipCodeInPopupEdited);
+          }
+        });
+      } else {
+        console.log('dont display zipcode');
+        containerDiv.querySelector('#ingrExpZipCodeInPopup').style.display = 'none';
+      }
+
+      // Insert location-specific elements (if necessary)
+      insertLocations();
+      */ 
+    } catch (error) {
       console.error('ERROR in launch location popup: ', error);
     }
-  }else{
-    console.log('Popup is already open. Do not launch.')
+  } else {
+    console.log('Popup is already open. Do not launch.');
   }
 }
+
 
 async function shopStore(event){ //a location has been selected from the location popup.
   document.getElementById('ingrExpLocationPopup').remove(); 
