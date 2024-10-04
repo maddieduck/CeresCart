@@ -1,7 +1,6 @@
 var allProductData = []; // 2D array of all data from grocery store
 var allLocationData = []; 
 var shadowRoot; 
-var shadowRoot; 
 var minimizeShadowRoot; 
 var currentUrl = window.location.href;
 console.log("run extension " + currentUrl);
@@ -389,7 +388,7 @@ async function minimizeClicked(event){
   //Hide the main poup. Close location popup if open. 
   console.log('minimize pressed ');
   document.getElementById('ingrExpIngredientExporterPopup').style.display = 'none'; 
-  var locationPopup = document.getElementById('ingrExpLocationPopup');
+  var locationPopup = shadowRoot.getElementById('ingrExpLocationPopup');
   if (locationPopup){
     locationPopup.remove();
   }
@@ -589,7 +588,7 @@ async function launchLocationPopup() {
 
 
 async function shopStore(event){ //a location has been selected from the location popup.
-  document.getElementById('ingrExpLocationPopup').remove(); 
+  shadowRoot.getElementById('ingrExpLocationPopup').remove(); 
   if (event.target.innerText !== 'Currently Shopping') {
     let existingNoLocationDiv = shadowRoot.getElementById('noLocationDiv');
     if (existingNoLocationDiv) {
@@ -1369,7 +1368,7 @@ function collapseRight(event){ //reader view only
   shadowRoot.getElementById('ingrExpTopLevelDiv').classList.remove('fullReaderView');
   shadowRoot.getElementById('ingrExpTopLevelDiv').classList.add('readerViewOnly');
 
-  var locationPopup = document.getElementById('ingrExpLocationPopup');
+  var locationPopup = shadowRoot.getElementById('ingrExpLocationPopup');
   if (locationPopup){
     locationPopup.remove();
     console.log('remove location popup');

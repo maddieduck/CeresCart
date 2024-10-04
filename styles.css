@@ -354,7 +354,7 @@
   background-color: white;
   width: 392px;
   position: fixed;
-  z-index: 2147483647;
+  z-index: 2147483648;
   display: block;
   overflow-y: auto;
   right: 26px;
