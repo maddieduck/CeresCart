@@ -1,6 +1,85 @@
 *{
   font-family: Nunito,-apple-system,BlinkMacSystemFont,Roboto,Segoe UI,system-ui,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
 }
+/*TOOLTIPS*/ 
+.hoverButtonsUp, .hoverButtonsDown {
+  position: relative; /* Ensure tooltips position correctly relative to the button */
+  z-index: 2147483647;
+}
+
+/* Tooltip pointing up */
+.tooltipUp {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  bottom: 125%; /* Position above the button */
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 14px;
+  max-width: 300px;
+  z-index: 2147483647;
+
+}
+
+.tooltipUp::after {
+  content: '';
+  position: absolute;
+  top: 100%; /* Arrow pointing down */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+  z-index: 9999; 
+}
+
+/* Tooltip pointing down */
+.tooltipDown {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  top: 125%; /* Position below the button */
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 14px;
+  max-width: 300px;
+  z-index: 2147483646;
+
+}
+
+.tooltipDown::after {
+  content: '';
+  position: absolute;
+  bottom: 100%; /* Arrow pointing up */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+/* Hover effects */
+.hoverButtonsUp:hover .tooltipUp,
+.hoverButtonsDown:hover .tooltipDown {
+  visibility: visible;
+  opacity: 1;
+}
+
+/*tooltips over*/ 
 #defaultPopup {
   width: 250px;
   margin: 0;
@@ -141,6 +220,7 @@
   border-radius: 50%; 
   border-color: rgb(228, 230, 232);
   cursor: pointer;
+  z-index: 2147483644;
 }
 .leftArrow:hover {
   border-color: rgb(228, 230, 232);
@@ -161,6 +241,7 @@
   border-color: rgb(228, 230, 232);
   background-color: rgb(240, 240, 240);
   cursor: pointer;
+  z-index: 2147483644;
 }
 .rightArrow:hover {
   border-color: rgb(228, 230, 232);
@@ -354,7 +435,7 @@
   background-color: white;
   width: 392px;
   position: fixed;
-  z-index: 2147483648;
+  z-index: 2147483647;
   display: block;
   overflow-y: auto;
   right: 26px;
@@ -372,7 +453,7 @@
   background-color: white; /* Ensures background is preserved when sticky */
   margin-bottom: 12px; /* Adjusted for margin */
   margin-top: 12px;
-  z-index: 2147483647;
+  z-index: 2147483645;
 }
 #goToCart {
   background-color: rgb(125,120,185); 
@@ -519,6 +600,7 @@
   background-position: center center; 
   background-size: 16px 16px ; 
   background-repeat: no-repeat; 
+  z-index: 2147483644;
 }
 .startingPlusButton:hover{
   background-color: #5A8C82; 
@@ -537,7 +619,7 @@
   position: absolute; 
   right: 16px; 
   top: 8px; 
-  z-index: 2147483647;
+  z-index: 2147483645;
 }
 .minusButton{
   width: 40px;
@@ -655,86 +737,6 @@
   flex-direction: column; 
   align-items: center;
 }
-
-/*TOOLTIPS*/ 
-.hoverButtonsUp, .hoverButtonsDown {
-  position: relative; /* Ensure tooltips position correctly relative to the button */
-  z-index: 2147483647;
-}
-
-/* Tooltip pointing up */
-.tooltipUp {
-  visibility: hidden;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  border-radius: 5px;
-  padding: 5px;
-  position: absolute;
-  bottom: 125%; /* Position above the button */
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  opacity: 0;
-  transition: opacity 0.3s;
-  font-size: 14px;
-  max-width: 300px;
-  z-index: 2147483647;
-
-}
-
-.tooltipUp::after {
-  content: '';
-  position: absolute;
-  top: 100%; /* Arrow pointing down */
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: black transparent transparent transparent;
-  z-index: 9999; 
-}
-
-/* Tooltip pointing down */
-.tooltipDown {
-  visibility: hidden;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  border-radius: 5px;
-  padding: 5px;
-  position: absolute;
-  top: 125%; /* Position below the button */
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  opacity: 0;
-  transition: opacity 0.3s;
-  font-size: 14px;
-  max-width: 300px;
-  z-index: 2147483646;
-
-}
-
-.tooltipDown::after {
-  content: '';
-  position: absolute;
-  bottom: 100%; /* Arrow pointing up */
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: transparent transparent black transparent;
-}
-
-/* Hover effects */
-.hoverButtonsUp:hover .tooltipUp,
-.hoverButtonsDown:hover .tooltipDown {
-  visibility: visible;
-  opacity: 1;
-}
-
-/*tooltips over*/ 
 
 .recipe-container {
   display: flex;
