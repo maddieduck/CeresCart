@@ -46,13 +46,13 @@ async function deployExtension(){
         console.log('last position ', lastPosition); 
         if(lastPosition == 'productsOnly'){
           collapseLeft(); 
+          shadowRoot.getElementById('ingrExpTopLevelDiv').style.display = 'flex';
         }else if(lastPosition == 'readerViewOnly'){
           collapseRight(); 
+          shadowRoot.getElementById('ingrExpTopLevelDiv').style.display = 'flex';
         }else{
-          //full 
-          shadowRoot.getElementById('readerView').style.display = 'block';
-          shadowRoot.getElementById('collapseContainer').style.display = 'flex';
-          shadowRoot.getElementById('productSearch').style.display = 'flex';
+          //'full' view, do nothing
+          shadowRoot.getElementById('ingrExpTopLevelDiv').style.display = 'flex';
         }
       })
 
