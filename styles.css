@@ -7,6 +7,39 @@
   z-index: 2147483647;
 }
 
+/*scrollbar settings start*/
+* {
+  scrollbar-width: none; /* Firefox: hides the scrollbar */
+}
+
+/* WebKit browsers (Chrome, Safari) */
+*::-webkit-scrollbar {
+  width: 0px; /* Hides the scrollbar */
+  height: 0px;
+}
+
+/* Ensure scrollbars show up when scrolling */
+html {
+  overflow-y: overlay; /* For WebKit browsers: overlay scrollbars */
+  overflow-x: hidden; /* Avoid horizontal scrolling */
+}
+
+/* Optionally make scrollbars appear when hovering */
+*:hover::-webkit-scrollbar {
+  width: 8px; /* Width of scrollbar when hovering */
+  height: 8px; /* Height of scrollbar when hovering */
+}
+
+*:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.5); /* Thumb color, customizable */
+  border-radius: 4px; /* Rounded scroll thumb for aesthetic */
+}
+
+*:hover::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.1); /* Track color */
+}
+/*scrollbar settings end*/
+
 /* Tooltip pointing up */
 .tooltipUp {
   visibility: hidden;
