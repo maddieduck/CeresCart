@@ -40,6 +40,22 @@ async function deployExtension(){
       // Now that shadowRoot is ready, populate the reader view
       populateReaderView(recipe);
 
+      //make the extension the correct size 
+      loadFromLocalStorage('lastPosition')
+      .then(lastPosition => {
+        console.log('last position ', lastPosition); 
+        if(lastPosition == 'productsOnly'){
+          collapseLeft(); 
+        }else if(lastPosition == 'readerViewOnly'){
+          collapseRight(); 
+        }else{
+          //full 
+          shadowRoot.getElementById('readerView').style.display = 'block';
+          shadowRoot.getElementById('collapseContainer').style.display = 'flex';
+          shadowRoot.getElementById('productSearch').style.display = 'flex';
+        }
+      })
+
       //check if location exists 
       var locationExists = await loadFromLocalStorage('locationName');
       console.log('location exists ', locationExists);
@@ -1341,6 +1357,9 @@ async function goToCart(event) {
 }
 
 function collapseLeft(event){ //products only 
+  chrome.storage.sync.set({ lastPosition: 'productsOnly' }, function() {
+    console.log('Position saved left arrow');
+  });
   shadowRoot.getElementById('collapseContainer').style.display = 'none';
   shadowRoot.getElementById('readerView').style.display = 'none';
   shadowRoot.getElementById('expandArrow').style.display = 'block';
@@ -1356,6 +1375,9 @@ function collapseLeft(event){ //products only
 }
 
 function collapseRight(event){ //reader view only 
+  chrome.storage.sync.set({ lastPosition: 'readerViewOnly' }, function() {
+    console.log('Position saved left arrow');
+  });
   shadowRoot.getElementById('collapseContainer').style.display = 'none';
   shadowRoot.getElementById('productSearch').style.display = 'none';
   shadowRoot.getElementById('expandArrow').style.display = 'block';
@@ -1376,6 +1398,9 @@ function collapseRight(event){ //reader view only
 }
 
 function expandArrowClicked(event) {
+  chrome.storage.sync.set({ lastPosition: 'full' }, function() {
+    console.log('Position saved expand arrow.');
+  });
   shadowRoot.getElementById('expandArrow').style.display = 'none';
   shadowRoot.getElementById('collapseContainer').style.display = 'flex';
   const arrowImageSrc = shadowRoot.getElementById("expandArrowImage").src;
