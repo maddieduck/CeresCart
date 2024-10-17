@@ -214,10 +214,27 @@ html {
 }
 .ingrExpOuterContainer{
   display: flex;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
+  margin-top: 8px;
+
   margin-top: 2px;   
   justify-content: center; 
   align-items: center; 
+  flex-direction: column;
+}
+.ingredientName {
+  font-weight: 450;
+  font-size: 18px;
+  height: 20px;
+  color: #1D1C1C;
+  text-align: center;
+  margin: 8px;
+  line-height: 20px; /* Set line-height to match the height to vertically center text */
+  
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
 }
 .ingrExpParagraphOutline{
   position: relative; 

@@ -1,8 +1,8 @@
 {
   "manifest_version":3,
-  "name": "Ceres Cart – Read Recipes, Shop Ingredients, Add to Cart",
-  "version": "2.0.6",
-  "description": "Streamline grocery shopping with the help of Ceres Cart.",
+  "name": "Ceres Cart | Reader View for Recipes & Grocery Assistant",
+  "version": "2.0.7",
+  "description": "Streamline cooking with the help of Ceres Cart.",
   "author": "Maddie Drake",
   "action": {
       "default_popup": "defaultPopup.html",
