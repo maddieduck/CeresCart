@@ -319,7 +319,6 @@ async function insertEachIngredient(ingredientData){
     console.log('insert each ingr');
     let ingredDiv = shadowRoot.getElementById('ingrExpPlaceholderForIngredients');
     allProductData = []
-    
     Array.from(ingredientData.entries()).forEach((entry, index) => {
       const [ingredient, productData] = entry;
       //TODO: Save allProductData as a map eventually 
@@ -341,6 +340,8 @@ async function insertEachIngredient(ingredientData){
       }else{
         nodeClone.querySelector('.ingredientDescription').style.display = 'none'; 
       }
+      nodeClone.querySelector('.ingredientName').textContent = ingredient;
+
       nodeClone.querySelector('.ingrExpSize').textContent = productData[0].size;
       nodeClone.querySelector('.ingrExpOuterContainer').id = 'ingrExpIngredient' + index;
       nodeClone.querySelector('.leftArrow').style.opacity = 0;
