@@ -991,3 +991,6 @@ ol li {
   border-color: rgb(228, 230, 232);
   background-color: rgb(228, 230, 232);
 }
+.highlight {
+  background-color: rgb(255, 225, 105);
+}
