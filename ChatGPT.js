@@ -20,8 +20,28 @@ async function getRefinedIngredients(userInput) {
           that don't represent the core product you want to buy. If ingredients are separated with 'or' or 
           'and,' make them two distinct items in the new list. Consolidate duplicates. Remove
           any unnecessary symbols or characters like parentheses. Remove anything that is made of just water. 
-          I want the end result to be an array of json data and the json data includes quantity, unit, stripped  
-          product name as well as an array of indexes of where that product was in the original list. 
+          I want the end result to be json data and the json data includes quantity, unit, stripped  
+          product name as well as an array of indexes of where that product was in the original list.
+
+          The final JSON structure should look like this:
+          [
+            {
+              "quantity": "2/3",
+              "unit": "cup",
+              "productName": "Japanese sweet potatoes",
+              "indexes": [1]
+            },
+            {
+              "quantity": "1/4",
+              "unit": "cup",
+              "productName": "almond flour",
+              "indexes": [2]
+            }
+            // Continue with similar objects
+          ]
+
+          Respond ONLY with JSON in this structure. Do not include explanations or extra text.
+
           ${userInput}` }]
       })
     });
@@ -43,6 +63,7 @@ async function getRefinedIngredients(userInput) {
 
     // Split the comma-separated string into an array of ingredients
     const content = result.choices[0].message.content;
+    console.log('content ', content);
     const jsonData = JSON.parse(content);
 
     // Extract ingredients array

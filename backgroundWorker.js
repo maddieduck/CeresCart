@@ -42,7 +42,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.log('found ingredients ', ingredients); 
         getRefinedIngredients(ingredients)
         .then(async strippedIngredients =>{
-            console.log('strippedIngredients ', strippedIngredients);
+            console.log('strippedIngredients ', strippedIngredients); 
             var finalIngredients = stripIngredients(strippedIngredients); 
             console.log('final product list ', finalIngredients); 
             if(strippedIngredients != null){

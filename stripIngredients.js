@@ -1,16 +1,22 @@
-function stripIngredients(products) {
-  products = replaceWords(products);
-  products = removeWords(products);
-  
-  // Remove null, undefined, blank strings, and duplicates
-  const uniqueProducts = [...new Set(products.filter(item => item !== null && item !== undefined && item.trim() !== ''))];
+function stripIngredients(ingredientsArray) {
+  // Modify each name within the original ingredient objects
+  const strippedIngredients = ingredientsArray.map(ingredient => {
+    // Apply replacements and removals to the name
+    let productName = ingredient.name;
+    productName = replaceWords([productName])[0]; // Modify and get single result
+    productName = removeWords([productName])[0];   // Modify and get single result
+    
+    // Remove special characters and trim whitespace
+    productName = productName.replace(/[^a-zA-Z0-9 ]/g, '').trim();
+    
+    // Return a new object with the cleaned name, keeping other properties the same
+    return { ...ingredient, name: productName };
+  });
 
-  // Remove special characters from each product in case they slip through ChatGPT
-  const cleanProducts = uniqueProducts.map(product => product.replace(/[^a-zA-Z0-9 ]/g, ''));
-
-  return cleanProducts;
+  return strippedIngredients;
 }
 
+// Replace words in product names
 function replaceWords(products) {
   const newWordPairs = [
     ["spring onion", "green onion"],
@@ -44,8 +50,9 @@ function replaceWords(products) {
   });
 }
 
+// Remove specified words in product names
 function removeWords(products) {
-  const wordsToRemove = [ //if one word is in a group of another words, put it last (ice cubes & ice)
+  const wordsToRemove = [
     "iced cubes", 'ice cubes', 'cubed', 'ice cube', "ice", 'diced', 'sliced', 'slice of', "filtered water", "warm water",
     'fresh', 'slices', "juiced", "juice", "chopped", "softened", "zest", "water", "finely", "cooked",
     "extra virgin", "extra-virgin", "heaped", "chunks", "hot water", "boiling", "melted", "rolled",
@@ -65,6 +72,4 @@ function removeWords(products) {
   });
 }
 
-export{stripIngredients}
-
-
+export { stripIngredients };
