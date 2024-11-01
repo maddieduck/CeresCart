@@ -63,13 +63,10 @@ async function getRefinedIngredients(userInput) {
 
     // Split the comma-separated string into an array of ingredients
     const content = result.choices[0].message.content;
-    console.log('content ', content);
+    console.log('ChatGPT response ', content);
     const jsonData = JSON.parse(content);
 
-    // Extract ingredients array
-    const ingredientsArray = jsonData.ingredients;
-
-    return ingredientsArray;
+    return jsonData;
   } catch (error) {
     console.error('Error in getRefinedIngredients:', error.message);
     throw error; // Re-throw the error for further handling or logging

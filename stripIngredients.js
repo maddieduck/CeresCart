@@ -1,23 +1,39 @@
 function stripIngredients(ingredientsArray) {
-  // Modify each name within the original ingredient objects
+  if (!Array.isArray(ingredientsArray)) {
+    console.error("Expected an array of ingredients, but received:", ingredientsArray);
+    return [];
+  }
+
+  // Modify each product name within the original ingredient objects
   const strippedIngredients = ingredientsArray.map(ingredient => {
-    // Apply replacements and removals to the name
-    let productName = ingredient.name;
-    productName = replaceWords([productName])[0]; // Modify and get single result
-    productName = removeWords([productName])[0];   // Modify and get single result
+    if (!ingredient || typeof ingredient !== 'object') {
+      console.error("Invalid ingredient object:", ingredient);
+      return null; // Skip invalid entries
+    }
+
+    // Extract and transform product name
+    let productName = ingredient.productName || '';
+    productName = replaceWords([productName])[0] || ''; // Modify and get single result or empty string
+    productName = removeWords([productName])[0] || '';  // Modify and get single result or empty string
     
-    // Remove special characters and trim whitespace
+    // Clean special characters and trim whitespace
     productName = productName.replace(/[^a-zA-Z0-9 ]/g, '').trim();
-    
-    // Return a new object with the cleaned name, keeping other properties the same
-    return { ...ingredient, name: productName };
+
+    // Return a new object with the cleaned product name, keeping other properties the same
+    return { ...ingredient, productName: productName };
   });
 
+  console.log("Stripped Ingredients:", strippedIngredients);
   return strippedIngredients;
 }
 
 // Replace words in product names
 function replaceWords(products) {
+  if (!Array.isArray(products)) {
+    console.error("Expected an array in replaceWords but received:", products);
+    return [];
+  }
+
   const newWordPairs = [
     ["spring onion", "green onion"],
     ["great northern bean", "cannellini bean"],
@@ -32,29 +48,34 @@ function replaceWords(products) {
   ];
 
   return products.map(product => {
-    const productWords = product.split(' ');
-    
-    newWordPairs.forEach(pair => {
-      const [oldWord, newWord] = pair;
-      
-      if (productWords.length > 0 && productWords[0].toLowerCase() === oldWord.toLowerCase()) {
-        const regex = new RegExp("\\b" + oldWord + "(?:s)?\\b", "gi");
-        product = product.replace(regex, match => {
-          const isPlural = match.toLowerCase().endsWith('s');
-          return isPlural ? newWord + 's' : newWord;
-        });
-      }
+    if (typeof product !== 'string') {
+      console.error("Expected a string in replaceWords but received:", product);
+      return ''; // Skip invalid entries
+    }
+
+    let modifiedProduct = product;
+    newWordPairs.forEach(([oldWord, newWord]) => {
+      const regex = new RegExp(`\\b${oldWord}(?:s)?\\b`, "gi");
+      modifiedProduct = modifiedProduct.replace(regex, match => {
+        const isPlural = match.toLowerCase().endsWith('s');
+        return isPlural ? newWord + 's' : newWord;
+      });
     });
 
-    return product;
+    return modifiedProduct;
   });
 }
 
 // Remove specified words in product names
 function removeWords(products) {
+  if (!Array.isArray(products)) {
+    console.error("Expected an array in removeWords but received:", products);
+    return [];
+  }
+
   const wordsToRemove = [
-    "iced cubes", 'ice cubes', 'cubed', 'ice cube', "ice", 'diced', 'sliced', 'slice of', "filtered water", "warm water",
-    'fresh', 'slices', "juiced", "juice", "chopped", "softened", "zest", "water", "finely", "cooked",
+    "iced cubes", "ice cubes", "cubed", "ice cube", "ice", "diced", "sliced", "slice of", "filtered water", "warm water",
+    "fresh", "slices", "juiced", "juice", "chopped", "softened", "zest", "water", "finely", "cooked",
     "extra virgin", "extra-virgin", "heaped", "chunks", "hot water", "boiling", "melted", "rolled",
     "peeled", "wedges", "thinly", "flaked", "for serving", "ripe", "crisp", "healthy", "whopping",
     "matchstick", "kosher", "roughly", "freshly", "fat", "dried", "loosely packed",
@@ -63,12 +84,18 @@ function removeWords(products) {
   ];
 
   return products.map(product => {
+    if (typeof product !== 'string') {
+      console.error("Expected a string in removeWords but received:", product);
+      return ''; // Skip invalid entries
+    }
+
+    let modifiedProduct = product;
     wordsToRemove.forEach(word => {
-      const regex = new RegExp("\\b" + word + "\\b", "gi");
-      product = product.replace(regex, '');
+      const regex = new RegExp(`\\b${word}\\b`, "gi");
+      modifiedProduct = modifiedProduct.replace(regex, '');
     });
 
-    return product.trim(); // Trim any leading or trailing spaces
+    return modifiedProduct.trim(); // Trim any leading or trailing spaces
   });
 }
 
