@@ -1,7 +1,7 @@
 {
   "manifest_version":3,
   "name": "Ceres Cart | Recipe Reader View & Grocery Assistant",
-  "version": "2.0.9",
+  "version": "2.0.10",
   "description": "Streamline cooking with the help of Ceres Cart.",
   "author": "Maddie Drake",
   "action": {
