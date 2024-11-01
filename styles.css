@@ -231,7 +231,7 @@ html {
   margin: 8px;
   line-height: 20px; /* Set line-height to match the height to vertically center text */
   
-  display: -webkit-box;
+  display: flex;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
   overflow: hidden;
@@ -993,4 +993,8 @@ ol li {
 }
 .highlight {
   background-color: rgb(255, 225, 105);
+}
+.edit{
+  height: 25px;
+  width: 25px;
 }
