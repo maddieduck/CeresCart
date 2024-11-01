@@ -45,7 +45,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             console.log('strippedIngredients ', strippedIngredients); 
             var finalIngredients = stripIngredients(strippedIngredients); 
             console.log('final product list ', finalIngredients); 
-            if(strippedIngredients != null){
+            if(strippedIngredients != null){ 
                 chrome.storage.sync.get(['storeType'], (result) => {
                     console.log('store type ingredient', result['storeType']);
                     const groceryStore = returnGroceryClass(result['storeType']); 
