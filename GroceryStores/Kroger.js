@@ -306,6 +306,7 @@ class Kroger extends GroceryStore {
                         return [ingredients, prioritizedProducts]; 
                     });
                     console.log("prioritized items ", prioritizedMap);
+                    prioritizedMap
                     resolve({launch: true, ingredientData: prioritizedMap}); 
                 }else{
                     resolve({launch: false}); 
