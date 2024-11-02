@@ -670,7 +670,7 @@ html {
   align-items: center; 
   position: absolute; 
   right: 16px; 
-  top: 8px; 
+  top: 16px; 
   z-index: 2147483645;
 }
 .minusButton{
