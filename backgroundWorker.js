@@ -47,11 +47,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             console.log('final product list ', finalIngredients); 
             if(strippedIngredients != null){ 
                 chrome.storage.sync.get(['storeType'], (result) => {
-                    console.log('store type ingredient', result['storeType']);
+                    console.log('store type ingredient', result['storeType']); 
                     const groceryStore = returnGroceryClass(result['storeType']); 
                     if(groceryStore == null){
                         sendResponse({launch: true, noLocation:true}); 
                     }else{
+                        //const productNames = finalIngredients.map(item => item.productName);
                         groceryStore.getProducts(finalIngredients, message.locationExists)
                         .then(products => {
                             console.log('products ', products); 

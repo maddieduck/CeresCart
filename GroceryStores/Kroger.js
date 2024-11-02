@@ -258,7 +258,7 @@ class Kroger extends GroceryStore {
 
             this.#getProductAccessToken()
             .then(accessToken => {
-                const promises = finalIngredients.map(ingredient => productSearch(accessToken, ingredient));
+                const promises = finalIngredients.map(ingredient => productSearch(accessToken, ingredient.productName));
                 return Promise.all(promises);
             })
             .then(allIngredientProducts => {

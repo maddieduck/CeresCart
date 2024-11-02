@@ -23,26 +23,26 @@ class Walmart extends GroceryStore {
             const ingredientDataPromises = finalIngredients.map(async ingredient => {
                 // Call search for each ingredient
                 const generatedHeaders = await generateWalmartHeaders();
-                const searchResult = await search(ingredient, generatedHeaders);
+                const searchResult = await search(ingredient.productName, generatedHeaders);
                 //console.log('search results ', searchResult);
                 
                 // Check if searchResult contains items
                 if (!searchResult.items || searchResult.items.length === 0) {
-                    console.warn(`No available items found for ingredient ${ingredient}`);
+                    console.warn(`No available items found for ingredient ${ingredient.productName}`);
                     return null; // Return null to filter out later
                 }
                 
                 // Extract item IDs from search results 
                 const itemIds = searchResult.items.map(item => item.itemId);
-                //console.log(`Item IDs for ingredient ${ingredient}:`, itemIds);
+                //console.log(`Item IDs for ingredient ${ingredient.productName}:`, itemIds);
     
                 // Call productLookup with the array of item IDs
-                const productDetails = await productLookup(itemIds, ingredient, generatedHeaders);
+                const productDetails = await productLookup(itemIds, ingredient.productName, generatedHeaders);
                 //console.log(`Product details for ingredient ${ingredient}:`, productDetails);
     
                 // Check if productDetails is valid
                 if (!productDetails || !productDetails.items) {
-                    console.warn(`No product details found for ingredient ${ingredient}`);
+                    console.warn(`No product details found for ingredient ${ingredient.productName}`);
                     return null; // Return null to filter out later
                 }
     
@@ -63,11 +63,11 @@ class Walmart extends GroceryStore {
     
                 // Check if productsArray is empty
                 if (productsArray.length === 0) {
-                    console.warn(`No available products found for ingredient ${ingredient}`);
+                    console.warn(`No available products found for ingredient ${ingredient.productName}`);
                     return null; // Return null to filter out later
                 }
     
-                return [ingredient, productsArray];
+                return [ingredient.productName, productsArray];
             });
     
             // Wait for all ingredient data to be processed

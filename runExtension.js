@@ -97,6 +97,7 @@ async function deployExtension(){
       } else {
         // Insert each ingredient into the popup
         const ingredientData = new Map(backgroundResponse.ingredientData);
+        //console.log('ingredient Data run ext ', ingredientData);
         insertEachIngredient(ingredientData);
         shadowRoot.getElementById('loadingContainer').style.display = 'none';
       }
@@ -320,7 +321,7 @@ async function insertEachIngredient(ingredientData){
     let ingredDiv = shadowRoot.getElementById('ingrExpPlaceholderForIngredients');
     allProductData = []
     Array.from(ingredientData.entries()).forEach((entry, index) => {
-      const [ingredient, productData] = entry;
+      const [ingredient, productData] = entry; //TODO: Update here
       //TODO: Save allProductData as a map eventually 
       //console.log('prod data ', productData); 
       allProductData[index] = {indexOfProductDisplayed: 0, productData: productData}; 
