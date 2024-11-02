@@ -294,7 +294,7 @@ class Kroger extends GroceryStore {
                                 }
                             }
                             if (singularProductsData.length !== 0) {
-                                allProductsFound.set(finalIngredients[j], singularProductsData);
+                                allProductsFound.set(finalIngredients[j].productName, singularProductsData);
                             }
                         }
                     }
