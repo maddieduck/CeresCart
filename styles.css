@@ -1012,7 +1012,7 @@ ol li {
 }
 
 .toggle-button.active {
-  background-color: #4caf50;
+  background-color: rgb(235, 190, 200);
 }
 
 .toggle-circle {
