@@ -211,7 +211,7 @@ function populateReaderView(recipe){
 
   // Loop through each time property and add a block if it exists
   timeProperties.forEach(time => {
-    if (time.value) {
+    if (time.value && time.value != '0 minutes') {
       addTimeBlock(time.name, time.value);
       timeExists = true;
     }
