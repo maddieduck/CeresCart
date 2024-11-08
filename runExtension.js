@@ -1457,8 +1457,8 @@ function expandArrowClicked(event) {
   }
 }
 
-function cookMode(event){
-  console.log('cook mode pressed ')
+function cookMode(event) {
+  console.log('Cook mode pressed');
   let wakeLock = null;
   const toggleButton = shadowRoot.getElementById('cookModeToggle');
 
@@ -1473,20 +1473,18 @@ function cookMode(event){
 
   function releaseWakeLock() {
     if (wakeLock !== null) {
-      wakeLock.release()
-        .then(() => {
-          wakeLock = null;
-          console.log("Wake lock is released");
-        });
+      wakeLock.release().then(() => {
+        wakeLock = null;
+        console.log("Wake lock is released");
+      });
     }
   }
 
-  toggleButton.addEventListener('click', () => {
-    toggleButton.classList.toggle('active');
-    if (toggleButton.classList.contains('active')) {
-      requestWakeLock();  // Enable wake lock
-    } else {
-      releaseWakeLock();  // Release wake lock
-    }
-  });
+  // Toggle button logic
+  toggleButton.classList.toggle('active');
+  if (toggleButton.classList.contains('active')) {
+    requestWakeLock();  // Enable wake lock
+  } else {
+    releaseWakeLock();  // Release wake lock
+  }
 }

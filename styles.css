@@ -999,31 +999,40 @@ ol li {
   width: 25px;
 }
 .toggle-button {
-  width: 60px;
-  height: 30px;
+  width: 80px;
+  height: 40px;
   background-color: #ccc;
-  border-radius: 15px;
+  border-radius: 20px;
   position: relative;
   cursor: pointer;
   transition: background-color 0.3s;
-  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .toggle-button.active {
-  background-color: rgb(235, 190, 200)
+  background-color: #4caf50;
 }
 
 .toggle-circle {
-  width: 26px;
-  height: 26px;
+  width: 34px;
+  height: 34px;
   background-color: white;
   border-radius: 50%;
   position: absolute;
-  top: 2px;
-  left: 2px;
+  top: 3px;
+  left: 3px;
   transition: transform 0.3s;
 }
 
 .toggle-button.active .toggle-circle {
-  transform: translateX(30px);
+  transform: translateX(40px);
+}
+
+.toggle-button p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
 }
