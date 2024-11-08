@@ -183,7 +183,6 @@ function populateReaderView(recipe){
   times.innerHTML = ''; // Clear existing times
 
   // Function to add a time block
-  /*
   function addTimeBlock(timeName, timeQuantity) {
     const timeDiv = document.createElement('div');
     const nameP = document.createElement('p');
@@ -199,12 +198,27 @@ function populateReaderView(recipe){
     times.appendChild(timeDiv);
   }
 
-  // Add each time if it exists
-  if (recipe.prepTime) addTimeBlock('Prep Time', recipe.prepTime);
-  if (recipe.performTime) addTimeBlock('Perform Time', recipe.performTime);
-  if (recipe.cookTime) addTimeBlock('Cook Time', recipe.cookTime);
-  if (recipe.totalTime) addTimeBlock('Total Time', recipe.totalTime);
-  */ 
+  // Define time properties and their labels
+  const timeProperties = [
+    { name: 'Prep Time', value: recipe.prepTime },
+    { name: 'Perform Time', value: recipe.performTime },
+    { name: 'Cook Time', value: recipe.cookTime },
+    { name: 'Total Time', value: recipe.totalTime }
+  ];
+
+  // Track if any times exist
+  let timeExists = false;
+
+  // Loop through each time property and add a block if it exists
+  timeProperties.forEach(time => {
+    if (time.value) {
+      addTimeBlock(time.name, time.value);
+      timeExists = true;
+    }
+  });
+
+  // Set time display based on whether any times exist
+  times.style.display = timeExists ? 'flex' : 'none';
 
   // Populate author
   const authorDiv = shadowRoot.getElementById('authorDiv');
