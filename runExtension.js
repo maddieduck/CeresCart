@@ -1229,18 +1229,23 @@ function parseRecipeData(i) {
   return result;
 }
 
-// Function to convert ISO 8601 duration (like P0Y0M0DT0H5M0.000S) to a human-readable format
+// Function to convert ISO 8601 duration (like P0Y0M0DT0H5M0.000S or PT600S) to a human-readable format
 function parseISODuration(duration) {
   if (!duration) return null;
 
-  const matches = duration.match(/P(?:\d+Y)?(?:\d+M)?(?:\d+D)?T(?:\d+H)?(\d+M)?(?:[\d.]+S)?/);
+  // Regex to capture hours, minutes, and seconds from ISO 8601 format
+  const matches = duration.match(/P(?:\d+Y)?(?:\d+M)?(?:\d+D)?T(?:\d+H)?(\d+M)?([\d.]+S)?/);
 
   if (!matches) return duration;
 
   const minutes = matches[1] ? parseInt(matches[1]) : 0;
+  const seconds = matches[2] ? parseFloat(matches[2]) : 0;
 
-  if (minutes > 0) {
-    return `${minutes} minute${minutes > 1 ? 's' : ''}`;
+  // Convert total seconds to minutes
+  const totalMinutes = minutes + Math.floor(seconds / 60);
+
+  if (totalMinutes > 0) {
+    return `${totalMinutes} minute${totalMinutes > 1 ? 's' : ''}`;
   } else {
     return "0 minutes";
   }
