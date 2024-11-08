@@ -1230,25 +1230,39 @@ function parseRecipeData(i) {
 }
 
 // Function to convert ISO 8601 duration (like P0Y0M0DT0H5M0.000S or PT600S) to a human-readable format
+// Function to convert ISO 8601 duration (like PT1H10M or PT2H10M) to a human-readable format
+// Function to convert ISO 8601 duration (like PT1H10M or PT2H10M) to a human-readable format
+// Function to convert ISO 8601 duration (like PT80M, PT1H10M, or PT2H10M) to a human-readable format
 function parseISODuration(duration) {
   if (!duration) return null;
 
   // Regex to capture hours, minutes, and seconds from ISO 8601 format
-  const matches = duration.match(/P(?:\d+Y)?(?:\d+M)?(?:\d+D)?T(?:\d+H)?(\d+M)?([\d.]+S)?/);
+  const matches = duration.match(/P(?:\d+Y)?(?:\d+M)?(?:\d+D)?T(\d+H)?(\d+M)?([\d.]+S)?/);
 
   if (!matches) return duration;
 
-  const minutes = matches[1] ? parseInt(matches[1]) : 0;
-  const seconds = matches[2] ? parseFloat(matches[2]) : 0;
+  const hours = matches[1] ? parseInt(matches[1]) : 0;
+  let minutes = matches[2] ? parseInt(matches[2]) : 0;
+  const seconds = matches[3] ? parseFloat(matches[3]) : 0;
 
-  // Convert total seconds to minutes
-  const totalMinutes = minutes + Math.floor(seconds / 60);
+  // Convert seconds to additional minutes
+  minutes += Math.floor(seconds / 60);
 
-  if (totalMinutes > 0) {
-    return `${totalMinutes} minute${totalMinutes > 1 ? 's' : ''}`;
-  } else {
-    return "0 minutes";
+  // Convert any minutes over 60 to hours and remaining minutes
+  const additionalHours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  const totalHours = hours + additionalHours;
+
+  // Format the output based on hours and remaining minutes
+  let result = '';
+  if (totalHours > 0) {
+    result += `${totalHours} hour${totalHours > 1 ? 's' : ''}`;
   }
+  if (remainingMinutes > 0) {
+    result += `${totalHours > 0 ? ' and ' : ''}${remainingMinutes} minute${remainingMinutes > 1 ? 's' : ''}`;
+  }
+
+  return result || "0 minutes";
 }
 
 function findRecipeDataOnPage() {
