@@ -77,10 +77,8 @@ async function deployExtension(){
       shadowRoot.getElementById('goToCart').addEventListener('click', goToCart); 
       shadowRoot.getElementById('collapseLeft').addEventListener('click', collapseLeft); 
       shadowRoot.getElementById('collapseRight').addEventListener('click', collapseRight); 
-      const toggleButton = shadowRoot.getElementById('cookModeToggle');
-      toggleButton.addEventListener('click', () => {
-        toggleButton.classList.toggle('active');
-      });
+      shadowRoot.getElementById('cookModeToggle').addEventListener('click', cookMode); 
+
       updateCheckoutButton();
 
       let backgroundResponse = await chrome.runtime.sendMessage({to: 'ingredients', data: ingredients, locationExists: locationExists}); 
@@ -105,6 +103,8 @@ async function deployExtension(){
         insertEachIngredient(ingredientData);
         shadowRoot.getElementById('loadingContainer').style.display = 'none';
       }
+
+
     } catch (error) {
       console.error('ERROR in runExtension.js: ', error);
     }
@@ -1455,4 +1455,38 @@ function expandArrowClicked(event) {
   } else {
     shadowRoot.getElementById('productSearch').style.display = 'flex';
   }
+}
+
+function cookMode(event){
+  console.log('cook mode pressed ')
+  let wakeLock = null;
+  const toggleButton = shadowRoot.getElementById('cookModeToggle');
+
+  async function requestWakeLock() {
+    try {
+      wakeLock = await navigator.wakeLock.request('screen');
+      console.log("Wake lock is active");
+    } catch (err) {
+      console.error(`Failed to activate wake lock: ${err.message}`);
+    }
+  }
+
+  function releaseWakeLock() {
+    if (wakeLock !== null) {
+      wakeLock.release()
+        .then(() => {
+          wakeLock = null;
+          console.log("Wake lock is released");
+        });
+    }
+  }
+
+  toggleButton.addEventListener('click', () => {
+    toggleButton.classList.toggle('active');
+    if (toggleButton.classList.contains('active')) {
+      requestWakeLock();  // Enable wake lock
+    } else {
+      releaseWakeLock();  // Release wake lock
+    }
+  });
 }
