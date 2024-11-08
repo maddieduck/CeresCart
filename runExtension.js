@@ -77,6 +77,10 @@ async function deployExtension(){
       shadowRoot.getElementById('goToCart').addEventListener('click', goToCart); 
       shadowRoot.getElementById('collapseLeft').addEventListener('click', collapseLeft); 
       shadowRoot.getElementById('collapseRight').addEventListener('click', collapseRight); 
+      const toggleButton = shadowRoot.getElementById('cookModeToggle');
+      toggleButton.addEventListener('click', () => {
+        toggleButton.classList.toggle('active');
+      });
       updateCheckoutButton();
 
       let backgroundResponse = await chrome.runtime.sendMessage({to: 'ingredients', data: ingredients, locationExists: locationExists}); 
