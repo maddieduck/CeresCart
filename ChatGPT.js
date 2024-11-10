@@ -59,7 +59,8 @@ async function getRefinedIngredients(userInput) {
             // Continue with similar objects
           ]
 
-          Respond ONLY with JSON in this structure. Do not include explanations or extra text. 
+          Return only a valid JSON array, without any code block markers. 
+          Do not include explanations or extra text. 
           Return a blank array if there is an issue parsing. 
 
           ${userInput}` }]
