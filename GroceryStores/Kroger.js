@@ -253,16 +253,14 @@ class Kroger extends GroceryStore {
         return sortedProducts;
     }
 
-    async getProducts(finalIngredients, locationExists){  
-        return new Promise((resolve, rejects)=>{
-
+    async getProducts(finalIngredients, locationExists) {  
+        return new Promise((resolve, reject) => {
             this.#getProductAccessToken()
             .then(accessToken => {
                 const promises = finalIngredients.map(ingredient => productSearch(accessToken, ingredient.productName));
                 return Promise.all(promises);
             })
             .then(allIngredientProducts => {
-                console.log('All Ingred ', allIngredientProducts); 
                 var allProductsFound = new Map();
                 for (const j in allIngredientProducts) {
                     if (allIngredientProducts[j] && allIngredientProducts[j]['data'] != null) {
@@ -271,14 +269,8 @@ class Kroger extends GroceryStore {
                             let singularProductsData = [];
                             for (const index in productData) {
                                 let product = productData[index];
-                                var price = null;
-                                if ('price' in product['items'][0] && product['items'][0]['price']['regular'] !== null) {
-                                    price = product['items'][0]['price']['regular'];
-                                } else {
-                                    price = null;
-                                }
+                                var price = product['items'][0]['price']?.['regular'] || null;
                                 if (this.#checkCategories(product['categories'])) {
-                                    // Only append to singularProductsData if price exists and is not null
                                     if ((locationExists && price !== null) || (!locationExists)) {
                                         var newProduct = {
                                             "description": product['description'],
@@ -299,25 +291,27 @@ class Kroger extends GroceryStore {
                         }
                     }
                 }
-                console.log('all ingred products ', allProductsFound)
-                if (allProductsFound.size !== 0){ 
-                    const prioritizedMap = Array.from(allProductsFound).map(([ingredients, products]) => {
-                        const prioritizedProducts = this.#prioritizeProducts(ingredients, products); 
-                        return [ingredients, prioritizedProducts]; 
+                
+                if (allProductsFound.size !== 0) { 
+                    const updatedIngredients = finalIngredients.map(ingredient => {
+                        const products = allProductsFound.get(ingredient.productName) || [];
+                        const prioritizedProducts = this.#prioritizeProducts(ingredient.productName, products);
+                        return {
+                            ...ingredient,
+                            products: prioritizedProducts
+                        };
                     });
-                    console.log("prioritized items ", prioritizedMap);
-                    prioritizedMap
-                    resolve({launch: true, ingredientData: prioritizedMap}); 
-                }else{
-                    resolve({launch: false}); 
+                    resolve({ launch: true, ingredientData: updatedIngredients });
+                } else {
+                    resolve({ launch: false });
                 } 
             })        
             .catch(error => {
                 console.log('error in backgroundWorker.js. when getting ingredients', error.message);
-                resolve({launch: false}); 
+                resolve({ launch: false }); 
             }); 
         });
-    }
+    }    
 
     async checkout(itemsToCheckout){
         //const singleProductAndQuantity = //{'quantity': quantity, 'upc': upc};
