@@ -22,14 +22,33 @@ async function getRefinedIngredients(userInput) {
           any unnecessary symbols or characters like parentheses. Remove anything that is made of just water. 
           I want the end result to be json data and the json data includes quantity, unit, stripped  
           product name as well as an array of indexes of where that product was in the original list.
+          I also want the units of each product in metric and customary.
 
           The final JSON structure should look like this:
           [
             {
-              "quantity": "2/3",
-              "unit": "cup",
               "productName": "Japanese sweet potatoes",
-              "indexes": [1]
+              "indexes": [1],
+              "customary": {
+                "quantity": "1",
+                "unit": "cup"
+              },
+              "metric": {
+                "quantity": "1",
+                "unit": "cup"
+              }
+            },
+            {
+              "productName": "almond flour",
+              "indexes": [2],
+              "customary": {
+                "quantity": "1/4",
+                "unit": "cup"
+              },
+              "metric": {
+                "quantity": "2/3",
+                "unit": "cup"
+              }
             },
             {
               "quantity": "1/4",
@@ -40,7 +59,8 @@ async function getRefinedIngredients(userInput) {
             // Continue with similar objects
           ]
 
-          Respond ONLY with JSON in this structure. Do not include explanations or extra text.
+          Respond ONLY with JSON in this structure. Do not include explanations or extra text. 
+          Return a blank array if there is an issue parsing. 
 
           ${userInput}` }]
       })
