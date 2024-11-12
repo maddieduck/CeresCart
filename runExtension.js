@@ -685,32 +685,32 @@ function displayNewIngredient(id, rightOrLeft, event){ //loads the image and pro
   }
   allProductData[productIndex]['indexOfProductDisplayed'] = newIngredientIndex 
   //display the new ingredient 
-  shadowRoot.getElementById(id).querySelector('.ingrExpIngredientImage').src = ingredientClickedData['productData'][newIngredientIndex]['image'];
+  shadowRoot.getElementById(id).querySelector('.ingrExpIngredientImage').src = ingredientClickedData['products'][newIngredientIndex]['image'];
 
-  if(ingredientClickedData['productData'][newIngredientIndex]['brand'] != undefined){
-    shadowRoot.getElementById(id).querySelector('.ingrExpIngredientBrand').textContent = ingredientClickedData['productData'][newIngredientIndex]['brand'];
+  if(ingredientClickedData['products'][newIngredientIndex]['brand'] != undefined){
+    shadowRoot.getElementById(id).querySelector('.ingrExpIngredientBrand').textContent = ingredientClickedData['products'][newIngredientIndex]['brand'];
     shadowRoot.getElementById(id).querySelector('.ingrExpIngredientBrand').style.display = '-webkit-box';
   }else{
     shadowRoot.getElementById(id).querySelector('.ingrExpIngredientBrand').style.display = 'none';
   }
-  if(ingredientClickedData['productData'][newIngredientIndex]['description'] != undefined){
-    shadowRoot.getElementById(id).querySelector('.ingredientDescription').textContent = ingredientClickedData['productData'][newIngredientIndex]['description'];
+  if(ingredientClickedData['products'][newIngredientIndex]['description'] != undefined){
+    shadowRoot.getElementById(id).querySelector('.ingredientDescription').textContent = ingredientClickedData['products'][newIngredientIndex]['description'];
     shadowRoot.getElementById(id).querySelector('.ingredientDescription').style.display = '-webkit-box';
   }else{
     shadowRoot.getElementById(id).querySelector('.ingredientDescription').style.display = 'none';
   }
 
-  shadowRoot.getElementById(id).querySelector('.ingrExpSize').textContent = ingredientClickedData['productData'][newIngredientIndex]['size'];
+  shadowRoot.getElementById(id).querySelector('.ingrExpSize').textContent = ingredientClickedData['products'][newIngredientIndex]['size'];
   updateStartingPlusButton(event); 
   //remove timer from quantity button 
   var quantityButtons = event.target.closest('.ingrExpOuterContainer').querySelector('.quantityButtons');
   clearTimeout(quantityButtons.timeout);
   quantityButtons.style.display = 'none';
 
-  if(ingredientClickedData['productData'][newIngredientIndex]['price'] != null){
+  if(ingredientClickedData['products'][newIngredientIndex]['price'] != null){
     shadowRoot.getElementById(id).querySelector('.ingrExpPriceContainer').style.display = '-webkit-box';
-    const dollars = Math.floor(ingredientClickedData['productData'][newIngredientIndex]['price']);
-    const cents = Math.round((ingredientClickedData['productData'][newIngredientIndex]['price'] - dollars) * 100);
+    const dollars = Math.floor(ingredientClickedData['products'][newIngredientIndex]['price']);
+    const cents = Math.round((ingredientClickedData['products'][newIngredientIndex]['price'] - dollars) * 100);
     shadowRoot.getElementById(id).querySelector('.ingrExpIngrExpPrice').innerHTML = "$" + dollars + ".";
     shadowRoot.getElementById(id).querySelector('.ingrExpCents').innerHTML = String(cents).padStart(2, '0'); 
   }else{
@@ -720,7 +720,7 @@ function displayNewIngredient(id, rightOrLeft, event){ //loads the image and pro
   }
 
   //check if arrow should be removed or shown 
-  var totalIndexes = allProductData[productIndex]['productData'].length 
+  var totalIndexes = allProductData[productIndex]['products'].length 
   if (rightOrLeft == 'right'){
     shadowRoot.getElementById(id).querySelector('.leftArrow').style.visibility = 'visible';
     shadowRoot.getElementById(id).querySelector('.leftArrow').style.pointerEvents = 'auto';
@@ -854,7 +854,7 @@ function updateStartingPlusButton(event){ //updates the original plus button wit
   var productIndex = Number(id.replace(/ingrExpIngredient/g, ''));
   var indexOfProductDisplayed = allProductData[productIndex]['indexOfProductDisplayed'];
   if(startingPlusButton){
-    var quantity = allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'];
+    var quantity = allProductData[productIndex]['products'][indexOfProductDisplayed]['quantity'];
     if(quantity == 0){
       startingPlusButton.classList.remove('startingPlusButtonNoImage');
       startingPlusButton.innerText = '';
@@ -876,7 +876,7 @@ function minusButtonClicked(event) {
   // Check if the element is found
   if (quantityElement) {
     // Update the content of the quantity element 
-    var currentQuantity = allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'] 
+    var currentQuantity = allProductData[productIndex]['products'][indexOfProductDisplayed]['quantity'] 
     console.log('current quantity ', currentQuantity);
     if (currentQuantity > 0) {
       // Update the content of the quantity element 
@@ -885,7 +885,7 @@ function minusButtonClicked(event) {
       var id = event.target.closest('[id]').id;
       var productIndex = Number(id.replace(/ingrExpIngredient/g, ''));
       var indexOfProductDisplayed = allProductData[productIndex]['indexOfProductDisplayed'];
-      allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'] = currentQuantity - 1;
+      allProductData[productIndex]['products'][indexOfProductDisplayed]['quantity'] = currentQuantity - 1;
       console.log('current quantity updated', currentQuantity); 
 
       updateStartingPlusButton(event);
@@ -905,7 +905,7 @@ function plusButtonClicked(event) {
 
   if (quantityElement) {
     // Update the content of the quantity element 
-    var currentQuantity = allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'] //Number(quantityElement.innerText);
+    var currentQuantity = allProductData[productIndex]['products'][indexOfProductDisplayed]['quantity'] //Number(quantityElement.innerText);
     quantityElement.innerText = String(currentQuantity + 1);
 
     // Update the corresponding data in allProductData
@@ -913,7 +913,7 @@ function plusButtonClicked(event) {
     var productIndex = Number(id.replace(/ingrExpIngredient/g, ''));
     console.log('all prod data ', productIndex); 
     var indexOfProductDisplayed = allProductData[productIndex]['indexOfProductDisplayed'];
-    allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'] = currentQuantity + 1;
+    allProductData[productIndex]['products'][indexOfProductDisplayed]['quantity'] = currentQuantity + 1;
     
     updateStartingPlusButton(event);
     updateCheckoutButton(); 
