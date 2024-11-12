@@ -98,9 +98,9 @@ async function deployExtension(){
         });
       } else {
         // Insert each ingredient into the popup
-        const ingredientData = new Map(backgroundResponse.ingredientData);
+        //const ingredientData = new Map();
         //console.log('ingredient Data run ext ', ingredientData);
-        insertEachIngredient(ingredientData);
+        insertEachIngredient(backgroundResponse.ingredientData);
         shadowRoot.getElementById('loadingContainer').style.display = 'none';
       }
 
@@ -327,97 +327,102 @@ function loadFromLocalStorage(key) {
 }
 
 async function insertEachIngredient(ingredientData){
+  console.log('ingredient data ', ingredientData);
   let existingNoLocationDiv = shadowRoot.getElementById('noLocationDiv');
   if (existingNoLocationDiv) {
     existingNoLocationDiv.remove();
   }
+  
   fetch(chrome.runtime.getURL('ingredientContainer.html'))
-  .then(response => response.text())
-  .then(ingredientHtml => {
-    //insert each ingredient into html 
-    console.log('insert each ingr');
-    let ingredDiv = shadowRoot.getElementById('ingrExpPlaceholderForIngredients');
-    allProductData = []
-    Array.from(ingredientData.entries()).forEach((entry, index) => {
-      const [ingredient, productData] = entry; //TODO: Update here
-      //TODO: Save allProductData as a map eventually 
-      //console.log('prod data ', productData); 
-      allProductData[index] = {indexOfProductDisplayed: 0, productData: productData}; 
+    .then(response => response.text())
+    .then(ingredientHtml => {
+      let ingredDiv = shadowRoot.getElementById('ingrExpPlaceholderForIngredients');
+      allProductData = [];
       
-      let nodeClone = document.createElement('div'); // Create a new div 
-      nodeClone.innerHTML = ingredientHtml;  //Set the inner HTML of the div 
-      nodeClone.querySelector('.ingrExpIngredientImage').src = productData[0].image; 
-      if(productData[0].brand != undefined){
-        nodeClone.querySelector('.ingrExpIngredientBrand').textContent = productData[0].brand; 
-        nodeClone.querySelector('.ingrExpIngredientBrand').style.display = '-webkit-box';
-      }else{
-        nodeClone.querySelector('.ingrExpIngredientBrand').style.display = 'none';
-      }
-      if(productData[0].description != undefined){
-        nodeClone.querySelector('.ingredientDescription').textContent = productData[0].description;
-        nodeClone.querySelector('.ingredientDescription').style.display = '-webkit-box';
-      }else{
-        nodeClone.querySelector('.ingredientDescription').style.display = 'none'; 
-      }
-      nodeClone.querySelector('.ingredientName').textContent = ingredient;
-
-      nodeClone.querySelector('.ingrExpSize').textContent = productData[0].size;
-      nodeClone.querySelector('.ingrExpOuterContainer').id = 'ingrExpIngredient' + index;
-      nodeClone.querySelector('.leftArrow').style.opacity = 0;
-      nodeClone.querySelector('.leftArrow').style.visibility = 'hidden';
-      nodeClone.querySelector('.leftArrow').style.pointerEvents = 'none';
-
-      var price = productData[0].price;
-      if (price !== null){
-        nodeClone.querySelector('.ingrExpPriceContainer').style.display = '-webkit-box';
-        const dollars = Math.floor(price);
-        const cents = Math.round((price - dollars) * 100);
-        nodeClone.querySelector('.ingrExpIngrExpPrice').innerHTML = "$" + dollars + ".";
-        nodeClone.querySelector('.ingrExpCents').innerHTML = String(cents).padStart(2, '0'); 
-      }else{
-        nodeClone.querySelector('.ingrExpPriceContainer').style.display = 'none';
-        nodeClone.querySelector('.ingrExpIngrExpPrice').innerHTML = ''; 
-        nodeClone.querySelector('.ingrExpCents').innerHTML = '';
-      }
-
-      if (productData.length == 1){
-        nodeClone.querySelector('.rightArrow').style.opacity = 0;
-        nodeClone.querySelector('.rightArrow').style.visibility = 'hidden';
-        nodeClone.querySelector('.rightArrow').style.pointerEvents = 'none';
-      }
-      ingredDiv.appendChild(nodeClone);
-    });
-    
-    var elementsWithClass = shadowRoot.querySelectorAll('.ingrExpLeftArrow');
-    elementsWithClass.forEach(element => {
-      element.addEventListener('click', leftArrowClicked);
-    });
-
-    elementsWithClass = shadowRoot.querySelectorAll('.rightArrow');
-    elementsWithClass.forEach(element => {
-      element.addEventListener('click', rightArrowClicked);
-    });
-
-    elementsWithClass = shadowRoot.querySelectorAll('.leftArrow');
-    elementsWithClass.forEach(element => {
-      element.addEventListener('click', leftArrowClicked);
-    });
-    elementsWithClass = shadowRoot.querySelectorAll('.startingPlusButton');
-    elementsWithClass.forEach(element => {
-      element.addEventListener('click', startingPlusButtonClicked);
-    });
-
-    elementsWithClass = shadowRoot.querySelectorAll('.minusButton');
-    elementsWithClass.forEach(element => {
-      element.addEventListener('click', minusButtonClicked);
-    });
-
-    elementsWithClass = shadowRoot.querySelectorAll('.plusButton');
-    elementsWithClass.forEach(element => {
-      element.addEventListener('click', plusButtonClicked);
-    });
-  })
-  .catch(error => console.error('Error:', error));
+      ingredientData.forEach((ingredient, index) => {
+        const productData = ingredient.products;
+        
+        allProductData[index] = { indexOfProductDisplayed: 0, ingredient };
+        
+        let nodeClone = document.createElement('div'); // Create a new div 
+        nodeClone.innerHTML = ingredientHtml;  // Set the inner HTML of the div 
+        nodeClone.querySelector('.ingrExpIngredientImage').src = productData[0].image;
+        
+        if (productData[0].brand) {
+          nodeClone.querySelector('.ingrExpIngredientBrand').textContent = productData[0].brand;
+          nodeClone.querySelector('.ingrExpIngredientBrand').style.display = '-webkit-box';
+        } else {
+          nodeClone.querySelector('.ingrExpIngredientBrand').style.display = 'none';
+        }
+        
+        if (productData[0].description) {
+          nodeClone.querySelector('.ingredientDescription').textContent = productData[0].description;
+          nodeClone.querySelector('.ingredientDescription').style.display = '-webkit-box';
+        } else {
+          nodeClone.querySelector('.ingredientDescription').style.display = 'none';
+        }
+        
+        nodeClone.querySelector('.ingredientName').textContent = ingredient.productName;
+        nodeClone.querySelector('.ingrExpSize').textContent = productData[0].size;
+        nodeClone.querySelector('.ingrExpOuterContainer').id = 'ingrExpIngredient' + index;
+        
+        nodeClone.querySelector('.leftArrow').style.opacity = 0;
+        nodeClone.querySelector('.leftArrow').style.visibility = 'hidden';
+        nodeClone.querySelector('.leftArrow').style.pointerEvents = 'none';
+        
+        let price = productData[0].price;
+        if (price !== null) {
+          nodeClone.querySelector('.ingrExpPriceContainer').style.display = '-webkit-box';
+          const dollars = Math.floor(price);
+          const cents = Math.round((price - dollars) * 100);
+          nodeClone.querySelector('.ingrExpIngrExpPrice').innerHTML = "$" + dollars + ".";
+          nodeClone.querySelector('.ingrExpCents').innerHTML = String(cents).padStart(2, '0');
+        } else {
+          nodeClone.querySelector('.ingrExpPriceContainer').style.display = 'none';
+          nodeClone.querySelector('.ingrExpIngrExpPrice').innerHTML = '';
+          nodeClone.querySelector('.ingrExpCents').innerHTML = '';
+        }
+        
+        if (productData.length === 1) {
+          nodeClone.querySelector('.rightArrow').style.opacity = 0;
+          nodeClone.querySelector('.rightArrow').style.visibility = 'hidden';
+          nodeClone.querySelector('.rightArrow').style.pointerEvents = 'none';
+        }
+        
+        ingredDiv.appendChild(nodeClone);
+      });
+      
+      let elementsWithClass = shadowRoot.querySelectorAll('.ingrExpLeftArrow');
+      elementsWithClass.forEach(element => {
+        element.addEventListener('click', leftArrowClicked);
+      });
+      
+      elementsWithClass = shadowRoot.querySelectorAll('.rightArrow');
+      elementsWithClass.forEach(element => {
+        element.addEventListener('click', rightArrowClicked);
+      });
+      
+      elementsWithClass = shadowRoot.querySelectorAll('.leftArrow');
+      elementsWithClass.forEach(element => {
+        element.addEventListener('click', leftArrowClicked);
+      });
+      
+      elementsWithClass = shadowRoot.querySelectorAll('.startingPlusButton');
+      elementsWithClass.forEach(element => {
+        element.addEventListener('click', startingPlusButtonClicked);
+      });
+      
+      elementsWithClass = shadowRoot.querySelectorAll('.minusButton');
+      elementsWithClass.forEach(element => {
+        element.addEventListener('click', minusButtonClicked);
+      });
+      
+      elementsWithClass = shadowRoot.querySelectorAll('.plusButton');
+      elementsWithClass.forEach(element => {
+        element.addEventListener('click', plusButtonClicked);
+      });
+    })
+    .catch(error => console.error('Error:', error));
 }
 
 async function minimizeClicked(event){
