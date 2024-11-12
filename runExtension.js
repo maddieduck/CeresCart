@@ -342,7 +342,7 @@ async function insertEachIngredient(ingredientData){
       ingredientData.forEach((ingredient, index) => {
         const productData = ingredient.products;
         
-        allProductData[index] = { indexOfProductDisplayed: 0, ingredient };
+        allProductData[index] = { indexOfProductDisplayed: 0, ...ingredient };
         
         let nodeClone = document.createElement('div'); // Create a new div 
         nodeClone.innerHTML = ingredientHtml;  // Set the inner HTML of the div 
@@ -837,7 +837,8 @@ function startingPlusButtonClicked(event) {
   quantityButtons.style.display = 'flex';
   quantityButtons.style.width = '108px';
   quantityButtons.style.height = '40px';
-  var currentQuantity = allProductData[productIndex]['productData'][indexOfProductDisplayed]['quantity'];
+  console.log('all prod ', allProductData);
+  var currentQuantity = allProductData[productIndex]['products'][indexOfProductDisplayed]['quantity'];
   var currentQuantityButton = event.target.closest('.ingrExpOuterContainer').querySelector('.quantity');
   currentQuantityButton.innerText = String(currentQuantity);
 
