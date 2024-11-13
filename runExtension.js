@@ -965,24 +965,26 @@ async function checkoutUser(quantityAndUPCArray) {
 }
 
 async function checkoutButtonClicked() {
-  console.log('checkout button clicked ');
-  //disable button until products are done being added
-  shadowRoot.getElementById("ingrExpCheckoutButton").disabled = true; 
+  console.log('checkout button clicked');
+  
+  // Get reference to the checkout button and disable it until products are added
+  const checkoutButton = shadowRoot.getElementById("ingrExpCheckoutButton");
+  checkoutButton.disabled = true; 
 
-  //get the quantity of items to add to cart 
+  // Get the quantity of items to add to cart
   const productAndQuantityArray = []; 
   for (const productData of allProductData) {
-    for (const product of productData.productData) {
+    for (const product of productData.products) { // Updated `productData.productData` to `productData.products`
       const quantity = product.quantity;
-      if (quantity > 0){
+      if (quantity > 0) {
         productAndQuantityArray.push(product);
       }
     }
   }
   
-  if (productAndQuantityArray.length != 0) {
+  if (productAndQuantityArray.length !== 0) {
     console.log('quantity and product ', productAndQuantityArray); 
-    shadowRoot.getElementById("ingrExpCheckoutButton").innerText = 'Adding Items to Cart...'; 
+    checkoutButton.innerText = 'Adding Items to Cart...'; 
 
     await checkoutUser(productAndQuantityArray); 
   } else {
@@ -990,7 +992,7 @@ async function checkoutButtonClicked() {
   }
 
   // Re-enable button and reset cursor after everything is done
-  shadowRoot.getElementById("ingrExpCheckoutButton").disabled = false;
+  checkoutButton.disabled = false;
 }
 
 function parseRecipeData(i) {
