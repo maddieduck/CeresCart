@@ -761,19 +761,20 @@ function rightArrowClicked(event){
 }
 
 async function updateCheckoutButton() {
-  //console.log('update checkout button');
   var totalQuantity = 0;
   var totalPrice = 0.0;
   console.log('allProductData ', allProductData);
+
   // Iterate through allProductData and get the total quantity and price 
   allProductData.forEach(function (element) {
-    element.productData.forEach(function (product) {
+    element.products.forEach(function (product) {
       var quantity = product.quantity || 0;
       var price = product.price || 0;
       totalQuantity += quantity;
       totalPrice += price * quantity; // Corrected: Multiply price by quantity
     });
   });
+
   let goToCartButton = shadowRoot.getElementById('goToCart');
   if (goToCartButton) {
     goToCartButton.style.display = 'none'; // Hide the button
@@ -784,17 +785,18 @@ async function updateCheckoutButton() {
     checkoutButton.innerHTML = `No Items Selected`;
     checkoutButton.style.cursor = 'default';
     checkoutButton.classList.remove('ingrExpCheckoutButton-hover');
-    //remove tooltip
-    var tooltipSpan = checkoutButton.querySelector(".tooltip");
     
+    // Remove tooltip if it exists
+    var tooltipSpan = checkoutButton.querySelector(".tooltip");
     if (tooltipSpan) {
-        button.removeChild(tooltipSpan);
+        checkoutButton.removeChild(tooltipSpan);
     }
   } else {
     checkoutButton.innerHTML = `Add <span class="bold">${totalQuantity}</span> Items for <span class="bold">$${totalPrice.toFixed(2)}</span>`;
     checkoutButton.style.cursor = 'pointer';
     checkoutButton.classList.add('ingrExpCheckoutButton-hover');
     checkoutButton.classList.add("grow");
+
     // Check if the tooltip already exists to avoid duplicates
     if (!checkoutButton.querySelector(".tooltip")) {
         var tooltipSpan = document.createElement("span");
@@ -803,7 +805,7 @@ async function updateCheckoutButton() {
         // Create a list of quantities and descriptions
         let tooltipContent = "<ul>";
         allProductData.forEach(function (element) {
-          element.productData.forEach(function (product) {
+          element.products.forEach(function (product) {
             if (product.quantity > 0) {
               tooltipContent += `<li>${product.quantity} - ${product.description}</li>`;
             }
@@ -815,11 +817,10 @@ async function updateCheckoutButton() {
         tooltipSpan.style.whiteSpace = "normal";
         tooltipSpan.style.minWidth = "350px";
         tooltipSpan.style.textAlign = "left"; // Align the text to the left
-
         tooltipSpan.innerHTML = tooltipContent; // Set the tooltip content
         checkoutButton.appendChild(tooltipSpan);
-
     }
+
     setTimeout(() => {
       checkoutButton.classList.remove("grow");
     }, 300); // Adjust the timing to match the CSS transition duration
