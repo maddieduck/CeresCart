@@ -1248,10 +1248,6 @@ function parseRecipeData(i) {
   return result;
 }
 
-// Function to convert ISO 8601 duration (like P0Y0M0DT0H5M0.000S or PT600S) to a human-readable format
-// Function to convert ISO 8601 duration (like PT1H10M or PT2H10M) to a human-readable format
-// Function to convert ISO 8601 duration (like PT1H10M or PT2H10M) to a human-readable format
-// Function to convert ISO 8601 duration (like PT80M, PT1H10M, or PT2H10M) to a human-readable format
 function parseISODuration(duration) {
   if (!duration) return null;
 
