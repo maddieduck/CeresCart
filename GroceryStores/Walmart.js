@@ -112,7 +112,6 @@ class Walmart extends GroceryStore {
             });
         });
     }
-    
 
     async checkout(itemsToCheckout) { 
         let locationData = await new Promise((resolve, reject) => {

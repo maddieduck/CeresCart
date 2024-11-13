@@ -84,7 +84,7 @@ async function getRefinedIngredients(userInput) {
 
     // Split the comma-separated string into an array of ingredients
     const content = result.choices[0].message.content;
-    console.log('ChatGPT response ', content);
+    //console.log('ChatGPT response ', content);
     const jsonData = JSON.parse(content);
 
     return jsonData;
