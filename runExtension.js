@@ -940,26 +940,32 @@ async function checkoutUser(quantityAndUPCArray) {
   console.log('Was cart successful? ', response.success, quantityAndUPCArray); 
 
   if (response.success) { 
-    //make all quantities 0 in array 
+    // Make all quantities 0 in `allProductData`
     allProductData.forEach(outerArray => {
-      outerArray.productData.forEach(product => {
+      outerArray.products.forEach(product => { // Updated `outerArray.productData` to `outerArray.products`
           product.quantity = 0;
       });
     });
-    //make all quantities 0 in UI
-    const elements = shadowRoot.querySelectorAll(`.${'startingPlusButton'}`);
+
+    // Make all quantities 0 in UI
+    const elements = shadowRoot.querySelectorAll('.startingPlusButton');
     elements.forEach(element => {
       element.classList.remove('startingPlusButtonNoImage');
       element.innerText = '';
     });
-    shadowRoot.getElementById('ingrExpCheckoutButton').innerHTML = 'Items Successfully Added';
-    shadowRoot.getElementById('ingrExpCheckoutButton').classList.remove('ingrExpCheckoutButton-hover');
-    shadowRoot.getElementById('ingrExpCheckoutButton').style.cursor = 'default';
-    shadowRoot.getElementById('goToCart').style.display = 'block';
+
+    // Update checkout button and show cart button
+    const checkoutButton = shadowRoot.getElementById('ingrExpCheckoutButton');
+    checkoutButton.innerHTML = 'Items Successfully Added';
+    checkoutButton.classList.remove('ingrExpCheckoutButton-hover');
+    checkoutButton.style.cursor = 'default';
+
+    const goToCartButton = shadowRoot.getElementById('goToCart');
+    goToCartButton.style.display = 'block';
 
   } else {
     warningPopup(response.errorMessage, 'rgb(210, 40, 65)');
-    console.log('error when trying to add to cart');
+    console.log('Error when trying to add to cart');
   }  
   return response; 
 }
