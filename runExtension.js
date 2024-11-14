@@ -330,13 +330,13 @@ function loadFromLocalStorage(key) {
   });
 }
 
-async function insertEachIngredient(ingredientData){
+async function insertEachIngredient(ingredientData) {
   console.log('ingredient data ', ingredientData);
   let existingNoLocationDiv = shadowRoot.getElementById('noLocationDiv');
   if (existingNoLocationDiv) {
     existingNoLocationDiv.remove();
   }
-  
+
   fetch(chrome.runtime.getURL('ingredientContainer.html'))
     .then(response => response.text())
     .then(ingredientHtml => {
@@ -345,35 +345,35 @@ async function insertEachIngredient(ingredientData){
       
       ingredientData.forEach((ingredient, index) => {
         const productData = ingredient.products;
-        
+
         allProductData[index] = { indexOfProductDisplayed: 0, ...ingredient };
-        
-        let nodeClone = document.createElement('div'); // Create a new div 
-        nodeClone.innerHTML = ingredientHtml;  // Set the inner HTML of the div 
+
+        let nodeClone = document.createElement('div'); 
+        nodeClone.innerHTML = ingredientHtml;
         nodeClone.querySelector('.ingrExpIngredientImage').src = productData[0].image;
-        
+
         if (productData[0].brand) {
           nodeClone.querySelector('.ingrExpIngredientBrand').textContent = productData[0].brand;
           nodeClone.querySelector('.ingrExpIngredientBrand').style.display = '-webkit-box';
         } else {
           nodeClone.querySelector('.ingrExpIngredientBrand').style.display = 'none';
         }
-        
+
         if (productData[0].description) {
           nodeClone.querySelector('.ingredientDescription').textContent = productData[0].description;
           nodeClone.querySelector('.ingredientDescription').style.display = '-webkit-box';
         } else {
           nodeClone.querySelector('.ingredientDescription').style.display = 'none';
         }
-        
+
         nodeClone.querySelector('.ingredientName').textContent = ingredient.productName;
         nodeClone.querySelector('.ingrExpSize').textContent = productData[0].size;
         nodeClone.querySelector('.ingrExpOuterContainer').id = 'ingrExpIngredient' + index;
-        
+
         nodeClone.querySelector('.leftArrow').style.opacity = 0;
         nodeClone.querySelector('.leftArrow').style.visibility = 'hidden';
         nodeClone.querySelector('.leftArrow').style.pointerEvents = 'none';
-        
+
         let price = productData[0].price;
         if (price !== null) {
           nodeClone.querySelector('.ingrExpPriceContainer').style.display = '-webkit-box';
@@ -386,47 +386,61 @@ async function insertEachIngredient(ingredientData){
           nodeClone.querySelector('.ingrExpIngrExpPrice').innerHTML = '';
           nodeClone.querySelector('.ingrExpCents').innerHTML = '';
         }
-        
+
         if (productData.length === 1) {
           nodeClone.querySelector('.rightArrow').style.opacity = 0;
           nodeClone.querySelector('.rightArrow').style.visibility = 'hidden';
           nodeClone.querySelector('.rightArrow').style.pointerEvents = 'none';
         }
-        
+
         ingredDiv.appendChild(nodeClone);
+
+        // Add hover event listeners for highlight/unhighlight
+        nodeClone.addEventListener('mouseover', highlightIngredient);
+        nodeClone.addEventListener('mouseout', unhighlightIngredient);
       });
       
+      // Additional event listeners for other elements (arrows, buttons, etc.)
       let elementsWithClass = shadowRoot.querySelectorAll('.ingrExpLeftArrow');
       elementsWithClass.forEach(element => {
         element.addEventListener('click', leftArrowClicked);
       });
-      
+
       elementsWithClass = shadowRoot.querySelectorAll('.rightArrow');
       elementsWithClass.forEach(element => {
         element.addEventListener('click', rightArrowClicked);
       });
-      
+
       elementsWithClass = shadowRoot.querySelectorAll('.leftArrow');
       elementsWithClass.forEach(element => {
         element.addEventListener('click', leftArrowClicked);
       });
-      
+
       elementsWithClass = shadowRoot.querySelectorAll('.startingPlusButton');
       elementsWithClass.forEach(element => {
         element.addEventListener('click', startingPlusButtonClicked);
       });
-      
+
       elementsWithClass = shadowRoot.querySelectorAll('.minusButton');
       elementsWithClass.forEach(element => {
         element.addEventListener('click', minusButtonClicked);
       });
-      
+
       elementsWithClass = shadowRoot.querySelectorAll('.plusButton');
       elementsWithClass.forEach(element => {
         element.addEventListener('click', plusButtonClicked);
       });
     })
     .catch(error => console.error('Error:', error));
+}
+
+// Functions to handle highlight/unhighlight
+function highlightIngredient(event) {
+  event.currentTarget.style.backgroundColor = '#f0f8ff'; // Highlight color
+}
+
+function unhighlightIngredient(event) {
+  event.currentTarget.style.backgroundColor = ''; // Remove highlight
 }
 
 async function minimizeClicked(event){
