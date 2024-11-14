@@ -136,19 +136,23 @@ function populateReaderView(recipe){
     image.style.display = 'none';
   }
 
-  //populate ingredients 
+  // Populate ingredients
   var ingredients = shadowRoot.getElementById('ingredients');
   const ingredientList = shadowRoot.getElementById('ingredientList');
+
   // Check if recipe.ingredients is an array
   if (Array.isArray(recipe.ingredients)) {
     // Iterate over the recipe.ingredients array and create <li> elements
-    recipe.ingredients.forEach(ingredient => {
+    recipe.ingredients.forEach((ingredient, index) => {
       // Create a new <li> element
       const li = document.createElement('li');
       
       // Set the text content of the <li> element
       li.textContent = ingredient;
-
+      
+      // Set a unique id for each <li> element
+      li.id = `ingredient${index}`;
+      
       // Append the <li> element to the <ul> element
       ingredientList.appendChild(li);
     });
@@ -156,7 +160,7 @@ function populateReaderView(recipe){
     // Ensure the title and list are visible
     ingredients.style.display = 'block';
     ingredientList.style.display = 'block';
-  }else{
+  } else {
     ingredients.style.display = 'none';
     ingredientList.style.display = 'none';
   }
