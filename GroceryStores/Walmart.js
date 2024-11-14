@@ -21,33 +21,33 @@ class Walmart extends GroceryStore {
     
         try {
             const ingredientDataPromises = finalIngredients.map(async ingredient => {
-                // Call search for each ingredient
+                // Generate headers and perform search
                 const generatedHeaders = await generateWalmartHeaders();
                 const searchResult = await search(ingredient.productName, generatedHeaders);
-                //console.log('search results ', searchResult);
                 
                 // Check if searchResult contains items
                 if (!searchResult.items || searchResult.items.length === 0) {
                     console.warn(`No available items found for ingredient ${ingredient.productName}`);
-                    return null; // Return null to filter out later
+                    ingredient.products = []; // Append an empty array for 'products' if no items are found
+                    return ingredient;
                 }
                 
-                // Extract item IDs from search results 
+                // Extract item IDs from search results
                 const itemIds = searchResult.items.map(item => item.itemId);
-                //console.log(`Item IDs for ingredient ${ingredient.productName}:`, itemIds);
-    
-                // Call productLookup with the array of item IDs
+        
+                // Lookup product details
                 const productDetails = await productLookup(itemIds, ingredient.productName, generatedHeaders);
-                //console.log(`Product details for ingredient ${ingredient}:`, productDetails);
-    
+        
                 // Check if productDetails is valid
                 if (!productDetails || !productDetails.items) {
                     console.warn(`No product details found for ingredient ${ingredient.productName}`);
-                    return null; // Return null to filter out later
+                    ingredient.products = []; // Append an empty array for 'products' if no details are found
+                    return ingredient;
                 }
-    
-                // Filter items where stock is "Available"
-                const productsArray = productDetails.items.filter(item => item.stock === "Available")
+        
+                // Filter items where stock is "Available" and map to product objects
+                const products = productDetails.items
+                    .filter(item => item.stock === "Available")
                     .map(item => ({
                         description: item.name || '',
                         brand: item.brandName || '',
@@ -60,33 +60,26 @@ class Walmart extends GroceryStore {
                         addToCartUrl: item.affiliateAddToCartUrl || '',
                         itemId: item.itemId || ''
                     }));
-    
-                // Check if productsArray is empty
-                if (productsArray.length === 0) {
-                    console.warn(`No available products found for ingredient ${ingredient.productName}`);
-                    return null; // Return null to filter out later
-                }
-    
-                return [ingredient.productName, productsArray];
+        
+                // Append the products array to the ingredient object
+                ingredient.products = products;
+                return ingredient;
             });
     
             // Wait for all ingredient data to be processed
-            const allIngredientData = await Promise.all(ingredientDataPromises);
-    
-            // Filter out null values
-            const ingredientData = allIngredientData.filter(data => data !== null);
-    
+            const ingredientData = await Promise.all(ingredientDataPromises);
+        
             console.log('get products results', ingredientData); 
-            if (ingredientData.length == 0) {
-                return {launch: false};  
+            if (ingredientData.every(ingredient => ingredient.products.length === 0)) {
+                return { launch: false };
             } else {
-                return {launch: true, ingredientData};  
+                return { launch: true, ingredientData };
             }
         } catch (error) {
             console.error('Error fetching products:', error);
-            return {launch: false};  
+            return { launch: false };
         }
-    }    
+    }
 
     async changeLocation(url) {
         return new Promise((resolve, reject) => {
