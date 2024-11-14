@@ -436,12 +436,54 @@ async function insertEachIngredient(ingredientData) {
 
 // Functions to handle highlight/unhighlight
 function highlightIngredient(event) {
-  event.currentTarget.style.backgroundColor = '#f0f8ff'; // Highlight color
+  // Highlight the hovered ingredient div
+  event.currentTarget.style.backgroundColor = '#f0f8ff';
+
+  //console.log("Event target ID:", event.target.id);
+  //console.log("Event currentTarget ID:", event.currentTarget.id);
+
+  // Get the ID of the hovered element and strip out 'ingrExpIngredient'
+  const elementId = event.target.id;
+  //console.log('id ', elementId);
+  const indexStr = elementId.replace('ingrExpIngredient', '');
+  const index = parseInt(indexStr, 10);
+  //console.log('index ', index);
+
+  // Access allProductData and retrieve the indexes array
+  const indexes = allProductData[index].indexes;
+  //console.log('indexes ', indexes);
+
+  // For each index, add the 'highlight' class to the element with id 'ingredient#'
+  indexes.forEach(i => {
+    const ingredientElement = shadowRoot.getElementById(`ingredient${i}`);
+    if (ingredientElement) {
+      ingredientElement.classList.add('highlight');
+    }
+  });
 }
 
+// Function to remove highlight when unhovered
 function unhighlightIngredient(event) {
-  event.currentTarget.style.backgroundColor = ''; // Remove highlight
+  // Reset the background color of the hovered ingredient div
+  event.currentTarget.style.backgroundColor = '';
+
+  // Get the ID and strip out 'ingrExpIngredient' to find the correct index in allProductData
+  const elementId = event.target.id;
+  const indexStr = elementId.replace('ingrExpIngredient', '');
+  const index = parseInt(indexStr, 10);
+
+  // Access allProductData and retrieve the indexes array
+  const indexes = allProductData[index].indexes;
+
+  // For each index, remove the 'highlight' class from the element with id 'ingredient#'
+  indexes.forEach(i => {
+    const ingredientElement = shadowRoot.getElementById(`ingredient${i}`);
+    if (ingredientElement) {
+      ingredientElement.classList.remove('highlight');
+    }
+  });
 }
+
 
 async function minimizeClicked(event){
   //Hide the main poup. Close location popup if open. 
