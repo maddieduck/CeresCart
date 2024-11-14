@@ -21,14 +21,14 @@ async function getRefinedIngredients(userInput) {
           'and,' make them two distinct items in the new list. Consolidate duplicates. Remove
           any unnecessary symbols or characters like parentheses. Remove anything that is made of just water. 
           I want the end result to be json data and the json data includes quantity, unit, stripped  
-          product name as well as an array of indexes of where that product was in the original list.
+          product name as well as an array of indexes (indexed by 0) of where that product was in the original list.
           I also want the units of each product in metric and customary.
 
           The final JSON structure should look like this:
           [
             {
               "productName": "Japanese sweet potatoes",
-              "indexes": [1],
+              "indexes": [0],
               "customary": {
                 "quantity": "1",
                 "unit": "cup"
@@ -40,7 +40,7 @@ async function getRefinedIngredients(userInput) {
             },
             {
               "productName": "almond flour",
-              "indexes": [2],
+              "indexes": [1],
               "customary": {
                 "quantity": "1/4",
                 "unit": "cup"
