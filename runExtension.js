@@ -437,8 +437,6 @@ async function insertEachIngredient(ingredientData) {
 // Functions to handle highlight/unhighlight
 function highlightIngredient(event) {
   // Highlight the hovered ingredient div
-  event.currentTarget.style.backgroundColor = '#f0f8ff';
-
   //console.log("Event target ID:", event.target.id);
   //console.log("Event currentTarget ID:", event.currentTarget.id);
 
@@ -465,8 +463,6 @@ function highlightIngredient(event) {
 // Function to remove highlight when unhovered
 function unhighlightIngredient(event) {
   // Reset the background color of the hovered ingredient div
-  event.currentTarget.style.backgroundColor = '';
-
   // Get the ID and strip out 'ingrExpIngredient' to find the correct index in allProductData
   const elementId = event.target.id;
   const indexStr = elementId.replace('ingrExpIngredient', '');
