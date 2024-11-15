@@ -487,7 +487,6 @@ function unhighlightIngredient(event) {
   }
 }
 
-
 async function minimizeClicked(event){
   //Hide the main poup. Close location popup if open. 
   console.log('minimize pressed ');
