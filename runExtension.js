@@ -394,17 +394,18 @@ async function insertEachIngredient(ingredientData) {
 
         ingredDiv.appendChild(nodeClone);
 
-        // Add hover event listeners for highlight/unhighlight
         nodeClone.addEventListener('mouseover', (event) => {
-          if (event.target.closest('.ingrExpOuterContainer')) {
-            highlightIngredient(event);
-          }
+          highlightIngredient(event);
         });
+        
         nodeClone.addEventListener('mouseout', (event) => {
-          if (event.target.closest('.ingrExpOuterContainer')) {
+          const outerContainer = event.target.closest('.ingrExpOuterContainer');
+          if (outerContainer && !outerContainer.contains(event.relatedTarget)) {
+            // Only unhighlight if the mouse has left the entire container
             unhighlightIngredient(event);
           }
-        });
+        });        
+
       });
       
       // Additional event listeners for other elements (arrows, buttons, etc.)
@@ -443,52 +444,71 @@ async function insertEachIngredient(ingredientData) {
 
 // Functions to handle highlight/unhighlight
 function highlightIngredient(event) {
-  // Highlight the hovered ingredient div
-  //console.log("Event target ID:", event.target.id);
-  //console.log("Event currentTarget ID:", event.currentTarget.id);
+  const outerContainer = event.target.closest('.ingrExpOuterContainer');
+  if (!outerContainer) {
+    console.error('No outer container found for event:', event);
+    return;
+  }
 
-  // Get the ID of the hovered element and strip out 'ingrExpIngredient'
-  const elementId = event.target.id;
-  //console.log('id ', elementId);
+  const elementId = outerContainer.id;
+  if (!elementId) {
+    console.error('Outer container has no ID:', outerContainer);
+    return;
+  }
+
   const indexStr = elementId.replace('ingrExpIngredient', '');
   const index = parseInt(indexStr, 10);
   if (!isNaN(index)) {
-    // Access allProductData and retrieve the indexes array
-    console.log('index highlight', index);
-    const indexes = allProductData[index].indexes;
-
-    // For each index, add the 'highlight' class to the element with id 'ingredient#'
-    indexes.forEach(i => {
-      const ingredientElement = shadowRoot.getElementById(`ingredient${i}`);
-      if (ingredientElement) {
-        ingredientElement.classList.add('highlight');
-      }
-    });
+    const indexes = allProductData[index]?.indexes;
+    if (indexes) {
+      indexes.forEach(i => {
+        const ingredientElement = shadowRoot.getElementById(`ingredient${i}`);
+        if (ingredientElement) {
+          ingredientElement.classList.add('highlight');
+        }
+      });
+    } else {
+      console.error(`Indexes not found for index: ${index}`);
+    }
+  } else {
+    console.error(`Invalid index parsed from element ID: ${elementId}`);
   }
 }
+
 
 // Function to remove highlight when unhovered
 function unhighlightIngredient(event) {
-  // Reset the background color of the hovered ingredient div
-  // Get the ID and strip out 'ingrExpIngredient' to find the correct index in allProductData
-  const elementId = event.target.id;
+  const outerContainer = event.target.closest('.ingrExpOuterContainer');
+  if (!outerContainer) {
+    console.error('No outer container found for event:', event);
+    return;
+  }
+
+  const elementId = outerContainer.id;
+  if (!elementId) {
+    console.error('Outer container has no ID:', outerContainer);
+    return;
+  }
+
   const indexStr = elementId.replace('ingrExpIngredient', '');
   const index = parseInt(indexStr, 10);
-
   if (!isNaN(index)) {
-    // Access allProductData and retrieve the indexes array
-    console.log('index unhighlighted ', index);
-    const indexes = allProductData[index].indexes;
-
-    // For each index, remove the 'highlight' class from the element with id 'ingredient#'
-    indexes.forEach(i => {
-      const ingredientElement = shadowRoot.getElementById(`ingredient${i}`);
-      if (ingredientElement) {
-        ingredientElement.classList.remove('highlight');
-      }
-    });
+    const indexes = allProductData[index]?.indexes;
+    if (indexes) {
+      indexes.forEach(i => {
+        const ingredientElement = shadowRoot.getElementById(`ingredient${i}`);
+        if (ingredientElement) {
+          ingredientElement.classList.remove('highlight');
+        }
+      });
+    } else {
+      console.error(`Indexes not found for index: ${index}`);
+    }
+  } else {
+    console.error(`Invalid index parsed from element ID: ${elementId}`);
   }
 }
+
 
 async function minimizeClicked(event){
   //Hide the main poup. Close location popup if open. 
