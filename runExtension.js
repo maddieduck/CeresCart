@@ -447,19 +447,19 @@ function highlightIngredient(event) {
   //console.log('id ', elementId);
   const indexStr = elementId.replace('ingrExpIngredient', '');
   const index = parseInt(indexStr, 10);
-  //console.log('index ', index);
+  if (!isNaN(index)) {
+    // Access allProductData and retrieve the indexes array
+    console.log('index highlight', index);
+    const indexes = allProductData[index].indexes;
 
-  // Access allProductData and retrieve the indexes array
-  const indexes = allProductData[index].indexes;
-  //console.log('indexes ', indexes);
-
-  // For each index, add the 'highlight' class to the element with id 'ingredient#'
-  indexes.forEach(i => {
-    const ingredientElement = shadowRoot.getElementById(`ingredient${i}`);
-    if (ingredientElement) {
-      ingredientElement.classList.add('highlight');
-    }
-  });
+    // For each index, add the 'highlight' class to the element with id 'ingredient#'
+    indexes.forEach(i => {
+      const ingredientElement = shadowRoot.getElementById(`ingredient${i}`);
+      if (ingredientElement) {
+        ingredientElement.classList.add('highlight');
+      }
+    });
+  }
 }
 
 // Function to remove highlight when unhovered
@@ -472,16 +472,19 @@ function unhighlightIngredient(event) {
   const indexStr = elementId.replace('ingrExpIngredient', '');
   const index = parseInt(indexStr, 10);
 
-  // Access allProductData and retrieve the indexes array
-  const indexes = allProductData[index].indexes;
+  if (!isNaN(index)) {
+    // Access allProductData and retrieve the indexes array
+    console.log('index unhighlighted ', index);
+    const indexes = allProductData[index].indexes;
 
-  // For each index, remove the 'highlight' class from the element with id 'ingredient#'
-  indexes.forEach(i => {
-    const ingredientElement = shadowRoot.getElementById(`ingredient${i}`);
-    if (ingredientElement) {
-      ingredientElement.classList.remove('highlight');
-    }
-  });
+    // For each index, remove the 'highlight' class from the element with id 'ingredient#'
+    indexes.forEach(i => {
+      const ingredientElement = shadowRoot.getElementById(`ingredient${i}`);
+      if (ingredientElement) {
+        ingredientElement.classList.remove('highlight');
+      }
+    });
+  }
 }
 
 
