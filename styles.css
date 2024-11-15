@@ -906,10 +906,12 @@ ol li {
   margin: 0;
   font-weight: 550;
   font-size: 18px;
+  line-height: 1.4;
 }
 .timeQuantity{
   margin: 0;
   font-size: 16px;
+  line-height: 1.4;
 }
 .recipeViewText{
   text-align: left;
