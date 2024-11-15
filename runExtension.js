@@ -475,7 +475,6 @@ function highlightIngredient(event) {
   }
 }
 
-
 // Function to remove highlight when unhovered
 function unhighlightIngredient(event) {
   const outerContainer = event.target.closest('.ingrExpOuterContainer');
@@ -508,7 +507,6 @@ function unhighlightIngredient(event) {
     console.error(`Invalid index parsed from element ID: ${elementId}`);
   }
 }
-
 
 async function minimizeClicked(event){
   //Hide the main poup. Close location popup if open. 
