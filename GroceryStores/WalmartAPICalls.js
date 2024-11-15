@@ -73,7 +73,7 @@ async function search(term, generatedHeaders) {
         throw new Error(errorMessage);
       }
       const data = await response.json();
-      console.log('data from walmart search', data);
+      //console.log('data from walmart search', data);
       return data;
     } catch (error) {
       console.error('ERROR in Search in Walmart API Calls', error, url);
