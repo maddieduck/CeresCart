@@ -104,7 +104,6 @@ async function deployExtension(){
         shadowRoot.getElementById('loadingContainer').style.display = 'none';
       }
 
-
     } catch (error) {
       console.error('ERROR in runExtension.js: ', error);
     }
@@ -396,8 +395,16 @@ async function insertEachIngredient(ingredientData) {
         ingredDiv.appendChild(nodeClone);
 
         // Add hover event listeners for highlight/unhighlight
-        nodeClone.addEventListener('mouseover', highlightIngredient);
-        nodeClone.addEventListener('mouseout', unhighlightIngredient);
+        nodeClone.addEventListener('mouseover', (event) => {
+          if (event.target.closest('.ingrExpOuterContainer')) {
+            highlightIngredient(event);
+          }
+        });
+        nodeClone.addEventListener('mouseout', (event) => {
+          if (event.target.closest('.ingrExpOuterContainer')) {
+            unhighlightIngredient(event);
+          }
+        });
       });
       
       // Additional event listeners for other elements (arrows, buttons, etc.)
