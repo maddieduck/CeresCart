@@ -44,7 +44,7 @@ async function generateWalmartHeaders() { //gets a token for use When making API
 }
 
 async function search(term, generatedHeaders) {
-  console.log('walmart search API running ', term);
+  //console.log('walmart search API running ', term);
   const attemptSearch = async (retries) => {
     try {
       //console.log('headers in Walmart search, Search API', generatedHeaders.headers);
@@ -91,7 +91,7 @@ async function search(term, generatedHeaders) {
 }
 
 async function productLookup(ids, ingredient, generatedHeaders) {
-  console.log('walmart product catalog snapshot running', ids, ingredient);
+  //console.log('walmart product catalog snapshot running', ids, ingredient);
   var locationId; 
 
   locationId = await new Promise((resolve, reject) => {
@@ -136,7 +136,7 @@ async function productLookup(ids, ingredient, generatedHeaders) {
       }
 
       const data = await response.json();
-      console.log('data from walmart product lookup ', ingredient, ' ', data);
+      //console.log('data from walmart product lookup ', ingredient, ' ', data);
       return data;
     } catch (error) {
       console.error('ERROR in product lookup in Walmart API Calls ', ingredient, ' ids length ', ids.length, error);
