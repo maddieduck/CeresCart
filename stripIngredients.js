@@ -23,8 +23,11 @@ function stripIngredients(ingredientsArray) {
     return { ...ingredient, productName: productName };
   });
 
-  console.log("Post Stripped Ingredients Function ", strippedIngredients);
-  return strippedIngredients;
+  // Filter out any objects where productName is blank
+  const filteredIngredients = strippedIngredients.filter(ingredient => ingredient && ingredient.productName);
+
+  console.log("Post Stripped Ingredients Function ", filteredIngredients);
+  return filteredIngredients;
 }
 
 // Replace words in product names
