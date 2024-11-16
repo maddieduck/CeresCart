@@ -27,7 +27,7 @@ async function getRefinedIngredients(userInput) {
           The final JSON structure should look like this:
           [
             {
-              "productName": "Japanese sweet potatoes",
+              "productName": "sweet potatoes",
               "indexes": [0],
               "customary": {
                 "quantity": "1",
@@ -50,7 +50,7 @@ async function getRefinedIngredients(userInput) {
                 "unit": "milliliters"
               }
             }
-            // Continue with similar objects
+            // Continue with other products 
           ]
 
           Return only a valid JSON array, without any code block markers. 
