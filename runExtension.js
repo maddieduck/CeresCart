@@ -393,7 +393,7 @@ async function insertEachIngredient(ingredientData) {
         }
 
         ingredDiv.appendChild(nodeClone);
-
+        /*
         nodeClone.addEventListener('mouseover', (event) => {
           highlightIngredient(event);
         });
@@ -404,7 +404,7 @@ async function insertEachIngredient(ingredientData) {
             // Only unhighlight if the mouse has left the entire container
             unhighlightIngredient(event);
           }
-        });        
+        });   */      
 
       });
       
