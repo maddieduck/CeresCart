@@ -23,7 +23,7 @@ function stripIngredients(ingredientsArray) {
     return { ...ingredient, productName: productName };
   });
 
-  console.log("Stripped Ingredients:", strippedIngredients);
+  console.log("Post Stripped Ingredients Function ", strippedIngredients);
   return strippedIngredients;
 }
 
