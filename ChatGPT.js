@@ -34,8 +34,8 @@ async function getRefinedIngredients(userInput) {
                 "unit": "cup"
               },
               "metric": {
-                "quantity": "1",
-                "unit": "cup"
+                "quantity": "240",
+                "unit": "milliliters"
               }
             },
             {
@@ -46,15 +46,9 @@ async function getRefinedIngredients(userInput) {
                 "unit": "cup"
               },
               "metric": {
-                "quantity": "2/3",
-                "unit": "cup"
+                "quantity": "60",
+                "unit": "milliliters"
               }
-            },
-            {
-              "quantity": "1/4",
-              "unit": "cup",
-              "productName": "almond flour",
-              "indexes": [2]
             }
             // Continue with similar objects
           ]
