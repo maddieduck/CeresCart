@@ -9,40 +9,23 @@ async function getRefinedIngredientsGemini(userInput){
       // Prompt the model and wait for the whole result to come back.  
       const result = await session.prompt(`Take this array of ingredients and provide a more 
       concise list by stripping out the quantity and unit. Only include essential 
-      product names that you would search for in an American grocery store API. Return ONLY a 
-      comma-separated object of string of ingredients like the JSON below. 
+      product names that you would search for in an American grocery store API. Return 
+      ONLY an array of comma-separated objects like the JSON below. 
 
       The final JSON structure should look like this:
       [
         {
-          "productName": "sweet potatoes",
-          "indexes": [0],
-          "customary": {
-            "quantity": "1",
-            "unit": "cup"
-          },
-          "metric": {
-            "quantity": "240",
-            "unit": "milliliters"
-          }
+          "productName": "sweet potatoes"
         },
         {
-          "productName": "almond flour",
-          "indexes": [1],
-          "customary": {
-            "quantity": "1/4",
-            "unit": "cup"
-          },
-          "metric": {
-            "quantity": "60",
-            "unit": "milliliters"
-          }
+          "productName": "almond flour"
         }
         // Continue with other products 
       ]
 
       ${userInput}`); 
       console.log('gemini result ', result);
+      return JSON.parse(result);
     }
 }
 
