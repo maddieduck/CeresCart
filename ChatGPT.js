@@ -14,9 +14,9 @@ async function getRefinedIngredients(userInput) {
         messages: [
           { role: 'system', content: 'You are a helpful assistant.' },
           { role: 'user', content: `Take this array of ingredients and provide a more 
-          concise list by stripping out the quantity and unit. Only include essential 
-          product names that you would search for in an American grocery store API. Return ONLY a 
-          comma-separated string of ingredients. Exclude any non-essential words, adjectives or descriptors 
+          concise list by parsing out the quantity and unit. Only include essential 
+          product names that you would search for in an American grocery store API.
+          Exclude any non-essential words, adjectives or descriptors 
           that don't represent the core product you want to buy. If ingredients are separated with 'or' or 
           'and,' make them two distinct items in the new list. Consolidate duplicates. Remove
           any unnecessary symbols or characters like parentheses. Remove anything that is made of just water.  

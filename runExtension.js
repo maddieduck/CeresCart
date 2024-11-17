@@ -16,7 +16,8 @@ if (!currentUrl.includes("pinterest.com")) {
   console.log('ext deployed');
 }
 
-async function deployExtension(){
+async function deployExtension(){  
+  console.log('deploy ');
   const mainPopup = document.getElementById('ingrExpIngredientExporterPopup');
   const minimizedPopup = document.getElementById('minimizePopup');
   if (ingredients != null && ingredients.length > 0) {

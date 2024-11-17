@@ -1,10 +1,10 @@
 import { stripIngredients } from './stripIngredients.js'
-import { getRefinedIngredients } from './ChatGPT.js'
+//import { getRefinedIngredients } from './ChatGPT.js'
+import { getRefinedIngredientsGemini } from './Gemini.js'
 import { Kroger } from './GroceryStores/Kroger.js'
 import {Walmart} from './GroceryStores/Walmart.js'
 
 chrome.runtime.onInstalled.addListener(function() {
-
     //registerOpenTabs();
 });
 
@@ -40,7 +40,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if(message.to === 'ingredients'){ //returns ingredients from kroger API
         var ingredients = Object.values(message.data); 
         console.log('found ingredients ', ingredients); 
-        getRefinedIngredients(ingredients)
+        getRefinedIngredientsGemini(ingredients)
         .then(async strippedIngredients =>{
             console.log('Post ChatGPT ', strippedIngredients); 
             var finalIngredients = stripIngredients(strippedIngredients); 
