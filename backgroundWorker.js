@@ -37,33 +37,34 @@ function interleaveLocations(array1, array2) {
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
-    if(message.to === 'ingredients'){ //returns ingredients from kroger API
-        var ingredients = Object.values(message.data); 
-        console.log('found ingredients ', ingredients); 
-        getRefinedIngredientsGemini(ingredients)
-        .then(async strippedIngredients =>{
-            console.log('Post ChatGPT ', strippedIngredients); 
-            var finalIngredients = stripIngredients(strippedIngredients); 
-            console.log('final product list ', finalIngredients); 
-            if(strippedIngredients != null){ 
-                chrome.storage.sync.get(['storeType'], (result) => {
-                    console.log('store type ingredient', result['storeType']); 
-                    const groceryStore = returnGroceryClass(result['storeType']); 
-                    if(groceryStore == null){
-                        sendResponse({launch: true, noLocation:true}); 
-                    }else{
-                        //const productNames = finalIngredients.map(item => item.productName);
-                        groceryStore.getProducts(finalIngredients, message.locationExists)
-                        .then(products => {
-                            console.log('products ', products); 
-                            sendResponse(products); 
-                        }) 
-                    }
-                });
-            }else{
-                sendResponse({launch: false}); 
+    if (message.to === 'ingredients') { //returns ingredients from Kroger API
+        var ingredients = Object.values(message.data);
+        console.log('found ingredients ', ingredients);
+    
+        // Immediately process the initial response before refining ingredients
+        chrome.storage.sync.get(['storeType'], (result) => {
+            console.log('store type ', result['storeType']);
+            const groceryStore = returnGroceryClass(result['storeType']);
+            if (groceryStore == null) {
+                sendResponse({ launch: true, noLocation: true }); // Moved here
+            } else {
+                getRefinedIngredientsGemini(ingredients)
+                    .then(async strippedIngredients => {
+                        console.log('Post ChatGPT ', strippedIngredients);
+                        var finalIngredients = stripIngredients(strippedIngredients);
+                        console.log('final product list ', finalIngredients);
+                        if (strippedIngredients != null) {
+                            groceryStore.getProducts(finalIngredients, message.locationExists)
+                                .then(products => {
+                                    console.log('products ', products);
+                                    sendResponse(products);
+                                });
+                        } else {
+                            sendResponse({ launch: false });
+                        }
+                    });
             }
-        })
+        });
     }else if(message.to === 'checkout'){ //allows the user to checkout using API 
         console.log('checkout pressed'); 
         chrome.storage.sync.get('storeType', (result) => {
