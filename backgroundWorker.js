@@ -1,8 +1,8 @@
 import { stripIngredients } from './stripIngredients.js'
-import { getRefinedIngredients } from './ChatGPT.js'
+import { getRefinedIngredientsChatGPT } from './ChatGPT.js'
 import { getRefinedIngredientsGemini } from './Gemini.js'
 import { Kroger } from './GroceryStores/Kroger.js'
-import {Walmart} from './GroceryStores/Walmart.js'
+import { Walmart } from './GroceryStores/Walmart.js'
 
 chrome.runtime.onInstalled.addListener(function() {
     //registerOpenTabs();
@@ -36,12 +36,17 @@ function interleaveLocations(array1, array2) {
     return interleavedArray;
 }
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {    
     if (message.to === 'ingredients') { //returns ingredients from Kroger API
-        
         var ingredients = Object.values(message.data);
         console.log('found ingredients ', ingredients);
-    
+
+        //check if built in AI model is found 
+        const {available, defaultTemperature, defaultTopK, maxTopK } = await ai.languageModel.capabilities();
+        if (available == "readily") {
+            //Canary is being used
+        }
+
         // Immediately process the initial response before refining ingredients
         chrome.storage.sync.get(['storeType'], (result) => {
             console.log('store type ', result['storeType']);
