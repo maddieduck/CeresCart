@@ -1,7 +1,7 @@
 const apiKey = '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';
 const endpoint = 'https://api.openai.com/v1/chat/completions';
 
-async function getRefinedIngredientsChatGPT(userInput) {
+async function getRefinedIngredients(userInput) {
   try {
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -88,4 +88,4 @@ async function getRefinedIngredientsChatGPT(userInput) {
   }
 }
 
-export {getRefinedIngredientsChatGPT};
+export {getRefinedIngredients};
