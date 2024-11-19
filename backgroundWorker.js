@@ -38,6 +38,12 @@ function interleaveLocations(array1, array2) {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
     if (message.to === 'ingredients') { //returns ingredients from Kroger API
+        if (navigator.userAgent.includes("Canary")) {
+            console.log("Running in Chrome Canary");
+        } else if (navigator.userAgent.includes("Chrome")) {
+            console.log("Running in regular Chrome ", navigator.userAgent);
+        }
+        
         var ingredients = Object.values(message.data);
         console.log('found ingredients ', ingredients);
     
