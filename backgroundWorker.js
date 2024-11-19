@@ -1,5 +1,5 @@
 import { stripIngredients } from './stripIngredients.js'
-import { getRefinedIngredientsChatGPT } from './ChatGPT.js'
+//import { getRefinedIngredients } from './ChatGPT.js'
 import { getRefinedIngredientsGemini } from './Gemini.js'
 import { Kroger } from './GroceryStores/Kroger.js'
 import { Walmart } from './GroceryStores/Walmart.js'
@@ -55,7 +55,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             if (groceryStore == null) {
                 sendResponse({ launch: true, noLocation: true }); // Moved here
             } else {
-                getRefinedIngredientsChatGPT(ingredients)
+                getRefinedIngredientsGemini(ingredients)
                     .then(async strippedIngredients => {
                         console.log('Post ChatGPT ', strippedIngredients);
                         var finalIngredients = stripIngredients(strippedIngredients);
