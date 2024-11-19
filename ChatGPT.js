@@ -14,14 +14,24 @@ async function getRefinedIngredientsChatGPT(userInput) {
         messages: [
           { role: 'system', content: 'You are a helpful assistant.' },
           { role: 'user', content: `          
-          Take this array of ingredients and create a concise list by extracting the product name, quantity, 
-          and units in both metric and customary formats.
-          Product Name: Use the core name as you would search for it on an American grocery store website. 
-          Exclude non-essential words, adjectives, or descriptors.
-          Formatting: If ingredients are separated by 'or' or 'and,' treat them as distinct items. 
-          Remove unnecessary symbols, characters (e.g., parentheses), and items made solely of water.
-          Indexes: Maintain the original indexes (0-based) in the output. Consolidate duplicates by combining their indexes.
-          The final JSON should follow this structure:
+          Take this array of ingredients and produce a concise list where each item contains:
+
+          Product Name: The essential name of the product as you would search for it on an American grocery store website. 
+          Remove non-essential words, adjectives, descriptors, and unnecessary symbols (e.g., parentheses).
+          
+          Indexes: The original zero-based index (or indices) in the input array where the item appeared. 
+          If one product corresponds to multiple input items (e.g., duplicates or consolidated items), 
+          list all relevant indexes for that product.
+
+          Quantities and Units: Parse the quantities and units in both customary and metric systems.
+          If no unit is provided, use null. 
+
+          Special rules:
+          
+          If ingredients are connected by "or" or "and," split them into separate items in the new list.
+          Remove items that consist solely of water.
+          Consolidate duplicate products into a single entry, combining their indexes.
+          The final output should be a valid JSON array in this format:
 
           [
             {

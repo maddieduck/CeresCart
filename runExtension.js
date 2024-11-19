@@ -405,7 +405,7 @@ async function insertEachIngredient(ingredientData) {
             // Only unhighlight if the mouse has left the entire container
             unhighlightIngredient(event);
           }
-        });   */      
+        });       */   
 
       });
       
