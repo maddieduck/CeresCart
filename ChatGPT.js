@@ -13,18 +13,16 @@ async function getRefinedIngredientsChatGPT(userInput) {
         model: 'gpt-3.5-turbo',//'gpt-4', // 'gpt-4o-mini'
         messages: [
           { role: 'system', content: 'You are a helpful assistant.' },
-          { role: 'user', content: `Take this array of ingredients and provide a more 
-          concise list by parsing out the quantity and unit. Only include essential 
-          product names that you would search for in an American grocery store API.
-          Exclude any non-essential words, adjectives or descriptors 
-          that don't represent the core product you want to buy. If ingredients are separated with 'or' or 
-          'and,' make them two distinct items in the new list. Consolidate duplicates. Remove
-          any unnecessary symbols or characters like parentheses. Remove anything that is made of just water.  
-          I want the end result to be json data and the json data includes quantity, unit, stripped  
-          product name as well as an array of indexes (indexed by 0) of where that product was in the original list.
-          I also want the units of each product in metric and customary.
+          { role: 'user', content: `          
+          Take this array of ingredients and create a concise list by extracting the product name, quantity, 
+          and units in both metric and customary formats.
+          Product Name: Use the core name as you would search for it on an American grocery store website. 
+          Exclude non-essential words, adjectives, or descriptors.
+          Formatting: If ingredients are separated by 'or' or 'and,' treat them as distinct items. 
+          Remove unnecessary symbols, characters (e.g., parentheses), and items made solely of water.
+          Indexes: Maintain the original indexes (0-based) in the output. Consolidate duplicates by combining their indexes.
+          The final JSON should follow this structure:
 
-          The final JSON structure should look like this:
           [
             {
               "productName": "sweet potatoes",
@@ -53,9 +51,8 @@ async function getRefinedIngredientsChatGPT(userInput) {
             // Continue with other products 
           ]
 
-          Return only a valid JSON array, without any code block markers. 
-          Do not include explanations or extra text. 
-          Return a blank array if there is an issue parsing. 
+          Return only a valid JSON array with no code block markers, explanations, or extra text. 
+          If parsing fails, return an empty array.
 
           ${userInput}` }]
       })
