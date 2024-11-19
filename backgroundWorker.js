@@ -42,10 +42,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         console.log('found ingredients ', ingredients);
 
         //check if built in AI model is found 
+        /*
         const {available, defaultTemperature, defaultTopK, maxTopK } = await ai.languageModel.capabilities();
         if (available == "readily") {
             //Canary is being used
-        }
+        }*/ 
 
         // Immediately process the initial response before refining ingredients
         chrome.storage.sync.get(['storeType'], (result) => {
@@ -54,7 +55,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             if (groceryStore == null) {
                 sendResponse({ launch: true, noLocation: true }); // Moved here
             } else {
-                getRefinedIngredientsGemini(ingredients)
+                getRefinedIngredientsChatGPT(ingredients)
                     .then(async strippedIngredients => {
                         console.log('Post ChatGPT ', strippedIngredients);
                         var finalIngredients = stripIngredients(strippedIngredients);
