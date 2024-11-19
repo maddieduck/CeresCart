@@ -37,14 +37,18 @@ function interleaveLocations(array1, array2) {
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
-    if (message.to === 'ingredients') { //returns ingredients from Kroger API
+    if (message.to === 'ingredients') { // Returns ingredients from Kroger API
         try {
-            const { available, defaultTemperature, defaultTopK, maxTopK } = ai.languageModel.capabilities();
-            console.log("This is Canary or a compatible environment:", { available, defaultTemperature, defaultTopK, maxTopK });
+            const { available } = ai.languageModel.capabilities();
+            console.log("This is Canary or a compatible environment:", { available });
+    
+            // Decide which function to use based on the environment
+            var isCanary = available; // Assuming `available` indicates Canary compatibility
         } catch (error) {
             console.log("This is likely not Canary or the required API is unavailable:", error);
+            var isCanary = false;
         }
-        
+    
         var ingredients = Object.values(message.data);
         console.log('found ingredients ', ingredients);
     
@@ -55,9 +59,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             if (groceryStore == null) {
                 sendResponse({ launch: true, noLocation: true }); // Moved here
             } else {
-                getRefinedIngredientsChatGPT(ingredients)
+                const refineIngredients = isCanary ? getRefinedIngredientsGemini : getRefinedIngredientsChatGPT;
+    
+                refineIngredients(ingredients)
                     .then(async strippedIngredients => {
-                        console.log('Post ChatGPT ', strippedIngredients);
+                        console.log('Post refinement ', strippedIngredients);
                         var finalIngredients = stripIngredients(strippedIngredients);
                         console.log('final product list ', finalIngredients);
                         if (strippedIngredients != null) {
@@ -72,7 +78,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     });
             }
         });
-    }else if(message.to === 'checkout'){ //allows the user to checkout using API 
+    }
+    else if(message.to === 'checkout'){ //allows the user to checkout using API 
         console.log('checkout pressed'); 
         chrome.storage.sync.get('storeType', (result) => {
             const groceryStore = returnGroceryClass(result['storeType']); 
