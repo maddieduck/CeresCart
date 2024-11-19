@@ -1,5 +1,5 @@
 import { stripIngredients } from './stripIngredients.js'
-import { getRefinedIngredients } from './ChatGPT.js'
+import { getRefinedIngredientsChatGPT } from './ChatGPT.js'
 import { getRefinedIngredientsGemini } from './Gemini.js'
 import { Kroger } from './GroceryStores/Kroger.js'
 import {Walmart} from './GroceryStores/Walmart.js'
@@ -38,10 +38,11 @@ function interleaveLocations(array1, array2) {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
     if (message.to === 'ingredients') { //returns ingredients from Kroger API
-        if (navigator.userAgent.includes("Canary")) {
-            console.log("Running in Chrome Canary");
-        } else if (navigator.userAgent.includes("Chrome")) {
-            console.log("Running in regular Chrome ", navigator.userAgent);
+        try {
+            const { available, defaultTemperature, defaultTopK, maxTopK } = ai.languageModel.capabilities();
+            console.log("This is Canary or a compatible environment:", { available, defaultTemperature, defaultTopK, maxTopK });
+        } catch (error) {
+            console.log("This is likely not Canary or the required API is unavailable:", error);
         }
         
         var ingredients = Object.values(message.data);
@@ -54,7 +55,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             if (groceryStore == null) {
                 sendResponse({ launch: true, noLocation: true }); // Moved here
             } else {
-                getRefinedIngredients(ingredients)
+                getRefinedIngredientsChatGPT(ingredients)
                     .then(async strippedIngredients => {
                         console.log('Post ChatGPT ', strippedIngredients);
                         var finalIngredients = stripIngredients(strippedIngredients);
