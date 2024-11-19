@@ -38,6 +38,7 @@ function interleaveLocations(array1, array2) {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
     if (message.to === 'ingredients') { //returns ingredients from Kroger API
+        
         var ingredients = Object.values(message.data);
         console.log('found ingredients ', ingredients);
     
@@ -48,7 +49,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             if (groceryStore == null) {
                 sendResponse({ launch: true, noLocation: true }); // Moved here
             } else {
-                getRefinedIngredients(ingredients)
+                getRefinedIngredientsGemini(ingredients)
                     .then(async strippedIngredients => {
                         console.log('Post ChatGPT ', strippedIngredients);
                         var finalIngredients = stripIngredients(strippedIngredients);

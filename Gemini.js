@@ -1,8 +1,8 @@
 async function getRefinedIngredientsGemini(userInput){
     // Start by checking if it's possible to create a session based on the availability of the model, and the characteristics of the device.
     const {available, defaultTemperature, defaultTopK, maxTopK } = await ai.languageModel.capabilities();
-    console.log('awaited ai ');
-    if (available !== "no") {
+    console.log('availble ', available);
+    if (available == "readily") {
       console.log('not no');
       const session = await ai.languageModel.create();
       console.log('created language model');
