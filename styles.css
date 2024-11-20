@@ -1011,6 +1011,7 @@ ol li {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 16px;
 }
 
 .toggle-button.active {
