@@ -78,7 +78,7 @@ async function deployExtension(){
       shadowRoot.getElementById('goToCart').addEventListener('click', goToCart); 
       shadowRoot.getElementById('collapseLeft').addEventListener('click', collapseLeft); 
       shadowRoot.getElementById('collapseRight').addEventListener('click', collapseRight); 
-      //shadowRoot.getElementById('cookModeToggle').addEventListener('click', cookMode); 
+      shadowRoot.getElementById('cookModeToggle').addEventListener('click', cookMode); 
 
       updateCheckoutButton();
 
