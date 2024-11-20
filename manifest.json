@@ -2,7 +2,7 @@
   "manifest_version":3,
   "name": "Recipe Viewer & Grocery Assistant | Ceres Cart",
   "version": "2.0.11",
-  "description": "Streamline cooking with the help of Ceres Cart.",
+  "description": "Enjoy an ad-free recipe browsing experience and instantly add ingredients to your cart!",
   "author": "Maddie Drake",
   "action": {
       "default_popup": "defaultPopup.html",
