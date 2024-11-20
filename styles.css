@@ -1029,7 +1029,7 @@ ol li {
 }
 
 .toggle-button.active .toggle-circle {
-  transform: translateX(40px);
+  transform: translateX(30px);
 }
 
 .toggle-button p {
