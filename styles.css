@@ -1039,3 +1039,7 @@ ol li {
   font-weight: bold;
   color: white;
 }
+#cookModeText{
+  font-weight: 550;
+  font-size: 16px;
+}
