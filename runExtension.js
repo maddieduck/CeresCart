@@ -1552,34 +1552,53 @@ function expandArrowClicked(event) {
   }
 }
 
-function cookMode(event) {
+async function cookMode(event) {
   console.log('Cook mode pressed');
   let wakeLock = null;
   const toggleButton = shadowRoot.getElementById('cookModeToggle');
 
+  if (!toggleButton) {
+    console.error("Toggle button not found in shadowRoot");
+    return;
+  }
+
+  // Function to request wake lock
   async function requestWakeLock() {
-    try {
-      wakeLock = await navigator.wakeLock.request('screen');
-      console.log("Wake lock is active");
-    } catch (err) {
-      console.error(`Failed to activate wake lock: ${err.message}`);
+    if ('wakeLock' in navigator) {
+      try {
+        wakeLock = await navigator.wakeLock.request('screen');
+        console.log("Wake lock is active");
+        wakeLock.addEventListener('release', () => {
+          console.log("Wake lock was released");
+        });
+      } catch (err) {
+        console.error(`Failed to activate wake lock: ${err.message}`);
+      }
+    } else {
+      console.warn("Wake Lock API is not supported in this browser.");
     }
   }
 
-  function releaseWakeLock() {
+  // Function to release wake lock
+  async function releaseWakeLock() {
     if (wakeLock !== null) {
-      wakeLock.release().then(() => {
+      try {
+        await wakeLock.release();
         wakeLock = null;
         console.log("Wake lock is released");
-      });
+      } catch (err) {
+        console.error(`Failed to release wake lock: ${err.message}`);
+      }
     }
   }
 
   // Toggle button logic
   toggleButton.classList.toggle('active');
   if (toggleButton.classList.contains('active')) {
-    requestWakeLock();  // Enable wake lock
+    console.log("Activating cook mode");
+    await requestWakeLock(); // Enable wake lock
   } else {
-    releaseWakeLock();  // Release wake lock
+    console.log("Deactivating cook mode");
+    await releaseWakeLock(); // Release wake lock
   }
 }
