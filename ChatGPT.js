@@ -1,4 +1,4 @@
-const apiKey = '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';
+const k = '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';
 const endpoint = 'https://api.openai.com/v1/chat/completions';
 
 async function getRefinedIngredientsChatGPT(userInput) {
@@ -8,7 +8,7 @@ async function getRefinedIngredientsChatGPT(userInput) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
+        'Authorization': `Bearer ${k}`
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',//'gpt-4', // 'gpt-4o-mini'
