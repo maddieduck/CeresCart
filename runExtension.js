@@ -628,7 +628,7 @@ async function loadLocationsInPopup(newLocationData){
 
 async function insertLocations(){
   let backgroundResponse = await chrome.runtime.sendMessage({to: 'locations'}); 
-  console.log('background response ', backgroundResponse)
+  //console.log('background response load locations', backgroundResponse)
   if(backgroundResponse.locationsFound){
     loadLocationsInPopup(backgroundResponse.locationData); 
     shadowRoot.getElementById('loadingContainerLocationPopup').style.display = 'none';

@@ -28,8 +28,7 @@ class Walmart extends GroceryStore {
                 // Check if searchResult contains items
                 if (!searchResult.items || searchResult.items.length === 0) {
                     console.warn(`No available items found for ingredient ${ingredient.productName}`);
-                    ingredient.products = []; // Append an empty array for 'products' if no items are found
-                    return ingredient;
+                    return null; // Skip this ingredient
                 }
                 
                 // Extract item IDs from search results
@@ -41,8 +40,7 @@ class Walmart extends GroceryStore {
                 // Check if productDetails is valid
                 if (!productDetails || !productDetails.items) {
                     console.warn(`No product details found for ingredient ${ingredient.productName}`);
-                    ingredient.products = []; // Append an empty array for 'products' if no details are found
-                    return ingredient;
+                    return null; // Skip this ingredient
                 }
         
                 // Filter items where stock is "Available" and map to product objects
@@ -61,16 +59,22 @@ class Walmart extends GroceryStore {
                         itemId: item.itemId || ''
                     }));
         
+                // Skip this ingredient if no valid products are found
+                if (products.length === 0) {
+                    console.warn(`No valid products found for ingredient ${ingredient.productName}`);
+                    return null;
+                }
+        
                 // Append the products array to the ingredient object
                 ingredient.products = products;
                 return ingredient;
             });
     
-            // Wait for all ingredient data to be processed
-            const ingredientData = await Promise.all(ingredientDataPromises);
-        
+            // Wait for all ingredient data to be processed and filter out null values
+            const ingredientData = (await Promise.all(ingredientDataPromises)).filter(Boolean);
+    
             console.log('get products results', ingredientData); 
-            if (ingredientData.every(ingredient => ingredient.products.length === 0)) {
+            if (ingredientData.length === 0) {
                 return { launch: false };
             } else {
                 return { launch: true, ingredientData };
@@ -79,7 +83,7 @@ class Walmart extends GroceryStore {
             console.error('Error fetching products:', error);
             return { launch: false };
         }
-    }
+    }    
 
     async changeLocation(url) {
         return new Promise((resolve, reject) => {
