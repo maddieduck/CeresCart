@@ -7,21 +7,32 @@ async function getRefinedIngredientsGemini(userInput){
       const session = await ai.languageModel.create();
       console.log('created language model');
       // Prompt the model and wait for the whole result to come back.  
-      const result = await session.prompt(`Take this array of ingredients and provide a more 
-      concise list by stripping out the quantity and unit. Only include essential 
-      product names that you would search for in an American grocery store API. Return 
-      ONLY an array of comma-separated objects like the JSON below. 
+      const result = await session.prompt(`Take this array of ingredients and produce a 
+      concise list where each item contains an object of product name. 
 
-      The final JSON structure should look like this:
+      Product name is the essential name of the product as you would search for it on an 
+      American grocery store website. Remove non-essential words, adjectives, descriptors, 
+      and unnecessary symbols (e.g., parentheses). 
+
+      Special rules:
+      
+      If ingredients are connected by "or" or "and," split them into separate items in the new list.
+      Remove items that consist solely of water.
+      Consolidate duplicate products into a single entry, combining their indexes.
+      The final output should be a valid JSON array in this format:
+
       [
         {
-          "productName": "sweet potatoes"
+          "productName": "sweet potatoes",
         },
         {
-          "productName": "almond flour"
+          "productName": "almond flour",
         }
         // Continue with other products 
       ]
+
+      Return only a valid JSON array with no code block markers, explanations, or extra text. 
+      If parsing fails, return an empty array.
 
       ${userInput}`); 
       console.log('gemini result ', result);
