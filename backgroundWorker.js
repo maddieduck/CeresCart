@@ -4,9 +4,15 @@ import { getRefinedIngredientsGemini, testRewriter } from './Gemini.js'
 import { Kroger } from './GroceryStores/Kroger.js'
 import {Walmart} from './GroceryStores/Walmart.js'
 
-chrome.runtime.onInstalled.addListener(function() {
-    //registerOpenTabs();
+chrome.runtime.onInstalled.addListener(() => {
+    const uninstallUrl = "https://forms.gle/5ZP6kkUKGi3LPkZH9"; // Replace with your URL
+    chrome.runtime.setUninstallURL(uninstallUrl, () => {
+        if (chrome.runtime.lastError) {
+            console.error(`Error setting uninstall URL: ${chrome.runtime.lastError.message}`);
+        }
+    });
 });
+
 
 function returnGroceryClass(storeType){ //returns the class for the grocery store the user selected
     switch (storeType) {
