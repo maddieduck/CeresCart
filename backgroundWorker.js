@@ -38,7 +38,6 @@ function interleaveLocations(array1, array2) {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
     if (message.to === 'ingredients') { // Returns ingredients from Kroger API
-        testRewriter(['1/2 cup japanese sweet potatoes, 2 cups sugar, 3 cups flour']);
         try {
             const { available } = ai.languageModel.capabilities();
             console.log("This is Canary or a compatible environment:", { available });
