@@ -2,6 +2,7 @@ const apiKey = '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';
 const endpoint = 'https://api.openai.com/v1/chat/completions';
 
 async function getRefinedIngredientsChatGPT(userInput) {
+  console.log('ChatGPT Running')
   try {
     const response = await fetch(endpoint, {
       method: 'POST',
