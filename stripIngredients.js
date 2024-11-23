@@ -78,12 +78,12 @@ function removeWords(products) {
 
   const wordsToRemove = [
     "iced cubes", "ice cubes", "cubed", "ice cube", "ice", "diced", "sliced", "slice of", "filtered water", "warm water",
-    "fresh", "slices", "juiced", "juice", "chopped", "softened", "zest", "water", "finely", "cooked",
-    "extra virgin", "extra-virgin", "heaped", "chunks", "hot water", "boiling", "melted", "rolled",
+    "fresh", "slices", "juiced", "juice", "chopped", "softened", "zest", "finely", "cooked",
+    "extra virgin", "extra-virgin", "heaped", "chunks", "hot water", "cold water", "boiling", "melted", "rolled",
     "peeled", "wedges", "thinly", "flaked", "for serving", "ripe", "crisp", "healthy", "whopping",
     "matchstick", "kosher", "roughly", "freshly", "fat", "dried", "loosely packed",
     "mashed", "very", "of", "for", "optional", "garnish", "toasted", "rounded", "in water", "extravirgin",
-    "freerange", "piece", "unbaked", "each", "to taste", "cooked", "bag", "large", "medium", "small"
+    "freerange", "piece", "unbaked", "each", "to taste", "cooked", "bag", "large", "medium", "small", "water"
   ];
 
   return products.map(product => {

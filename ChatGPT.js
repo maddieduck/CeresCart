@@ -55,6 +55,7 @@ async function getRefinedIngredientsChatGPT(userInput) {
     const result = await response.json();
 
         // Check for token usage in the response
+        /*
         if (result.usage) {
           console.log('Token Usage:', result.usage);
           console.log(`Prompt Tokens: ${result.usage.prompt_tokens}`);
@@ -62,7 +63,7 @@ async function getRefinedIngredientsChatGPT(userInput) {
           console.log(`Total Tokens: ${result.usage.total_tokens}`);
         } else {
           console.warn('Token usage data not available in the response.');
-        }
+        }*/ 
 
     if (!result.choices || result.choices.length === 0 || !result.choices[0].message || !result.choices[0].message.content) {
       throw new Error('Unexpected response format from OpenAI API');
