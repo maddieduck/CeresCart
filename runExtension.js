@@ -99,8 +99,6 @@ async function deployExtension(){
         });
       } else {
         // Insert each ingredient into the popup
-        //const ingredientData = new Map();
-        //console.log('ingredient Data run ext ', ingredientData);
         insertEachIngredient(backgroundResponse.ingredientData);
         shadowRoot.getElementById('loadingContainer').style.display = 'none';
       }
@@ -344,7 +342,7 @@ async function insertEachIngredient(ingredientData) {
       allProductData = [];
       
       ingredientData.forEach((ingredient, index) => {
-        const productData = ingredient.products;
+        const productData = ingredient.products; 
 
         allProductData[index] = { indexOfProductDisplayed: 0, ...ingredient };
 
@@ -750,9 +748,13 @@ async function shopStore(event){ //a location has been selected from the locatio
     }); 
   
     //insert ingredients from the new store location
+    console.log('ingreditents ', ingredients);
     let backgroundResponse = await chrome.runtime.sendMessage({ to: 'ingredients', data: ingredients, locationExists: true});
-    const ingredientData = new Map(backgroundResponse.ingredientData);
-    insertEachIngredient(ingredientData);  
+    if(backgroundResponse.launch){
+      insertEachIngredient(backgroundResponse.ingredientData);  
+    }else{
+      //TODO: throw error why it couldn't launch 
+    }
 
     shadowRoot.getElementById('loadingContainer').style.display = 'none'; //hide loading wheel 
   }
