@@ -13,7 +13,6 @@ chrome.runtime.onInstalled.addListener(() => {
     });
 });
 
-
 function returnGroceryClass(storeType){ //returns the class for the grocery store the user selected
     switch (storeType) {
         case 'Walmart':
