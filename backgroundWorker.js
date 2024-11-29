@@ -1,6 +1,6 @@
 import { stripIngredients } from './stripIngredients.js'
 import { getRefinedIngredientsChatGPT } from './ChatGPT.js'
-import { getRefinedIngredientsGemini, testRewriter } from './Gemini.js'
+import { getRefinedIngredientsGemini } from './Gemini.js'
 import { Kroger } from './GroceryStores/Kroger.js'
 import {Walmart} from './GroceryStores/Walmart.js'
 
