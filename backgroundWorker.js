@@ -13,6 +13,12 @@ chrome.runtime.onInstalled.addListener(() => {
     });
 });
 
+chrome.runtime.onInstalled.addListener((details) => {
+    if (details.reason === "install") {
+        chrome.tabs.create({ url: "welcomeMessage/welcome.html" });
+    }
+  });
+
 function returnGroceryClass(storeType){ //returns the class for the grocery store the user selected
     switch (storeType) {
         case 'Walmart':
