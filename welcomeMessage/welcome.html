@@ -24,10 +24,29 @@
         <section id="mailing-list">
             <h2>Stay Updated</h2>
             <p>Join our mailing list to get updates, tips, and special offers:</p>
-            <form id="mailing-list-form">
-                <input type="email" placeholder="Enter your email" required>
-                <button type="submit">Join Now</button>
+            <form id="signupForm">
+              <input type="text" id="name" placeholder="Your Name" required />
+              <input type="email" id="email" placeholder="Your Email" required />
+              <button type="submit">Sign Up</button>
             </form>
+            <p id="status"></p>
+            <script>
+                const form = document.getElementById('signupForm');
+                form.addEventListener('submit', async (e) => {
+                  e.preventDefault();
+                  const name = document.getElementById('name').value;
+                  const email = document.getElementById('email').value;
+                  const response = await fetch('https://script.google.com/a/macros/cerescart.com/s/AKfycby7-O68f4iF3IU21aivorZlSfJYeqTnvXhNy6MqIqLVs0u98tZwmNaQX-OYEBF4_wziIw/exec', {
+                    method: 'POST',
+                    body: JSON.stringify({ name, email }),
+                    headers: { 'Content-Type': 'application/json' }
+                    });
+                  const result = await response.json();
+                  document.getElementById('status').textContent = result.success 
+                    ? 'Thank you for signing up!' 
+                    : `There was an error: ${result.error || 'Please try again.'}`;
+                });
+              </script>
         </section>
         <footer>
             <p>&copy; 2024 Ceres Cart. All rights reserved.</p>
