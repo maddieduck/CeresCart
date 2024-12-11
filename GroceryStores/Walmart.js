@@ -1,6 +1,5 @@
 import {stores, search, productLookup, generateWalmartHeaders} from './WalmartAPICalls.js'
 import { GroceryStore } from './GroceryStore.js';
-import {loadFromLocalStorage} from '../storageHelpers.js';
 
 class Walmart extends GroceryStore { 
     constructor() {
@@ -20,9 +19,9 @@ class Walmart extends GroceryStore {
         console.log('get products Walmart.js', finalIngredients);
     
         try {
+            const generatedHeaders = await generateWalmartHeaders();
             const ingredientDataPromises = finalIngredients.map(async ingredient => {
                 // Generate headers and perform search
-                const generatedHeaders = await generateWalmartHeaders();
                 const searchResult = await search(ingredient.productName, generatedHeaders);
                 
                 // Check if searchResult contains items
