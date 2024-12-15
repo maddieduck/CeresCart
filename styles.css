@@ -640,7 +640,7 @@ html {
   flex-direction: column;
   position: absolute; /* Allows positioning relative to the parent */
   top: 50%;
-  transform: translate(50%, -50%); /* Centers the element */
+  transform: translate(37%, -50%); /* Centers the element */
   background-color: rgba(255, 255, 255, 0.8); /* Optional: Add a light background for contrast */
   padding: 20px; /* Optional: Add padding around the content */
   border-radius: 8px; /* Optional: Rounded corners */
