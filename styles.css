@@ -144,22 +144,25 @@ html {
   display: none;             /* Use Flexbox */
   align-items: center;       /* Center text vertically */
 }
-#ingrExpZipCode{ 
+#ingrExpZipCode {
   margin-left: 5px;
   font-weight: 325;
   font-size: 12px;
   width: 180px;
   border: none;
   border-radius: 25px;
-  text-align: left;
-  margin-right: 1px;
+  text-align: center; /* Centers text horizontally */
   height: 25px;
 
-  display: -webkit-box; /* Limit the text to three lines */
+  display: flex; /* Enables flexbox */
+  justify-content: center; /* Centers text horizontally */
+  align-items: center; /* Centers text vertically */
+
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1; 
+  -webkit-line-clamp: 1; /* Limits to one line */
   overflow: hidden;
 }
+
 #change{
   cursor: pointer;
   background-color: white;
@@ -184,27 +187,23 @@ html {
   outline: none;
   outline: none;
 }
-#ingrExpZipCodeInPopup{
-  color: black;
-  font-weight: 325;
-  font-size: 17px;
-  outline: 1px solid rgb(191, 191, 191); ;
-  border: none;
-  border-radius: 25px;
-  text-align: center;
-  height: 20px;
-  align-items: center; /* Center vertically */
-  margin-left: 88px;
-  width: 200px;
+#ingrExpZipCodeInPopup {
+  width: 180px; /* Adjust as needed */
+  height: 40px; /* Set height for vertical alignment */
+  border: 1px solid #ccc; /* Optional: Border styling */
+  border-radius: 8px; /* Optional: Rounded corners */
+  padding: 0; /* Remove padding to avoid misalignment */
+  text-align: center; /* Centers text and placeholder horizontally */
+  font-size: 14px; /* Adjust font size */
+  box-sizing: border-box; /* Ensures padding/borders don’t affect dimensions */
+}
 
-  display: -webkit-box; 
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1; 
-  overflow: hidden;
+#ingrExpZipCodeInPopup::placeholder {
+  text-align: center; /* Ensures placeholder is horizontally centered */
+  line-height: 40px; /* Matches the input's height for vertical centering */
+  font-size: 14px; /* Optional: Match font size */
 }
-#ingrExpZipCodeInPopup:placeholder{
-  color: black;
-}
+
 #location{
   height: 25px;
   width: 25px;

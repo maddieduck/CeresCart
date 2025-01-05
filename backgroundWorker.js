@@ -5,7 +5,7 @@ import { Kroger } from './GroceryStores/Kroger.js'
 import {Walmart} from './GroceryStores/Walmart.js'
 
 chrome.runtime.onInstalled.addListener(() => {
-    const uninstallUrl = "https://forms.gle/5ZP6kkUKGi3LPkZH9"; // Replace with your URL
+    const uninstallUrl = "https://forms.gle/5ZP6kkUKGi3LPkZH9"; 
     chrome.runtime.setUninstallURL(uninstallUrl, () => {
         if (chrome.runtime.lastError) {
             console.error(`Error setting uninstall URL: ${chrome.runtime.lastError.message}`);
@@ -13,11 +13,12 @@ chrome.runtime.onInstalled.addListener(() => {
     });
 });
 
+/*
 chrome.runtime.onInstalled.addListener((details) => {
     if (details.reason === "install") {
         chrome.tabs.create({ url: "welcomeMessage/welcome.html" });
     }
-  });
+});*/ 
 
 function returnGroceryClass(storeType){ //returns the class for the grocery store the user selected
     switch (storeType) {
